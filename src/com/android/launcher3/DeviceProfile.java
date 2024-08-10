@@ -534,7 +534,8 @@ public class DeviceProfile {
         HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
 
-        hotseatQsbHeight = isQsbEnable ? res.getDimensionPixelSize(R.dimen.qsb_widget_height) : 0;
+        hotseatQsbHeight = isQsbEnable ? hotseatMode.getLayoutResourceId() == R.layout.container_hotseat_poweramp ? res.getDimensionPixelSize(R.dimen.qsb_widget_height_large)
+            : res.getDimensionPixelSize(R.dimen.qsb_widget_height) : 0;
         hotseatQsbShadowHeight = res.getDimensionPixelSize(R.dimen.qsb_shadow_height);
         hotseatQsbVisualHeight = isQsbEnable ? hotseatQsbHeight - 2 * hotseatQsbShadowHeight : 0;
 
@@ -899,9 +900,9 @@ public class DeviceProfile {
     /** Updates hotseatCellHeightPx and hotseatBarSizePx */
     private void updateHotseatSizes(int hotseatIconSizePx) {
         // Ensure there is enough space for folder icons, which have a slightly larger radius.
-        hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
+        hotseatCellHeightPx = (int) (getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 1.25);
 
-        var space = Math.abs(hotseatCellHeightPx / 2) - 16;
+        var space = (int) Math.abs(hotseatCellHeightPx / 3.5);
 
         hotseatBarBottomSpacePx *= PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getHotseatBottomFactor());

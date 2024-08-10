@@ -406,6 +406,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_bottom_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
+    val hotseatHorizontalFactor = preference(
+        key = floatPreferencesKey(name = "hotseat_horizontal_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_bottom_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
 
     val enableFuzzySearch = preference(
         key = booleanPreferencesKey(name = "enable_fuzzy_search"),

@@ -536,6 +536,7 @@
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_lawnchair" translatable="false">Lawnchair</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="hotseat_mode_power_amp">Poweramp Widget</string>
 
     <string name="qsb_hotseat_background_transparency">Background opacity</string>
     <string name="qsb_hotseat_stroke_width">Outline width</string>
@@ -546,6 +547,7 @@
 
     <string name="dock_icons">Dock icons</string>
     <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <string name="hotseat_horizontal_padding">Horizontal Spacing</string>
 
     <!-- Search providers -->
     <string name="search_provider_app_search">App search</string>
