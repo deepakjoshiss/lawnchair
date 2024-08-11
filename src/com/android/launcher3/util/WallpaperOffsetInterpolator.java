@@ -73,12 +73,13 @@ public class WallpaperOffsetInterpolator {
      */
     private void wallpaperOffsetForScroll(int scroll, int numScrollableScreens, final int[] out) {
         out[1] = 1;
-
+        float wallShift = prefs.getWallpaperShift().get();
         // To match the default wallpaper behavior in the system, we default to either
         // the left
         // or right edge on initialization
         if (!prefs.getWallpaperScrolling().get() || mLockedToDefaultPage || numScrollableScreens <= 1) {
-            out[0] = mIsRtl ? 1 : 0;
+            out[1] = 100;
+            out[0] = (int) (100 * wallShift);
             return;
         }
 
@@ -87,7 +88,7 @@ public class WallpaperOffsetInterpolator {
         // screens, not including the custom screen, and empty screens (if >
         // MIN_PARALLAX_PAGE_SPAN)
         int numScreensForWallpaperParallax = mWallpaperIsLiveWallpaper ? numScrollableScreens
-                : Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollableScreens);
+            : Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollableScreens);
 
         // Offset by the custom screen
 
@@ -114,7 +115,8 @@ public class WallpaperOffsetInterpolator {
         int rightPageScrollX = mWorkspace.getScrollForPage(rightPageIndex);
         int scrollRange = rightPageScrollX - leftPageScrollX;
         if (scrollRange <= 0) {
-            out[0] = 0;
+            out[1] = 100;
+            out[0] = (int) (100 * wallShift);
             return;
         }
 
@@ -122,8 +124,11 @@ public class WallpaperOffsetInterpolator {
         // transition;
         // this parameter offsets it to keep the wallpaper from animating as well
         int adjustedScroll = scroll - leftPageScrollX -
-                mWorkspace.getLayoutTransitionOffsetForPage(0);
+            mWorkspace.getLayoutTransitionOffsetForPage(0);
         adjustedScroll = Utilities.boundToRange(adjustedScroll, 0, scrollRange);
+
+        int adjustAmount = numScrollableScreens < numScreensForWallpaperParallax
+            ? (int) ((scrollRange * (numScreensForWallpaperParallax - numScrollableScreens)) * wallShift) : 0;
         out[1] = (numScreensForWallpaperParallax - 1) * scrollRange;
 
         // The offset is now distributed 0..1 between the left and right pages that we
@@ -134,7 +139,8 @@ public class WallpaperOffsetInterpolator {
             // In RTL, the pages are right aligned, so adjust the offset from the end
             rtlOffset = out[1] - (numScrollableScreens - 1) * scrollRange;
         }
-        out[0] = rtlOffset + adjustedScroll * (numScrollableScreens - 1);
+        out[0] = rtlOffset + adjustedScroll * (numScrollableScreens - 1) + adjustAmount;
+        System.out.println(">>> Scroll range is " + out[0] + " to " + out[1] + " scroll " + adjustedScroll + " screens " + numScrollableScreens);
     }
 
     public float wallpaperOffsetForScroll(int scroll) {

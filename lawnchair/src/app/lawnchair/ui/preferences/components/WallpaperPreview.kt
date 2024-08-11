@@ -57,19 +57,21 @@ fun wallpaperDrawable(): Drawable? {
         },
     )
     val wallpaperDrawable by produceState<Drawable?>(initialValue = null) {
-        value = when {
-            wallpaperInfo != null -> wallpaperInfo.loadThumbnail(context.packageManager)
-            filesAndStorageGranted(context) -> {
-                withContext(Dispatchers.IO) {
-                    wallpaperManager.drawable?.let {
-                        val size = Size(it.intrinsicWidth, it.intrinsicHeight).scaleDownToDisplaySize(context)
-                        val bitmap = it.toBitmap(size.width, size.height)
-                        BitmapDrawable(context.resources, bitmap)
-                    }
-                }
-            }
-            else -> null
-        }
+        value = null;
+
+//            when {
+//            false && wallpaperInfo != null -> wallpaperInfo.loadThumbnail(context.packageManager)
+//            filesAndStorageGranted(context) -> {
+//                withContext(Dispatchers.IO) {
+//                    wallpaperManager.drawable?.let {
+//                        val size = Size(it.intrinsicWidth, it.intrinsicHeight).scaleDownToDisplaySize(context)
+//                        val bitmap = it.toBitmap(size.width, size.height)
+//                        BitmapDrawable(context.resources, bitmap)
+//                    }
+//                }
+//            }
+//            else -> null
+//        }
     }
 
     if (!permissionState.status.isGranted) {

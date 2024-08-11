@@ -45,6 +45,13 @@ class ColorPreferenceModelList(context: Context) {
                 dynamicEntries = dynamicColorsWithDefault,
             ),
         )
+        registerModel(
+            ColorPreferenceModel(
+                prefObject = prefs.drawerColor,
+                labelRes = R.string.dj_drawer_bg_color_label,
+                dynamicEntries = dynamicColorsWithDefault,
+            ),
+        )
     }
 
     operator fun get(key: String): ColorPreferenceModel = models.getValue(key)

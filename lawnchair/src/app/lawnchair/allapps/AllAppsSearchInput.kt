@@ -321,8 +321,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         lp.topMargin = max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
 
         val dp = launcher.deviceProfile
-        val horizontalPadding = dp.desiredWorkspaceHorizontalMarginPx + dp.desiredWorkspaceHorizontalMarginPx
-        setPadding(horizontalPadding, paddingTop, horizontalPadding, paddingBottom)
+        val horizontalPadding = resources.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding )
+        setPadding(horizontalPadding, paddingTop, horizontalPadding, horizontalPadding / 2)
         requestLayout()
     }
 

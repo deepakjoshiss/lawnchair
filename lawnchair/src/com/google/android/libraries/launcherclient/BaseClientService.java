@@ -46,5 +46,6 @@ public class BaseClientService implements ServiceConnection {
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
+        mConnected = false;
     }
 }

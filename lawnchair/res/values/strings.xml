@@ -491,6 +491,7 @@
     <string name="feed_provider">Feed provider</string>
 
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
+    <string name="dj_wallpaper_shift_label">Wallpaper center shift</string>
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
@@ -603,6 +604,7 @@
     <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
     <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
+    <string name="dj_drawer_bg_color_label">Drawer background color</string>
 
     <string name="max_folder_columns">Maximum folder columns</string>
     <string name="max_folder_rows">Maximum folder rows</string>

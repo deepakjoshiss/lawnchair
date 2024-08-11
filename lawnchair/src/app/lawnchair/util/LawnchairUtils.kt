@@ -45,6 +45,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.os.UserManagerCompat
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -176,7 +177,13 @@ fun getFolderBackgroundAlpha(context: Context): Int {
 
 fun getAllAppsScrimColor(context: Context): Int {
     val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
-    val scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
+    // Load drawer color
+    val colorOption: ColorOption =
+        PreferenceManager2.getInstance(context).drawerColor.firstBlocking()
+    var scrimColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
+    if (scrimColor == 0) {
+        scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
+    }
     val alpha = (opacity * 255).roundToInt()
     return ColorUtils.setAlphaComponent(scrimColor, alpha)
 }

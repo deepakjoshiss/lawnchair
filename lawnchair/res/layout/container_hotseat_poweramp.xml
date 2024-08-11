@@ -10,5 +10,5 @@
         android:name="app.lawnchair.hotseat.PowerampWidgetContainerView$QsbFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:tag="qsb_view" />
+        android:tag="poweramp_view" />
 </app.lawnchair.hotseat.PowerampWidgetContainerView>

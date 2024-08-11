@@ -37,7 +37,7 @@ open class PowerampWidgetHostView(context: Context?) : NavigableAppWidgetHostVie
         setBackgroundResource(R.drawable.qsb_host_view_focus_bg)
     }
 
-    override fun updateAppWidget(remoteViews: RemoteViews) {
+    override fun updateAppWidget(remoteViews: RemoteViews?) {
         // Store the orientation in which the widget was inflated
         mPreviousOrientation = resources.configuration.orientation
         super.updateAppWidget(remoteViews)

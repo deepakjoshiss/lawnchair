@@ -152,6 +152,14 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_folder_color)),
     )
 
+    val drawerColor = preference(
+        key = stringPreferencesKey(name = "dj_drawer_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_folder_color)),
+    )
+
     val showNotificationCount = preference(
         key = booleanPreferencesKey(name = "show_notification_count"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_notification_count),

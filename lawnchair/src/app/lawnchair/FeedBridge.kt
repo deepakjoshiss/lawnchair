@@ -35,7 +35,7 @@ import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
 
 class FeedBridge(private val context: Context) {
 
-    private val shouldUseFeed = context.applicationInfo.flags and (FLAG_DEBUGGABLE or FLAG_SYSTEM) == 0
+    private val shouldUseFeed = true;//context.applicationInfo.flags and (FLAG_DEBUGGABLE or FLAG_SYSTEM) == 0
     private val prefs by lazy { PreferenceManager.getInstance(context) }
     private val bridgePackages by lazy {
         listOf(
@@ -101,24 +101,25 @@ class FeedBridge(private val context: Context) {
                     ),
                 0,
             )
-            return info != null && isSigned()
+            return info != null;
         }
 
         open fun isSigned(): Boolean {
-            when {
-                BuildConfig.DEBUG -> return true
-                Utilities.ATLEAST_P -> {
-                    val info =
-                        context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-                    val signingInfo = info.signingInfo
-                    if (signingInfo.hasMultipleSigners()) return false
-                    return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
-                }
-                else -> {
-                    val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-                    return if (info.signatures.any { it.hashCode() != signatureHash }) false else info.signatures.isNotEmpty()
-                }
-            }
+            return true;
+//            when {
+//                BuildConfig.DEBUG -> return true
+//                Utilities.ATLEAST_P -> {
+//                    val info =
+//                        context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+//                    val signingInfo = info.signingInfo
+//                    if (signingInfo.hasMultipleSigners()) return false
+//                    return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
+//                }
+//                else -> {
+//                    val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+//                    return if (info.signatures.any { it.hashCode() != signatureHash }) false else info.signatures.isNotEmpty()
+//                }
+//            }
         }
     }
 
@@ -126,17 +127,18 @@ class FeedBridge(private val context: Context) {
         override val signatureHash = whitelist[packageName]?.toInt() ?: -1
         val ignoreWhitelist = prefs.ignoreFeedWhitelist.get()
         override fun isSigned(): Boolean {
-            if (signatureHash == -1 && Utilities.ATLEAST_P) {
-                val info = context.packageManager
-                    .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-                val signingInfo = info.signingInfo
-                if (signingInfo.hasMultipleSigners()) return false
-                signingInfo.signingCertificateHistory.forEach {
-                    val hash = Integer.toHexString(it.hashCode())
-                    Log.d(TAG, "Feed provider $packageName(0x$hash) isn't whitelisted")
-                }
-            }
-            return ignoreWhitelist || signatureHash != -1 && super.isSigned()
+            return true;
+//            if (signatureHash == -1 && Utilities.ATLEAST_P) {
+//                val info = context.packageManager
+//                    .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+//                val signingInfo = info.signingInfo
+//                if (signingInfo.hasMultipleSigners()) return false
+//                signingInfo.signingCertificateHistory.forEach {
+//                    val hash = Integer.toHexString(it.hashCode())
+//                    Log.d(TAG, "Feed provider $packageName(0x$hash) isn't whitelisted")
+//                }
+//            }
+//            return ignoreWhitelist || signatureHash != -1 && super.isSigned()
         }
     }
 

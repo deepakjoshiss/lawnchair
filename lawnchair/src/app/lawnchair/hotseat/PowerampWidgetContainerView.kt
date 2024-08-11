@@ -71,7 +71,7 @@ open class PowerampWidgetContainerView : FrameLayout {
      * A fragment to display the QSB.
      */
     class QsbFragment : FragmentWithPreview() {
-        protected var mKeyWidgetId: String = "qsb_widget_id"
+        protected var mKeyWidgetId: String = "pwa_widget_id"
         private var mQsbWidgetHost: PowerampWidgetHost? = null
         protected var mWidgetInfo: AppWidgetProviderInfo? = null
         private var mQsb: PowerampWidgetHostView? = null
@@ -281,7 +281,7 @@ open class PowerampWidgetContainerView : FrameLayout {
             )
 
         companion object {
-            const val QSB_WIDGET_HOST_ID: Int = 1026
+            const val QSB_WIDGET_HOST_ID: Int = 1028
             private const val REQUEST_BIND_QSB = 1
             private const val REQUEST_CONFIGURE = 2
         }
@@ -330,15 +330,6 @@ open class PowerampWidgetContainerView : FrameLayout {
         @WorkerThread
         fun getSearchWidgetPackageName(context: Context): String? {
             var providerPkg = "com.maxmpz.audioplayer"
-            if (providerPkg == null) {
-                val searchManager = context.getSystemService(
-                    SearchManager::class.java,
-                )
-                val componentName = searchManager.globalSearchActivity
-                if (componentName != null) {
-                    providerPkg = searchManager.globalSearchActivity.packageName
-                }
-            }
             return providerPkg
         }
 
