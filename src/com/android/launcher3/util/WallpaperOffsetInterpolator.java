@@ -140,7 +140,7 @@ public class WallpaperOffsetInterpolator {
             rtlOffset = out[1] - (numScrollableScreens - 1) * scrollRange;
         }
         out[0] = rtlOffset + adjustedScroll * (numScrollableScreens - 1) + adjustAmount;
-        System.out.println(">>> Scroll range is " + out[0] + " to " + out[1] + " scroll " + adjustedScroll + " screens " + numScrollableScreens);
+//        System.out.println(">>> Scroll range is " + out[0] + " to " + out[1] + " scroll " + adjustedScroll + " screens " + numScrollableScreens);
     }
 
     public float wallpaperOffsetForScroll(int scroll) {

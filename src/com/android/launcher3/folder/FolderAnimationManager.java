@@ -181,11 +181,10 @@ public class FolderAnimationManager {
                 - paddingOffsetY;
         final float xDistance = initialX - lp.x;
         final float yDistance = initialY - lp.y;
-
+        
         // Set up the Folder background.
-        final int previewColor = ColorTokens.FolderPreviewColor.resolveColor(mContext);
-        final int initialColor = ColorUtils.setAlphaComponent(previewColor, LawnchairUtilsKt.getFolderPreviewAlpha(mContext));
-        final int finalColor = ColorTokens.FolderBackgroundColor.resolveColor(mContext);
+        final int initialColor = ColorUtils.setAlphaComponent(mDeviceProfile.folderIconColor, LawnchairUtilsKt.getFolderPreviewAlpha(mContext));
+        final int finalColor = mDeviceProfile.folderBackgroundColor;
 
         mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);

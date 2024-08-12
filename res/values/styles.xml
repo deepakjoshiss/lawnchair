@@ -413,7 +413,7 @@
     </style>
 
     <style name="FolderStyleDefault">
-        <item name="folderTopPadding">24dp</item>
+        <item name="folderTopPadding">8dp</item>
         <item name="folderCellHeight">94dp</item>
         <item name="folderCellWidth">80dp</item>
         <item name="folderBorderSpace">16dp</item>

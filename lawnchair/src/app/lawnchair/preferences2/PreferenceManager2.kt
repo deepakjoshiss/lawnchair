@@ -355,6 +355,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadIcons() },
     )
 
+    val showFolderFooter = preference(
+        key = booleanPreferencesKey(name = "dj_show_folder_footer"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showIconLabelsOnHomeScreen = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),

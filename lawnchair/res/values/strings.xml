@@ -179,6 +179,7 @@
     <string name="show_labels">Show labels</string>
     <string name="label_size">Label size</string>
     <string name="twoline_label">Use multiple lines</string>
+    <string name="dj_show_folder_footer">Show Footer</string>
 
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent themed icons</string>
@@ -603,7 +604,7 @@
     <!-- Folder settings -->
     <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
     <string name="folder_bg_opacity_label">Folder background opacity</string>
-    <string name="folder_preview_bg_color_label">Icon background color</string>
+    <string name="folder_preview_bg_color_label">Background color</string>
     <string name="dj_drawer_bg_color_label">Drawer background color</string>
 
     <string name="max_folder_columns">Maximum folder columns</string>

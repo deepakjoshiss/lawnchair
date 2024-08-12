@@ -71,6 +71,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IconSizeSteps;
 import com.android.launcher3.util.ResourceHelper;
 import com.android.launcher3.util.WindowBounds;
+import com.androidinternal.graphics.ColorUtils;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
@@ -83,6 +84,7 @@ import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
@@ -199,6 +201,9 @@ public class DeviceProfile {
     public int folderFooterHeightPx;
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
+    public int folderIconColor;
+    public int folderBackgroundColor;
+    public int folderLabelColor;
 
     // Folder content
     public Point folderCellLayoutBorderSpacePx;
@@ -464,7 +469,20 @@ public class DeviceProfile {
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
         numFolderRows = inv.numFolderRows;
         numFolderColumns = inv.numFolderColumns;
-
+        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderColor());
+        int folderColorAlpha = (int) (PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderBackgroundOpacity()) * 255);
+        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+        if (folderColor == 0) {
+            folderBackgroundColor =  ColorUtils.setAlphaComponent(ColorTokens.FolderBackgroundColor.resolveColor(context), folderColorAlpha);
+            folderIconColor = ColorTokens.FolderPreviewColor.resolveColor(context);
+        } else {
+            folderBackgroundColor = ColorUtils.setAlphaComponent(folderColor, folderColorAlpha);
+            folderIconColor = folderColor;
+        }
+        folderLabelColor = ColorUtils.calculateLuminance(folderBackgroundColor) < 0.5F 
+            ? ColorTokens.INSTANCE.getNeutral1_50().resolveColor(context): ColorTokens.INSTANCE.getNeutral1_900().resolveColor(context);
+        System.out.println(">>> color lumi " + ColorUtils.calculateLuminance(folderBackgroundColor));
+        
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
                     R.styleable.FolderStyle);
@@ -1069,12 +1087,12 @@ public class DeviceProfile {
         }
 
         // We want enough space so that the text is closer to its corresponding icon.
-        if (workspaceCellPaddingY < iconTextHeight) {
-            iconTextSizePx = 0;
-            iconDrawablePaddingPx = 0;
-            cellHeightPx = getIconSizeWithOverlap(iconSizePx);
-            autoResizeAllAppsCells();
-        }
+//        if (workspaceCellPaddingY < iconTextHeight) {
+//            iconTextSizePx = 0;
+//            iconDrawablePaddingPx = 0;
+//            cellHeightPx = getIconSizeWithOverlap(iconSizePx);
+//            autoResizeAllAppsCells();
+//        }
     }
 
     /**

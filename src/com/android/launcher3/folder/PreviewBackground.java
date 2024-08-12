@@ -178,24 +178,19 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
             int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
 
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+        DeviceProfile grid = activity.getDeviceProfile();
 
         // Load folder color
-        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderColor());
-        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+        
+        mBgColor = grid.folderIconColor;
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
-        if (folderColor != 0) {
-            mBgColor = folderColor;
-        } else {
-            mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
-        }
+
         mBgColor = ColorUtils.setAlphaComponent(mBgColor, LawnchairUtilsKt.getFolderPreviewAlpha(context));
         ta.recycle();
 
-        DeviceProfile grid = activity.getDeviceProfile();
         previewSize = grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
