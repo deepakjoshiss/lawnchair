@@ -180,6 +180,7 @@
     <string name="label_size">Label size</string>
     <string name="twoline_label">Use multiple lines</string>
     <string name="dj_show_folder_footer">Show Footer</string>
+    <string name="dj_stack_folder_icon">Stack Icon</string>
 
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent themed icons</string>

@@ -127,9 +127,8 @@ public class WallpaperOffsetInterpolator {
             mWorkspace.getLayoutTransitionOffsetForPage(0);
         adjustedScroll = Utilities.boundToRange(adjustedScroll, 0, scrollRange);
 
-        int adjustAmount = numScrollableScreens < numScreensForWallpaperParallax
-            ? (int) ((scrollRange * (numScreensForWallpaperParallax - numScrollableScreens)) * wallShift) : 0;
         out[1] = (numScreensForWallpaperParallax - 1) * scrollRange;
+        int adjustAmount = wallShift < 1 ? (int) (out[1] * wallShift) : out[1];
 
         // The offset is now distributed 0..1 between the left and right pages that we
         // care about,
@@ -139,8 +138,8 @@ public class WallpaperOffsetInterpolator {
             // In RTL, the pages are right aligned, so adjust the offset from the end
             rtlOffset = out[1] - (numScrollableScreens - 1) * scrollRange;
         }
-        out[0] = rtlOffset + adjustedScroll * (numScrollableScreens - 1) + adjustAmount;
-//        System.out.println(">>> Scroll range is " + out[0] + " to " + out[1] + " scroll " + adjustedScroll + " screens " + numScrollableScreens);
+        out[0] = (int) ((1.0F - wallShift) * (rtlOffset + adjustedScroll * (numScrollableScreens - 1)) + adjustAmount);
+//        System.out.println(">>> Scroll range is " + out[0] + " to " + out[1] + " scroll " + adjustedScroll + " adjust " + adjustAmount + " screens " + numScrollableScreens);
     }
 
     public float wallpaperOffsetForScroll(int scroll) {

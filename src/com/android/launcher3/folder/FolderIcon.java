@@ -602,7 +602,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-
+        int count = canvas.save();
+        canvas.clipPath(mBackground.getFullClipPath());
         if (!mBackgroundIsVisible)
             return;
 
@@ -620,7 +621,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackgroundStroke(canvas);
         }
-
+        canvas.restoreToCount(count);
         drawDot(canvas);
     }
 

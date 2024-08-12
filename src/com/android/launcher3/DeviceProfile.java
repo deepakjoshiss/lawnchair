@@ -204,6 +204,7 @@ public class DeviceProfile {
     public int folderIconColor;
     public int folderBackgroundColor;
     public int folderLabelColor;
+    public boolean folderStackPreview;
 
     // Folder content
     public Point folderCellLayoutBorderSpacePx;
@@ -482,7 +483,8 @@ public class DeviceProfile {
         folderLabelColor = ColorUtils.calculateLuminance(folderBackgroundColor) < 0.5F 
             ? ColorTokens.INSTANCE.getNeutral1_50().resolveColor(context): ColorTokens.INSTANCE.getNeutral1_900().resolveColor(context);
         System.out.println(">>> color lumi " + ColorUtils.calculateLuminance(folderBackgroundColor));
-        
+        folderStackPreview = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowFolderStackIcon());
+
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
                     R.styleable.FolderStyle);

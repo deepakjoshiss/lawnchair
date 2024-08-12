@@ -62,6 +62,10 @@ fun FolderPreferences(
                 adapter = prefs2.showFolderFooter.getAdapter(),
                 label = stringResource(id = R.string.dj_show_folder_footer),
             )
+            SwitchPreference(
+                adapter = prefs2.showFolderStackIcon.getAdapter(),
+                label = stringResource(id = R.string.dj_stack_folder_icon),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

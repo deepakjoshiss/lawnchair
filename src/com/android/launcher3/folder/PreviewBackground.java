@@ -81,6 +81,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
     private final Matrix mShaderMatrix = new Matrix();
     private final Path mPath = new Path();
+    private Path mFullPath;
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -198,7 +199,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
         // Stroke width is 1dp
         mStrokeWidth = context.getResources().getDisplayMetrics().density;
-
+        setUpFullClipPath();
         if (DRAW_SHADOW) {
             float radius = getScaledRadius();
             float shadowRadius = radius + mStrokeWidth;
@@ -393,6 +394,20 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         float offsetY = basePreviewOffsetY - radiusDifference;
         getShape().addToPath(mPath, offsetX, offsetY, radius);
         return mPath;
+    }
+
+    private void setUpFullClipPath() {
+        mFullPath = new Path();
+        float radius = getScaledRadius();
+        // Find the difference in radius so that the clip path remains centered.
+        float radiusDifference = radius - getRadius();
+        float offsetX = basePreviewOffsetX - radiusDifference;
+        float offsetY = basePreviewOffsetY - radiusDifference;
+        getShape().addToPath(mFullPath, offsetX, offsetY, radius);
+    }
+    
+    public Path getFullClipPath() {
+        return mFullPath == null ? getClipPath() : mFullPath;
     }
 
     private void delegateDrawing(CellLayout delegate, int cellX, int cellY) {
