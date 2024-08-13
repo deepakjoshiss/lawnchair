@@ -115,7 +115,7 @@ public class FolderAnimationManager {
         mLargeFolderPreviewItemOpenInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.large_folder_preview_item_open_interpolator);
         mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.standard_accelerate_interpolator);
+                android.R.interpolator.accelerate_decelerate);
     }
 
     /**
@@ -415,12 +415,12 @@ public class FolderAnimationManager {
             if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
                 // These delays allows the preview items to move as part of the Folder's motion,
                 // and its only necessary for large folders because of differing interpolators.
-                int delay = mIsOpening ? mDelay : mDelay * 2;
-                if (mIsOpening) {
-                    translationX.setStartDelay(delay);
-                    translationY.setStartDelay(delay);
-                    scaleAnimator.setStartDelay(delay);
-                }
+                int delay = mIsOpening ? 0 : mDelay / 2;
+                //     if (mIsOpening) {
+                translationX.setStartDelay(delay);
+                translationY.setStartDelay(delay);
+                scaleAnimator.setStartDelay(delay);
+                //   }
                 translationX.setDuration(translationX.getDuration() - delay);
                 translationY.setDuration(translationY.getDuration() - delay);
                 scaleAnimator.setDuration(scaleAnimator.getDuration() - delay);
