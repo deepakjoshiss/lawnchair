@@ -486,6 +486,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = resourceProvider.getInt(R.dimen.config_default_recent_max_result_count),
     )
 
+    val homeBottomPaddingMultiplier = preference(
+        key = intPreferencesKey(name = "dj_home_bottom_padding_multiplier"),
+        defaultValue = 1,
+        onSet = { reloadHelper.reloadGrid() }
+    )
+
     val enableSmartspace = preference(
         key = booleanPreferencesKey(name = "enable_smartspace"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smartspace),

@@ -517,7 +517,8 @@ public class DeviceProfile {
         workspacePageIndicatorHeight = res.getDimensionPixelSize(
                 R.dimen.workspace_page_indicator_height);
         mWorkspacePageIndicatorOverlapWorkspace =
-                res.getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace);
+               - res.getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace) 
+                    * PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHomeBottomPaddingMultiplier());
 
         if (!mIsResponsiveGrid) {
             TypedArray cellStyle;

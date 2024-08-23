@@ -494,6 +494,7 @@
 
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
     <string name="dj_wallpaper_shift_label">Wallpaper center shift</string>
+    <string name="dj_bottom_padding_multiplier">Bottom padding multiplier</string>
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
