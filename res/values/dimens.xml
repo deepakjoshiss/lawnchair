@@ -54,10 +54,10 @@
     <dimen name="button_drop_target_resize_text_increment">1sp</dimen>
 
     <!-- App Widget resize frame -->
-    <dimen name="widget_handle_margin">8dp</dimen>
-    <dimen name="resize_frame_background_padding">16dp</dimen>
-    <dimen name="resize_frame_margin">16dp</dimen>
-    <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">8dp</dimen>
+    <dimen name="widget_handle_margin">4dp</dimen>
+    <dimen name="resize_frame_background_padding">8dp</dimen>
+    <dimen name="resize_frame_margin">8dp</dimen>
+    <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">4dp</dimen>
 
     <!-- App widget reconfigure button -->
     <dimen name="widget_reconfigure_button_corner_radius">14dp</dimen>
