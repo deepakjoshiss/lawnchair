@@ -19,7 +19,7 @@
     <dimen name="click_shadow_elevation">4dp</dimen>
 
     <!-- Dynamic Grid -->
-    <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">0dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">0dp</dimen>
     <!-- Minimum amount of next page visible in spring loaded mode -->
     <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">24dp</dimen>
@@ -38,15 +38,15 @@
     <dimen name="min_qsb_margin">8dp</dimen>
 
     <!-- Workspace page indicator -->
-    <dimen name="workspace_page_indicator_height">24dp</dimen>
+    <dimen name="workspace_page_indicator_height">16dp</dimen>
     <dimen name="workspace_page_indicator_line_height">1dp</dimen>
-    <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
+    <dimen name="workspace_page_indicator_overlap_workspace">8dp</dimen>
 
     <!-- Drop target bar -->
-    <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
-    <dimen name="drop_target_vertical_gap">20dp</dimen>
-    <dimen name="drop_target_top_margin">32dp</dimen>
-    <dimen name="drop_target_bottom_margin">16dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">28dp</dimen>
+    <dimen name="drop_target_vertical_gap">1dp</dimen>
+    <dimen name="drop_target_top_margin">4dp</dimen>
+    <dimen name="drop_target_bottom_margin">4dp</dimen>
 
     <!-- App Widget resize frame -->
     <!-- Button drop target bar -->
@@ -54,10 +54,10 @@
     <dimen name="button_drop_target_resize_text_increment">1sp</dimen>
 
     <!-- App Widget resize frame -->
-    <dimen name="widget_handle_margin">13dp</dimen>
-    <dimen name="resize_frame_background_padding">24dp</dimen>
-    <dimen name="resize_frame_margin">22dp</dimen>
-    <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">24dp</dimen>
+    <dimen name="widget_handle_margin">8dp</dimen>
+    <dimen name="resize_frame_background_padding">16dp</dimen>
+    <dimen name="resize_frame_margin">16dp</dimen>
+    <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">8dp</dimen>
 
     <!-- App widget reconfigure button -->
     <dimen name="widget_reconfigure_button_corner_radius">14dp</dimen>

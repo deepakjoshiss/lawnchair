@@ -131,6 +131,7 @@ public class CellLayout extends ViewGroup {
     @Thunk
     final int[] mTempLocation = new int[2];
     final PointF mTmpPointF = new PointF();
+    final Point mTempPointLoc = new Point();
 
     protected GridOccupancy mOccupied;
     public GridOccupancy mTmpOccupied;
@@ -232,6 +233,8 @@ public class CellLayout extends ViewGroup {
     private final float[] mTmpFloatArray = new float[4];
 
     private static final Paint sPaint = new Paint();
+    private int mRealCellWidth;
+    private int mRealCellHeight;
 
     // Related to accessible drag and drop
     DragAndDropAccessibilityDelegate mTouchHelper;
@@ -636,26 +639,26 @@ public class CellLayout extends ViewGroup {
 
     protected void visualizeGrid(Canvas canvas) {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        int paddingX = Math.min((mCellWidth - dp.iconSizePx) / 2, dp.gridVisualizationPaddingX);
-        int paddingY = Math.min((mCellHeight - dp.iconSizePx) / 2, dp.gridVisualizationPaddingY);
+        int paddingX = Math.min((mRealCellWidth - dp.iconSizePx) / 2, dp.gridVisualizationPaddingX);
+        int paddingY = Math.min((mRealCellHeight - dp.iconSizePx) / 2, dp.gridVisualizationPaddingY);
         mVisualizeGridRect.set(paddingX, paddingY,
-                mCellWidth - paddingX,
-                mCellHeight - paddingY);
+                mRealCellWidth - paddingX,
+                mRealCellHeight - paddingY);
 
         mVisualizeGridPaint.setStrokeWidth(8);
-        int paintAlpha = (int) (120 * mGridAlpha);
-        mVisualizeGridPaint.setColor(ColorUtils.setAlphaComponent(mGridColor, paintAlpha));
+        int paintAlpha = 80;
+        mVisualizeGridPaint.setColor(ColorUtils.setAlphaComponent(Color.RED, paintAlpha));
 
         if (mVisualizeCells) {
+            Point loc = new Point(0 , 0);
             for (int i = 0; i < mCountX; i++) {
                 for (int j = 0; j < mCountY; j++) {
-                    int transX = i * mCellWidth + (i * mBorderSpace.x) + getPaddingLeft()
-                            + paddingX;
-                    int transY = j * mCellHeight + (j * mBorderSpace.y) + getPaddingTop()
-                            + paddingY;
+                    findCellPosition(i , j, loc);
+                    int transX = loc.x + paddingX;
+                    int transY = loc.y + paddingY;
 
                     mVisualizeGridRect.offsetTo(transX, transY);
-                    mVisualizeGridPaint.setStyle(Paint.Style.FILL);
+                    mVisualizeGridPaint.setStyle(Paint.Style.STROKE);
                     canvas.drawRoundRect(mVisualizeGridRect, mGridVisualizationRoundingRadius,
                             mGridVisualizationRoundingRadius, mVisualizeGridPaint);
                 }
@@ -663,6 +666,9 @@ public class CellLayout extends ViewGroup {
         }
 
         if (mVisualizeDropLocation) {
+            Point loc = new Point(0, 0);
+            paddingX = -paddingX;
+            paddingY = -paddingY;
             for (int i = 0; i < mDragOutlines.length; i++) {
                 final float alpha = mDragOutlineAlphas[i];
                 if (alpha <= 0)
@@ -673,16 +679,12 @@ public class CellLayout extends ViewGroup {
                 int y = mDragOutlines[i].getCellY();
                 int spanX = mDragOutlines[i].cellHSpan;
                 int spanY = mDragOutlines[i].cellVSpan;
-
+                findCellPosition(x, y, loc);
                 // TODO b/194414754 clean this up, reconcile with cellToRect
-                mVisualizeGridRect.set(paddingX, paddingY,
-                        mCellWidth * spanX + mBorderSpace.x * (spanX - 1) - paddingX,
-                        mCellHeight * spanY + mBorderSpace.y * (spanY - 1) - paddingY);
+                mVisualizeGridRect.set(paddingX, paddingY, getSpanWidth(spanX) - paddingX, getSpanHeight(spanY) - paddingY);
 
-                int transX = x * mCellWidth + (x * mBorderSpace.x)
-                        + getPaddingLeft() + paddingX;
-                int transY = y * mCellHeight + (y * mBorderSpace.y)
-                        + getPaddingTop() + paddingY;
+                int transX = loc.x + paddingX;
+                int transY = loc.y + paddingY;
 
                 mVisualizeGridRect.offsetTo(transX, transY);
 
@@ -694,6 +696,40 @@ public class CellLayout extends ViewGroup {
                         mGridVisualizationRoundingRadius, mVisualizeGridPaint);
             }
         }
+    }
+    
+    private void findCellPosition(int cellX, int cellY, Point loc) {
+        loc.x = cellX * mCellWidth + (cellX * mBorderSpace.x) + getPaddingLeft() - calculateWDiff(cellX);
+        loc.y = cellY * mCellHeight + (cellY * mBorderSpace.y) + getPaddingTop() - calculateHDiff(cellY);
+    }
+    
+    private Point getCellPosition(int cellX, int cellY) {
+        Point loc = new Point(0 , 0);
+        findCellPosition(cellX, cellY, loc);
+        return loc;
+    }
+
+    private int getSpanWidth(int spanX) {
+        return spanX == 0 ? 0 :  mRealCellWidth + mCellWidth * (spanX - 1) - calculateWDiff(spanX - 1)
+            + mBorderSpace.x * (spanX - 1);
+    }
+
+    private int getSpanHeight(int spanY) {
+        return spanY == 0 ? 0 : mRealCellHeight + mCellHeight * (spanY - 1) - calculateHDiff(spanY - 1)
+            + mBorderSpace.y * (spanY - 1);
+    }
+    
+    private int calculateWDiff(int index) {
+        return calculateDiff(mRealCellWidth, mCellWidth, index, mCountX);
+    }
+
+    private int calculateHDiff(int index) {
+        return calculateDiff(mRealCellHeight, mCellHeight, index, mCountY);
+    }
+    
+    private int calculateDiff(int realSize, int size, int current, int count) {
+        if(count <= 1) return 0;
+        return ((realSize - size) * current) / (count - 1);
     }
 
     @Override
@@ -1038,12 +1074,14 @@ public class CellLayout extends ViewGroup {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
-
+        DeviceProfile dp = mActivity.getDeviceProfile();
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
             int cw = DeviceProfile.calculateCellWidth(childWidthSize, mBorderSpace.x,
                     mCountX);
             int ch = DeviceProfile.calculateCellHeight(childHeightSize, mBorderSpace.y,
                     mCountY);
+            mRealCellWidth = Math.max(dp.cellWidthPx, cw);
+            mRealCellHeight = Math.max(dp.cellHeightPx, ch);
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
@@ -1345,9 +1383,10 @@ public class CellLayout extends ViewGroup {
         // corresponds to the center of the item, but we are searching based on the
         // top-left cell,
         // so we translate the point over to correspond to the top-left.
-        relativeXPos = (int) (relativeXPos - (mCellWidth + mBorderSpace.x) * (spanX - 1) / 2f);
-        relativeYPos = (int) (relativeYPos - (mCellHeight + mBorderSpace.y) * (spanY - 1) / 2f);
-
+       // System.out.println(">>>> relative " + relativeXPos + " " + minSpanX + " " + spanX);
+        relativeXPos = (int) (relativeXPos - getSpanWidth(spanX - 1) / 2f);
+        relativeYPos = (int) (relativeYPos - getSpanHeight(spanY - 1) / 2f);
+        
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
@@ -2824,6 +2863,7 @@ public class CellLayout extends ViewGroup {
      * @param resultRect Rect into which to put the results
      */
     public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, Rect resultRect) {
+        findCellPosition(cellX, cellY, mTempPointLoc);
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
 
@@ -2833,11 +2873,11 @@ public class CellLayout extends ViewGroup {
                 + (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
         final int vStartPadding = getPaddingTop();
 
-        int x = hStartPadding + (cellX * mBorderSpace.x) + (cellX * cellWidth);
-        int y = vStartPadding + (cellY * mBorderSpace.y) + (cellY * cellHeight);
+        int x = hStartPadding + mTempPointLoc.x;
+        int y = vStartPadding + mTempPointLoc.y;
 
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * mBorderSpace.x);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * mBorderSpace.y);
+        int width = getSpanWidth(cellHSpan);
+        int height = getSpanHeight(cellVSpan);
 
         resultRect.set(x, y, x + width, y + height);
     }

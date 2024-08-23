@@ -1125,7 +1125,6 @@ public class DeviceProfile {
         final int maxHeight = getCellLayoutHeight();
         float extraHeight = Math.max(0, maxHeight - usedHeight);
         float scaleY = maxHeight / usedHeight;
-        boolean shouldScale = scaleY < 1f;
 
         float scaleX = 1f;
         if (mIsScalableGrid) {
@@ -1133,21 +1132,18 @@ public class DeviceProfile {
             // The benefit of scalable grids is that we can get consistent aspect ratios between
             // devices.
             float usedWidth =
-                    getCellLayoutWidthSpecification() + (desiredWorkspaceHorizontalMarginPx * 2);
+                getCellLayoutWidthSpecification() + (desiredWorkspaceHorizontalMarginPx * 2);
             // We do not subtract padding here, as we also scale the workspace padding if needed.
             scaleX = availableWidthPx / usedWidth;
-            shouldScale = true;
-        }
 
-        if (shouldScale) {
             float scale = Math.min(scaleX, scaleY);
             updateIconSize(scale, res);
             extraHeight = Math.max(0, maxHeight - getCellLayoutHeightSpecification());
+            
         }
 
         return Math.round(extraHeight);
     }
-
     private int getCellLayoutHeightSpecification() {
         return (cellHeightPx * inv.numRows) + (cellLayoutBorderSpacePx.y * (inv.numRows - 1))
                 + cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom;
@@ -1195,6 +1191,7 @@ public class DeviceProfile {
         // Icon scale should never exceed 1, otherwise pixellation may occur.
         iconScale = Math.min(1f, scale);
         cellScaleToFit = scale;
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
@@ -1303,9 +1300,7 @@ public class DeviceProfile {
                 iconDrawablePaddingPx = cellPaddingY;
             }
         }
-
-        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
-
+        
         // All apps
         if (mIsResponsiveGrid) {
             updateAllAppsWithResponsiveMeasures();
@@ -1659,6 +1654,8 @@ public class DeviceProfile {
                 getCellLayoutHeight() - (cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom);
         result.y = calculateCellHeight(shortcutAndWidgetContainerHeight, cellLayoutBorderSpacePx.y,
                 inv.numRows);
+        result.x = (int) Math.max((iconSizePx * iconScale) + 2 * (iconDrawablePaddingPx + workspaceCellPaddingXPx), result.x);
+        result.y = Math.max(cellHeightPx, result.y);
         return result;
     }
 

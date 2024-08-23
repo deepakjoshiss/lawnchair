@@ -376,7 +376,9 @@
         <item name="android:background">@drawable/drop_target_background</item>
     </style>
 
-    <style name="DropTargetButton" parent="DropTargetButtonBase" />
+    <style name="DropTargetButton" parent="DropTargetButtonBase" >
+        <item name="android:padding">2dp</item>
+    </style>
 
     <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
         <item name="customFontType">@id/font_body_medium</item>
