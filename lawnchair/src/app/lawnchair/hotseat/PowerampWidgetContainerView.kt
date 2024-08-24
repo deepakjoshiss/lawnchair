@@ -110,10 +110,8 @@ open class PowerampWidgetContainerView : FrameLayout {
         ): View? {
             mWrapper = createWrapper(context)
             // Only add the view when enabled
-            if (isQsbEnabled) {
-                mQsbWidgetHost!!.startListening()
-                mWrapper!!.addView(createQsb(mWrapper!!))
-            }
+            mQsbWidgetHost!!.startListening()
+            mWrapper!!.addView(createQsb(mWrapper!!))
             return mWrapper!!
         }
 
@@ -165,7 +163,7 @@ open class PowerampWidgetContainerView : FrameLayout {
                     context, widgetId,
                     mWidgetInfo,
                 ) as PowerampWidgetHostView
-                mQsb!!.id = R.id.qsb_widget
+                mQsb!!.id = R.id.poweramp_widget
 
                 if (!isInPreviewMode) {
                     if (!containsAll(
@@ -223,18 +221,11 @@ open class PowerampWidgetContainerView : FrameLayout {
 
         private fun rebindFragment() {
             // Exit if the embedded qsb is disabled
-            if (!isQsbEnabled) {
-                return
-            }
-
             if (mWrapper != null && context != null) {
                 mWrapper!!.removeAllViews()
                 mWrapper!!.addView(createQsb(mWrapper!!))
             }
         }
-
-        val isQsbEnabled: Boolean
-            get() = FeatureFlags.topQsbOnFirstScreenEnabled(context)
 
         protected fun createBindOptions(): Bundle {
             val idp = LauncherAppState.getIDP(context)

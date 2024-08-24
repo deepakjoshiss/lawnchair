@@ -20,15 +20,22 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
+import com.android.systemui.util.DimensionKt;
 
 import java.util.ArrayList;
 
@@ -53,6 +60,7 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     protected final ActivityContext mActivity;
 
     private boolean mDisableSetPadding = false;
+    private boolean mCalendarWidget = false;
 
     public NavigableAppWidgetHostView(Context context) {
         super(context);
@@ -152,6 +160,13 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         mDisableSetPadding = true;
         super.setAppWidget(appWidgetId, info);
         mDisableSetPadding = false;
+        if ("Calendar schedule".equals(getAppWidgetInfo().label)) {
+            mCalendarWidget = true;
+            int left = (int) DimensionKt.dpToPx(16, getResources());
+            setPadding(left, 0, left/2, 0);
+        } else {
+            mCalendarWidget = false;
+        }
     }
 
     @Override
@@ -159,6 +174,56 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         if (!mDisableSetPadding) {
             super.setPadding(left, top, right, bottom);
         }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mCalendarWidget && getChildCount() > 0) {
+            float eventAlpha = 0.80f;
+            ViewGroup grp = (ViewGroup) getChildAt(0);
+            if (grp.getChildCount() > 0 && grp.getChildAt(0) instanceof ListView list && grp.getBackground() instanceof GradientDrawable) {
+                ViewGroup tempGroup;
+                View tempView;
+                System.out.println(">>>> updating calendar widget color");
+                if (grp.getChildCount() >= 3) {
+                    tempView = grp.getChildAt(2); 
+                    tempView.setAlpha(eventAlpha);
+                    tempView.setScaleX(0.5f);
+                    tempView.setScaleY(0.5f);
+                    tempView.setTranslationY(16);
+                }
+                grp.getBackground().setAlpha(0);
+                int listCount = list.getChildCount();
+                list.setVerticalFadingEdgeEnabled(true);
+                list.setFadingEdgeLength(getPaddingLeft() * 2);
+
+                if(listCount > 0) {
+                    for (int i = 0; i< listCount; i++) {
+                        tempGroup = (ViewGroup) list.getChildAt(i);
+                        if(tempGroup.getChildCount() > 0 && tempGroup.getChildAt(0) instanceof ViewGroup) {
+                            tempGroup = (ViewGroup) tempGroup.getChildAt(0);
+                            if(tempGroup.getChildCount() > 1 && tempGroup instanceof LinearLayout) {
+                                tempView = tempGroup.getChildAt(1);
+                                if(tempView instanceof TextView && tempView.getBackground() != null) {
+                                    tempView.getBackground().setAlpha((int) (255 * eventAlpha));
+                                } else if(tempView instanceof FrameLayout && ((FrameLayout) tempView).getChildCount() > 1) {
+                                    tempView = ((FrameLayout) tempView).getChildAt(0);
+                                    if(tempView instanceof ImageView ) {
+                                        tempView.setAlpha(eventAlpha);
+                                    }
+                                }
+                            } else if (tempGroup.getChildCount() > 1 && tempGroup instanceof FrameLayout) {
+                                tempView = tempGroup.getChildAt(0);
+                                if (tempView instanceof ImageView) {
+                                    tempView.setAlpha(eventAlpha);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
