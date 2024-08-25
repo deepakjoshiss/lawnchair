@@ -76,6 +76,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val fontHeadingMedium = FontPref("pref_fontHeadingMedium", fontCache.uiMedium, recreate)
     val fontBody = FontPref("pref_fontBody", fontCache.uiText, recreate)
     val fontBodyMedium = FontPref("pref_fontBodyMedium", fontCache.uiTextMedium, recreate)
+    val fontSmartSpacer = FontPref("dj_ss_font_pref", fontCache.uiText, reloadGrid)
 
     // TODO REMOVE
     val deviceSearch = BoolPref("device_search", false, recreate)

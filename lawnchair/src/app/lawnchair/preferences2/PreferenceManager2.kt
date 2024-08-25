@@ -160,6 +160,20 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_folder_color)),
     )
 
+    val ssFontColor = preference(
+        key = stringPreferencesKey(name = "dj_ss_font_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString("default"),
+    )
+
+    val ssWidgetOpacity = preference(
+        key = floatPreferencesKey(name = "dj_ss_widget_opacity"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showNotificationCount = preference(
         key = booleanPreferencesKey(name = "show_notification_count"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_notification_count),

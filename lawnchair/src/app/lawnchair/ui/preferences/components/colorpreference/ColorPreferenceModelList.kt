@@ -52,6 +52,13 @@ class ColorPreferenceModelList(context: Context) {
                 dynamicEntries = dynamicColorsWithDefault,
             ),
         )
+        registerModel(
+            ColorPreferenceModel(
+                prefObject = prefs.ssFontColor,
+                labelRes = R.string.home_screen_text_color,
+                dynamicEntries = dynamicColorsWithDefault,
+            ),
+        )
     }
 
     operator fun get(key: String): ColorPreferenceModel = models.getValue(key)

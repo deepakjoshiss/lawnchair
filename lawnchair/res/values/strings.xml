@@ -608,6 +608,8 @@
     <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Background color</string>
     <string name="dj_drawer_bg_color_label">Drawer background color</string>
+    <string name="dj_smartspacer_opacity">Widget Opacity</string>
+    <string name="dj_smartspacer_font">Font</string>
 
     <string name="max_folder_columns">Maximum folder columns</string>
     <string name="max_folder_rows">Maximum folder rows</string>

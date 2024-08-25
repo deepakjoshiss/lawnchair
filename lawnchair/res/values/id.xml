@@ -22,6 +22,7 @@
     <item type="id" name="font_heading_medium" />
     <item type="id" name="font_body" />
     <item type="id" name="font_body_medium" />
+    <item type="id" name="font_smart_spacer" />
 
     <item type="id" name="qsbIconTintPrimary" />
     <item type="id" name="qsbIconTintSecondary" />

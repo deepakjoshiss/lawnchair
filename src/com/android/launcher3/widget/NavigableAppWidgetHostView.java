@@ -187,10 +187,10 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
                 System.out.println(">>>> updating calendar widget color");
                 if (grp.getChildCount() >= 3) {
                     tempView = grp.getChildAt(2); 
-                    tempView.setAlpha(eventAlpha);
-                    tempView.setScaleX(0.5f);
-                    tempView.setScaleY(0.5f);
-                    tempView.setTranslationY(16);
+                    tempView.setAlpha(0);
+//                    tempView.setScaleX(0.5f);
+//                    tempView.setScaleY(0.5f);
+//                    tempView.setTranslationY(16);
                 }
                 grp.getBackground().setAlpha(0);
                 int listCount = list.getChildCount();
