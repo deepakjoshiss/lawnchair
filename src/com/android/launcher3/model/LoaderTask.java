@@ -24,12 +24,14 @@ import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
 import android.annotation.SuppressLint;
+import android.app.AppOpsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -43,6 +45,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -65,7 +68,6 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.folder.FolderNameProvider;
-import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon.ComponentWithIconCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -99,15 +101,16 @@ import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 
-import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**
@@ -135,6 +138,7 @@ public class LoaderTask implements Runnable {
 
     private final LauncherApps mLauncherApps;
     private final UserManager mUserManager;
+    private final UsageStatsManager mUsageStatsManager;
     private final UserCache mUserCache;
 
     private final InstallSessionHelper mSessionHelper;
@@ -161,6 +165,7 @@ public class LoaderTask implements Runnable {
 
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
+        mUsageStatsManager = mApp.getContext().getSystemService(UsageStatsManager.class);
         mUserCache = UserCache.INSTANCE.get(mApp.getContext());
         mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
@@ -944,6 +949,8 @@ public class LoaderTask implements Runnable {
         var enableBulkLoading = pref.getAllAppBulkIconLoading().get();
 
         List<IconRequestInfo<AppInfo>> iconRequestInfos = new ArrayList<>();
+        LinkedHashMap<String, long[]> usageStats =  loadUsageStats(mApp.getContext(), mUsageStatsManager);
+        long [] arr;
         for (UserHandle user : profiles) {
             // Query for the set of apps
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
@@ -957,7 +964,11 @@ public class LoaderTask implements Runnable {
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
                 AppInfo appInfo = new AppInfo(app, user, quietMode);
-
+                arr = usageStats.get(app.getApplicationInfo().packageName); 
+                if (arr != null) {
+                    appInfo.launchCount = (int) arr[0];
+                    appInfo.foregroundTime = arr[1];
+                }
                 iconRequestInfos.add(new IconRequestInfo<>(
                         appInfo, app, /* useLowResIcon= */ false));
                 mBgAllAppsList.add(
@@ -1037,6 +1048,45 @@ public class LoaderTask implements Runnable {
                 }
             }
         }
+    }
+    
+    public static LinkedHashMap<String, long[]> loadUsageStats(Context context, UsageStatsManager usageStatsManager) {
+        // Get the app statistics since one year ago from the current time.
+        LinkedHashMap<String, long []> usageStats = new LinkedHashMap<>();
+        if(Utilities.ATLEAST_Q) {
+            AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = appOps.unsafeCheckOpNoThrow(
+                AppOpsManager.OPSTR_GET_USAGE_STATS,
+                android.os.Process.myUid(), context.getPackageName());
+            if (mode == AppOpsManager.MODE_ALLOWED) {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, -7);
+                List<UsageStats> queryUsageStats = usageStatsManager
+                    .queryUsageStats(UsageStatsManager.INTERVAL_WEEKLY, cal.getTimeInMillis(),
+                        System.currentTimeMillis());
+                long[] arr;
+                UsageStats stats = null;
+                for (int i = 0; i < queryUsageStats.size(); i++) {
+                    stats = queryUsageStats.get(i);
+                    if (stats.getTotalTimeInForeground() > 15 * 60 * 1000 && !stats.getPackageName().startsWith("app.lawnchair")) {
+                        arr = usageStats.get(stats.getPackageName());
+                        if(arr == null) arr = new long[2];
+                        Parcel parcel = Parcel.obtain();
+                        stats.writeToParcel(parcel, 0);
+                        parcel.setDataPosition(0);
+                        parcel.readString();
+                        parcel.setDataPosition(parcel.dataPosition() + 76);
+                        arr[0] += parcel.readInt();
+                        arr[1] += stats.getTotalTimeInForeground();
+                        usageStats.put(stats.getPackageName(), arr);
+//                        System.out.println(">>> usage stats " + stats.getPackageName() +" > " + Arrays.toString(arr));
+                        parcel.recycle();
+                    }
+                }
+            }
+        }
+        System.out.println(">>> usage stats loaded " + usageStats.size());
+        return usageStats;
     }
 
     public static boolean isValidProvider(AppWidgetProviderInfo provider) {

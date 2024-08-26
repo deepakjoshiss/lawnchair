@@ -16,28 +16,28 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.Utilities.dpToPx;
+
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.android.launcher3.R;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
-import com.android.systemui.util.DimensionKt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Extension of AppWidgetHostView with support for controlled keyboard navigation.
@@ -160,15 +160,23 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         mDisableSetPadding = true;
         super.setAppWidget(appWidgetId, info);
         mDisableSetPadding = false;
-        if ("Calendar schedule".equals(getAppWidgetInfo().label)) {
+        if ("Calendar schedule".equals(info.label)) {
             mCalendarWidget = true;
-            int left = (int) DimensionKt.dpToPx(16, getResources());
+            int left = dpToPx(16);
             setPadding(left, 0, left/2, 0);
         } else {
             mCalendarWidget = false;
         }
     }
 
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        if(mCalendarWidget) {
+           updateCalendarWidget((ViewGroup) child);
+        }
+    }
+    
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
         if (!mDisableSetPadding) {
@@ -177,58 +185,139 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (mCalendarWidget && getChildCount() > 0) {
-            float eventAlpha = 0.80f;
-            ViewGroup grp = (ViewGroup) getChildAt(0);
-            if (grp.getChildCount() > 0 && grp.getChildAt(0) instanceof ListView list && grp.getBackground() instanceof GradientDrawable) {
-                ViewGroup tempGroup;
-                View tempView;
-                System.out.println(">>>> updating calendar widget color");
-                if (grp.getChildCount() >= 3) {
-                    tempView = grp.getChildAt(2); 
-                    tempView.setAlpha(0);
-//                    tempView.setScaleX(0.5f);
-//                    tempView.setScaleY(0.5f);
-//                    tempView.setTranslationY(16);
-                }
-                grp.getBackground().setAlpha(0);
-                int listCount = list.getChildCount();
-                list.setVerticalFadingEdgeEnabled(true);
-                list.setFadingEdgeLength(getPaddingLeft() * 2);
-
-                if(listCount > 0) {
-                    for (int i = 0; i< listCount; i++) {
-                        tempGroup = (ViewGroup) list.getChildAt(i);
-                        if(tempGroup.getChildCount() > 0 && tempGroup.getChildAt(0) instanceof ViewGroup) {
-                            tempGroup = (ViewGroup) tempGroup.getChildAt(0);
-                            if(tempGroup.getChildCount() > 1 && tempGroup instanceof LinearLayout) {
-                                tempView = tempGroup.getChildAt(1);
-                                if(tempView instanceof TextView && tempView.getBackground() != null) {
-                                    tempView.getBackground().setAlpha((int) (255 * eventAlpha));
-                                } else if(tempView instanceof FrameLayout && ((FrameLayout) tempView).getChildCount() > 1) {
-                                    tempView = ((FrameLayout) tempView).getChildAt(0);
-                                    if(tempView instanceof ImageView ) {
-                                        tempView.setAlpha(eventAlpha);
-                                    }
-                                }
-                            } else if (tempGroup.getChildCount() > 1 && tempGroup instanceof FrameLayout) {
-                                tempView = tempGroup.getChildAt(0);
-                                if (tempView instanceof ImageView) {
-                                    tempView.setAlpha(eventAlpha);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        super.onLayout(changed, left, top, right, bottom);
-    }
-
-    @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return mChildrenFocused;
+    }
+    
+// Calendar widget structure
+//FrameLayout{#7f0b023b com.google.android.calendar:id/ghost_chip}
+//
+//    
+//LinearLayout{#7f0b0636 com.google.android.calendar:id/widget_month_label}
+//			TextView{#7f0b0634 com.google.android.calendar:id/widget_month}
+//			TextView{#7f0b0635 com.google.android.calendar:id/widget_month_alternate}
+//
+//	FrameLayout{#7f0b0032 com.google.android.calendar:id/accessibility_fab_target_wrapper}
+//      TextView{#7f0b0031 com.google.android.calendar:id/accessibility_fab_target}
+//
+//
+//LinearLayout{#7f0b01e3 com.google.android.calendar:id/event_chip}
+//	FrameLayout{#7f0b0630 com.google.android.calendar:id/widget_day_column}
+//		ImageView{#7f0b0638 com.google.android.calendar:id/widget_today_circle}
+//		TextView{#7f0b0633 com.google.android.calendar:id/widget_day_weekday}
+//		FrameLayout{#7f0b0632 com.google.android.calendar:id/widget_day_month_day_wrapper}
+//
+//
+//	FrameLayout{#7f0b0637 com.google.android.calendar:id/widget_row}
+//		ImageView{#7f0b0083 com.google.android.calendar:id/agenda_item_color}
+//
+//			TextView{#7f0b05e0 com.google.android.calendar:id/title}
+//			TextView{#7f0b062d com.google.android.calendar:id/when}
+//
+//
+//FrameLayout{#7f0b0637 com.google.android.calendar:id/widget_row}
+//				ImageView{#7f0b0124 com.google.android.calendar:id/chip_badged_icon_background}
+//				
+//	ImageView{#7f0b0083 com.google.android.calendar:id/agenda_item_color}
+//		TextView{#7f0b05e0 com.google.android.calendar:id/title}
+    
+    private String widgetMonthName = "widget_month";
+    private String rowColorName = "agenda_item_color";
+    private String rowName = "widget_row";
+    private String eventChipName = "event_chip";
+    private String widgetMonthLabelName = "widget_month_label";
+    private String ghostChipName = "ghost_chip";
+    private String acssFabName = "accessibility_fab_target";
+    private int bottomPadding = dpToPx(8);
+    
+    private String getFullIdName(String idName) {
+        return "com.google.android.calendar:id/" + idName;
+    }
+
+    private int getIdFromName(Resources resources, String idName) {
+        return resources.getIdentifier(getFullIdName(idName), null, null);
+    }
+
+    private void updateChildAlpha(View view) {
+        if(view != null) {
+//            System.out.println(" >>> Updating chld alpha " + view.getClass().getName());
+            view.setAlpha(0.65f);
+        }
+    }
+    
+    private void updateChildView(ViewGroup mainView, ViewGroup viewGroup, HashMap<String, Integer> idMap) {
+        int id = viewGroup.getId();
+        if(id == idMap.get(eventChipName) || id == idMap.get(rowName)) {
+            updateChildAlpha(viewGroup.findViewById(idMap.get(rowColorName)));
+        } else if (id == idMap.get(widgetMonthLabelName)){
+            View view = viewGroup.findViewById(idMap.get(acssFabName));
+            if(view != null) {
+                view.setVisibility(GONE);
+                view = viewGroup.getChildAt(0);
+                view.setMinimumHeight(0);
+                view.setPadding(0, 0, 0, bottomPadding);
+            }
+        } else if(id == idMap.get(ghostChipName)) {
+            mainView.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+//                    System.out.println(">>>> nested hier update " + child.getClass().getName());
+                    if (child instanceof ViewGroup) {
+                        updateChildView(mainView, (ViewGroup) child, idMap);
+                    }
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+
+                }
+            });
+            
+        }
+    }
+    
+    private void updateListChild(ViewGroup childView, HashMap<String, Integer> idMap) {
+        if (childView.getChildCount() > 0) {
+            updateChildView(childView, (ViewGroup) childView.getChildAt(0), idMap);
+        }
+    }
+        
+    
+    private void updateCalendarWidget(ViewGroup child) {
+        if (child.getChildCount() > 0 && child.getChildAt(0) instanceof ListView list && child.getBackground() instanceof GradientDrawable) {
+            System.out.println(">>>> updating calendar widget color");
+            if (child.getChildCount() >= 3) {
+                child.getChildAt(2).setAlpha(0);
+            }
+            
+            HashMap<String, Integer> map = new HashMap<>();
+            Resources resources = list.getResources();
+            map.put(widgetMonthName, getIdFromName(resources, widgetMonthName));
+            map.put(rowColorName, getIdFromName(resources, rowColorName));
+            map.put(eventChipName, getIdFromName(resources, eventChipName));
+            map.put(widgetMonthLabelName, getIdFromName(resources, widgetMonthLabelName));
+            map.put(ghostChipName, getIdFromName(resources, ghostChipName));
+            map.put(rowName, getIdFromName(resources, rowName));
+            map.put(acssFabName, getIdFromName(resources, acssFabName));
+            
+            child.getBackground().setAlpha(0);
+            list.setDividerHeight(getResources().getDimensionPixelSize(R.dimen.all_apps_height_extra));
+            list.setVerticalFadingEdgeEnabled(true);
+            list.setFadingEdgeLength(list.getDividerHeight() * 4);
+            list.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    updateListChild((ViewGroup) child, map);
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+                    if(child instanceof ViewGroup) {
+                        ((ViewGroup) child).setOnHierarchyChangeListener(null);
+                    }
+                }
+            });
+        }
     }
 
     private void dispatchChildFocus(boolean childIsFocused) {
