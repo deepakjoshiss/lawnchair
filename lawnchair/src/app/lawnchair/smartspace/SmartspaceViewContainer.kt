@@ -17,6 +17,7 @@ import com.android.launcher3.CheckLongPressHelper
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
+import com.android.systemui.util.dpToPx
 
 class SmartspaceViewContainer @JvmOverloads constructor(
     context: Context,
@@ -33,7 +34,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         smartspaceView.previewMode = previewMode
         val ctx = LawnchairLauncher.instance?.launcherNullable
         val dp = ctx?.deviceProfile
-        val leftPadding = dp?.widgetPadding?.left
+        val leftPadding = (16).dpToPx(resources).toInt();
         smartspaceView.setPadding(leftPadding ?: (left + 16), top, right, bottom)
         setOnLongClickListener {
             openOptions()

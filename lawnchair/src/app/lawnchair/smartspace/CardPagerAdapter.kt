@@ -71,7 +71,7 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
         val target = smartspaceTargets[viewHolder.position]
         val card = viewHolder.card
         card.setSmartspaceTarget(target, smartspaceTargets.size > 1)
-        card.setPrimaryTextColor(currentTextColor)
+//        card.setPrimaryTextColor(currentTextColor)
     }
 
     override fun getCount() = smartspaceTargets.size

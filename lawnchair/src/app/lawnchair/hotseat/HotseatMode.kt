@@ -14,6 +14,7 @@ sealed class HotseatMode(
         fun fromString(value: String): HotseatMode = when (value) {
             "disabled" -> DisabledHotseat
             "google_search" -> GoogleSearchHotseat
+            "poweramp_widget" -> PowerampHotseat
             else -> LawnchairHotseat
         }
 
@@ -24,6 +25,7 @@ sealed class HotseatMode(
             DisabledHotseat,
             LawnchairHotseat,
             GoogleSearchHotseat,
+            PowerampHotseat,
         )
     }
 
@@ -46,6 +48,16 @@ object GoogleSearchHotseat : HotseatMode(
 
     override fun isAvailable(context: Context): Boolean =
         context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
+}
+
+object PowerampHotseat : HotseatMode(
+    nameResourceId = R.string.hotseat_mode_power_amp,
+    layoutResourceId = R.layout.container_hotseat_poweramp,
+) {
+    override fun toString(): String = "poweramp_widget"
+
+    override fun isAvailable(context: Context): Boolean =
+        context.packageManager.isPackageInstalledAndEnabled("com.maxmpz.audioplayer")
 }
 
 object DisabledHotseat : HotseatMode(

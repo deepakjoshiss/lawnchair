@@ -17,6 +17,7 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW_STACK;
 
 import android.graphics.Point;
 
@@ -25,6 +26,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,6 +43,7 @@ public class FolderGridOrganizer {
     private int mCountX;
     private int mCountY;
     private boolean mDisplayingUpperLeftQuadrant = false;
+    private boolean mIsStackPreview;
 
     /**
      * Note: must call {@link #setFolderInfo(FolderInfo)} manually for verifier to work.
@@ -55,6 +58,7 @@ public class FolderGridOrganizer {
      * Updates the organizer with the provided folder info
      */
     public FolderGridOrganizer setFolderInfo(FolderInfo info) {
+        mIsStackPreview = info.isStackPreview;
         return setContentSize(info.contents.size());
     }
 
@@ -158,15 +162,20 @@ public class FolderGridOrganizer {
         int itemsPerPage = mCountX * mCountY;
         int start = itemsPerPage * page;
         int end = Math.min(start + itemsPerPage, contents.size());
+        int maxItems = mIsStackPreview ? MAX_NUM_ITEMS_IN_PREVIEW_STACK : MAX_NUM_ITEMS_IN_PREVIEW;
 
         for (int i = start, rank = 0; i < end; i++, rank++) {
             if (isItemInPreview(page, rank)) {
                 result.add((R) contents.get(i));
             }
 
-            if (result.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
+            if (result.size() == maxItems) {
                 break;
             }
+        }
+        if (mIsStackPreview && result.size() == maxItems) {
+            Collections.swap(result, 0, maxItems - 1);
+            Collections.swap(result, 1, maxItems - 1);
         }
         return result;
     }

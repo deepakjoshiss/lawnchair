@@ -146,8 +146,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     appWidgetScale.x, appWidgetScale.y, mBorderSpace, profile.widgetPadding);
         } else {
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpace);
+            DeviceProfile profile = mActivity.getDeviceProfile();
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY, 1, 1,
+                    mBorderSpace, null, profile.cellWidthPx, profile.cellHeightPx);
         }
     }
 
@@ -169,10 +170,10 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         if (child instanceof NavigableAppWidgetHostView) {
             final PointF appWidgetScale = dp.getAppWidgetScale((ItemInfo) child.getTag());
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding);
+                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding, dp.cellWidthPx, 0);
         } else {
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpace);
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY, 1, 1,
+                    mBorderSpace, null, dp.cellWidthPx, dp.cellHeightPx);
             // Center the icon/folder
             int cHeight = getCellContentHeight();
             int cellPaddingY = dp.cellYPaddingPx >= 0 && mContainerType == WORKSPACE

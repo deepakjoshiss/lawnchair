@@ -33,6 +33,7 @@ class FontManager private constructor(private val context: Context) {
             R.id.font_heading_medium to FontSpec(prefs.fontHeadingMedium, sansSerif),
             R.id.font_body to FontSpec(prefs.fontBody, sansSerif),
             R.id.font_body_medium to FontSpec(prefs.fontBodyMedium, sansSerif),
+            R.id.font_smart_spacer to FontSpec(prefs.fontSmartSpacer, sansSerif),
         )
     }
 

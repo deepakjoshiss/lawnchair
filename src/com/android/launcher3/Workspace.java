@@ -349,7 +349,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
         mStatsLogManager = StatsLogManager.newInstance(context);
 
-        if (mPreferenceManger.getEnableWallpaperBlur().get() && mWallpaperManager.getDrawable() != null) {
+        if (false && mPreferenceManger.getEnableWallpaperBlur().get() && mWallpaperManager.getDrawable() != null) {
             var blurWallpaper = mPreferenceManger.getWallpaperBlur().get();
             var blurThreshold = mPreferenceManger.getWallpaperBlurFactorThreshold().get();
             var wallpaperBitmap = mWallpaperManager.getDrawable();

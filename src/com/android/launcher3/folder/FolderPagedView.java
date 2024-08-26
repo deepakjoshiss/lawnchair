@@ -136,7 +136,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     protected void dispatchDraw(Canvas canvas) {
         if (mClipPath != null) {
             int count = canvas.save();
-            canvas.clipPath(mClipPath);
+   //         canvas.clipPath(mClipPath);
             mFocusIndicatorHelper.draw(canvas);
             super.dispatchDraw(canvas);
             canvas.restoreToCount(count);
@@ -322,7 +322,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
                 ItemInfo info = (ItemInfo) v.getTag();
                 lp.setCellXY(mOrganizer.getPosForRank(rank));
                 currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
-
+                // hack for stack drawing order
+                v.setTranslationZ(0.1f * lp.getCellY() - 0.01f * lp.getCellX());
                 if (mOrganizer.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
                 }

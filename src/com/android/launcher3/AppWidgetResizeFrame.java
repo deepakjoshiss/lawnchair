@@ -147,7 +147,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mBackgroundPadding = getResources()
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
-        mTouchTargetWidth = 2 * mBackgroundPadding;
+        mTouchTargetWidth = 4 * mBackgroundPadding;
         mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
 
         for (int i = 0; i < HANDLE_COUNT; i++) {

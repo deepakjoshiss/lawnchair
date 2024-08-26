@@ -81,6 +81,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
     private final Matrix mShaderMatrix = new Matrix();
     private final Path mPath = new Path();
+    private final Path mFullPath = new Path();
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -178,24 +179,19 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
             int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
 
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+        DeviceProfile grid = activity.getDeviceProfile();
 
         // Load folder color
-        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderColor());
-        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+        
+        mBgColor = grid.folderIconColor;
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
-        if (folderColor != 0) {
-            mBgColor = folderColor;
-        } else {
-            mBgColor = ColorTokens.FolderPreviewColor.resolveColor(context);
-        }
+
         mBgColor = ColorUtils.setAlphaComponent(mBgColor, LawnchairUtilsKt.getFolderPreviewAlpha(context));
         ta.recycle();
 
-        DeviceProfile grid = activity.getDeviceProfile();
         previewSize = grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
@@ -203,7 +199,6 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
         // Stroke width is 1dp
         mStrokeWidth = context.getResources().getDisplayMetrics().density;
-
         if (DRAW_SHADOW) {
             float radius = getScaledRadius();
             float shadowRadius = radius + mStrokeWidth;
@@ -252,6 +247,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     void invalidate() {
+        mFullPath.reset();
         if (mInvalidateDelegate != null) {
             mInvalidateDelegate.invalidate();
         }
@@ -398,6 +394,23 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         float offsetY = basePreviewOffsetY - radiusDifference;
         getShape().addToPath(mPath, offsetX, offsetY, radius);
         return mPath;
+    }
+
+    private void setUpFullClipPath() {
+        mFullPath.reset();
+        float radius = getScaledRadius();
+        // Find the difference in radius so that the clip path remains centered.
+        float radiusDifference = radius - getRadius();
+        float offsetX = basePreviewOffsetX - radiusDifference;
+        float offsetY = basePreviewOffsetY - radiusDifference;
+        getShape().addToPath(mFullPath, offsetX, offsetY, radius);
+    }
+    
+    public Path getFullClipPath() {
+        if(mFullPath.isEmpty()) {
+            setUpFullClipPath();
+        }
+        return mFullPath;
     }
 
     private void delegateDrawing(CellLayout delegate, int cellX, int cellY) {
