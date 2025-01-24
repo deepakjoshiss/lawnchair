@@ -255,7 +255,7 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
                 view.setVisibility(GONE);
                 view = viewGroup.getChildAt(0);
                 view.setMinimumHeight(0);
-                view.setPadding(0, 0, 0, bottomPadding);
+                view.setPadding(0, bottomPadding / 2, 0, bottomPadding);
             }
         } else if(id == idMap.get(ghostChipName)) {
             mainView.setOnHierarchyChangeListener(new OnHierarchyChangeListener() {
