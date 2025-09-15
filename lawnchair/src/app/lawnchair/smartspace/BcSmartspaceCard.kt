@@ -11,10 +11,15 @@ import android.widget.TextView
 import androidx.core.text.layoutDirection
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import app.lawnchair.font.FontManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.model.hasIntent
+import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.R
+import com.android.launcher3.util.Themes
+import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import java.util.UUID
 
@@ -50,6 +55,19 @@ class BcSmartspaceCard @JvmOverloads constructor(
             nextAlarmImageView = it.findViewById(R.id.alarm_icon)
             nextAlarmTextView = it.findViewById(R.id.alarm_text)
         }
+        // Styles
+        val prefs2 = PreferenceManager2.getInstance(context)
+        val fontManager = FontManager.INSTANCE.get(context)
+        alpha = prefs2.ssWidgetOpacity.firstBlocking()
+        if(titleTextView != null) fontManager.setCustomFont(titleTextView!!, R.id.font_smart_spacer)
+        if(dateView != null) fontManager.setCustomFont(dateView!!, R.id.font_smart_spacer)
+        if(subtitleTextView != null) fontManager.setCustomFont(subtitleTextView!!, R.id.font_smart_spacer)
+        val colorOption: ColorOption = prefs2.ssFontColor.firstBlocking()
+        var primaryColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
+        if (primaryColor == 0) {
+            primaryColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
+        }
+        setPrimaryTextColor(primaryColor)
     }
 
     fun setSmartspaceTarget(target: SmartspaceTarget, multipleCards: Boolean) {

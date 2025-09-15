@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:padding="@dimen/widget_handle_margin"
             android:layout_margin="@dimen/resize_frame_margin"
             android:src="@drawable/widget_resize_frame" />
 

@@ -147,7 +147,14 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
         adapter = prefs2.hotseatBottomFactor.getAdapter(),
         label = stringResource(id = R.string.hotseat_bottom_space_label),
         valueRange = 0.0F..1.7F,
-        step = 0.1F,
+        step = 0.05F,
+        showAsPercentage = true,
+    )
+    SliderPreference(
+        adapter = prefs2.hotseatHorizontalFactor.getAdapter(),
+        label = stringResource(id = R.string.hotseat_horizontal_padding),
+        valueRange = 0.0F..1.7F,
+        step = 0.05F,
         showAsPercentage = true,
     )
     SliderPreference(

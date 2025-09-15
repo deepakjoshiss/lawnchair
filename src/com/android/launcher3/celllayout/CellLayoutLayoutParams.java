@@ -115,7 +115,13 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
     public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
             int rowCount, Point borderSpace) {
         setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, 1.0f, 1.0f,
-                borderSpace, null);
+                borderSpace, null, 0, 0);
+    }
+
+    public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
+                      int rowCount, float cellScaleX, float cellScaleY, Point borderSpace, @Nullable Rect inset) {
+        setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, cellScaleX, cellScaleY,
+            borderSpace, inset, 0, 0);
     }
 
     /**
@@ -127,7 +133,7 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
      */
     public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
             int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
-            @Nullable Rect inset) {
+            @Nullable Rect inset, int minW, int minH) {
         if (isLockedToGrid) {
             final int myCellHSpan = cellHSpan;
             final int myCellVSpan = cellVSpan;
@@ -155,6 +161,17 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
                 width -= inset.left + inset.right;
                 height -= inset.top + inset.bottom;
             }
+            int finalWidth = Math.max(minW, width);
+            if(colCount > 1) {
+                x -= ((finalWidth - width) * mCellX) / (colCount - 1);
+            }
+            width = finalWidth;
+            
+            int finalHeight = Math.max(minH, height);
+            if (rowCount > 1) {
+                y -= ((finalHeight - height) * mCellY) / (rowCount - 1);
+            }
+            height = finalHeight;
         }
     }
 

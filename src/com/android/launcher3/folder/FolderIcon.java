@@ -614,7 +614,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, FloatingI
         super.dispatchDraw(canvas);
 
         if (!mBackgroundIsVisible) return;
-
+        
+        int count = canvas.save();
+        canvas.clipPath(mBackground.getFullClipPath());
+        
         mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
@@ -628,7 +631,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, FloatingI
         if (!mBackground.drawingDelegated()) {
             mBackground.drawBackgroundStroke(canvas);
         }
-
+        canvas.restoreToCount(count);
         drawDot(canvas);
     }
 

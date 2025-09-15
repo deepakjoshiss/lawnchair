@@ -74,6 +74,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IconSizeSteps;
 import com.android.launcher3.util.ResourceHelper;
 import com.android.launcher3.util.WindowBounds;
+import com.androidinternal.graphics.ColorUtils;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import com.android.launcher3.util.window.WindowManagerProxy;
 
@@ -87,13 +88,14 @@ import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
 
     private static final int DEFAULT_DOT_SIZE = 100;
     private static final float MIN_FOLDER_TEXT_SIZE_SP = 16f;
-    private static final float MIN_WIDGET_PADDING_DP = 8f;
+    private static final float MIN_WIDGET_PADDING_DP = 0f;
 
     // Minimum aspect ratio beyond which an extra top padding may be applied to a
     // bottom sheet.
@@ -210,6 +212,10 @@ public class DeviceProfile {
     public int folderFooterHeightPx;
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
+    public int folderIconColor;
+    public int folderBackgroundColor;
+    public int folderLabelColor;
+    public boolean folderStackPreview;
 
     // Folder content
     public Point folderCellLayoutBorderSpacePx;
@@ -492,6 +498,21 @@ public class DeviceProfile {
         numFolderRows = inv.numFolderRows[mTypeIndex];
         numFolderColumns = inv.numFolderColumns[mTypeIndex];
 
+        ColorOption colorOption = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderColor());
+        int folderColorAlpha = (int) (PreferenceExtensionsKt.firstBlocking(preferenceManager2.getFolderBackgroundOpacity()) * 255);
+        int folderColor = colorOption.getColorPreferenceEntry().getLightColor().invoke(context);
+        if (folderColor == 0) {
+            folderBackgroundColor =  ColorUtils.setAlphaComponent(ColorTokens.FolderBackgroundColor.resolveColor(context), folderColorAlpha);
+            folderIconColor = ColorTokens.FolderPreviewColor.resolveColor(context);
+        } else {
+            folderBackgroundColor = ColorUtils.setAlphaComponent(folderColor, folderColorAlpha);
+            folderIconColor = folderColor;
+        }
+        folderLabelColor = ColorUtils.calculateLuminance(folderBackgroundColor) < 0.5F 
+            ? ColorTokens.INSTANCE.getNeutral1_50().resolveColor(context): ColorTokens.INSTANCE.getNeutral1_900().resolveColor(context);
+        System.out.println(">>> color lumi " + ColorUtils.calculateLuminance(folderBackgroundColor));
+        folderStackPreview = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowFolderStackIcon());
+
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
                     R.styleable.FolderStyle);
@@ -527,8 +548,9 @@ public class DeviceProfile {
             .firstBlocking(preferenceManager2.getPageIndicatorHeightFactor());
         
         workspacePageIndicatorHeight *= (int) pageIndicatorHeightFactor;
-        mWorkspacePageIndicatorOverlapWorkspace = res
-                .getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace);
+        mWorkspacePageIndicatorOverlapWorkspace =
+            - res.getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace)
+                * PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHomeBottomPaddingMultiplier());
 
         if (!mIsResponsiveGrid) {
             TypedArray cellStyle;
@@ -575,7 +597,8 @@ public class DeviceProfile {
         HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;
 
-        hotseatQsbHeight = isQsbEnable ? res.getDimensionPixelSize(R.dimen.qsb_widget_height) : 0;
+        hotseatQsbHeight = isQsbEnable ? hotseatMode.getLayoutResourceId() == R.layout.container_hotseat_poweramp ? res.getDimensionPixelSize(R.dimen.qsb_widget_height_large)
+            : res.getDimensionPixelSize(R.dimen.qsb_widget_height) : 0;
         hotseatQsbShadowHeight = res.getDimensionPixelSize(R.dimen.qsb_shadow_height);
         hotseatQsbVisualHeight = isQsbEnable ? hotseatQsbHeight - 2 * hotseatQsbShadowHeight : 0;
 
@@ -936,11 +959,11 @@ public class DeviceProfile {
         int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
         var isLabelInDock = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableLabelInDock());
 
-        hotseatCellHeightPx = getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 2;
+        hotseatCellHeightPx = (int) (getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 1.25);
         hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
         hotseatQsbSpace += isLabelInDock ? (iconTextHeight / 2) : 0;
 
-        var space = Math.abs(hotseatCellHeightPx / 2) - 16;
+        var space = (int) Math.abs(hotseatCellHeightPx / 3.5);
 
         hotseatBarBottomSpacePx *= PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getHotseatBottomFactor());
@@ -1139,12 +1162,12 @@ public class DeviceProfile {
                 - iconTextHeight;
 
         // We want enough space so that the text is closer to its corresponding icon.
-        if (workspaceCellPaddingY < iconTextHeight) {
-            iconTextSizePx = 0;
-            iconDrawablePaddingPx = 0;
-            cellHeightPx = getIconSizeWithOverlap(iconSizePx);
-            autoResizeAllAppsCells();
-        }
+//        if (workspaceCellPaddingY < iconTextHeight) {
+//            iconTextSizePx = 0;
+//            iconDrawablePaddingPx = 0;
+//            cellHeightPx = getIconSizeWithOverlap(iconSizePx);
+//            autoResizeAllAppsCells();
+//        }
     }
 
     /**
@@ -1187,10 +1210,7 @@ public class DeviceProfile {
             // We do not subtract padding here, as we also scale the workspace padding if
             // needed.
             scaleX = availableWidthPx / usedWidth;
-            shouldScale = true;
-        }
 
-        if (shouldScale) {
             float scale = Math.min(scaleX, scaleY);
             updateIconSize(scale, context);
             extraHeight = Math.max(0, maxHeight - getCellLayoutHeightSpecification());
@@ -1244,6 +1264,7 @@ public class DeviceProfile {
         // Icon scale should never exceed 1, otherwise pixellation may occur.
         iconScale = Math.min(1f, scale);
         cellScaleToFit = scale;
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
@@ -1354,9 +1375,7 @@ public class DeviceProfile {
                 iconDrawablePaddingPx = cellPaddingY;
             }
         }
-
-        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
-
+        
         // All apps
         if (mIsResponsiveGrid) {
             updateAllAppsWithResponsiveMeasures();
@@ -1714,6 +1733,8 @@ public class DeviceProfile {
                 - (cellLayoutPaddingPx.top + cellLayoutPaddingPx.bottom);
         result.y = calculateCellHeight(shortcutAndWidgetContainerHeight, cellLayoutBorderSpacePx.y,
                 inv.numRows);
+        result.x = (int) Math.max((iconSizePx * iconScale) + 2 * (iconDrawablePaddingPx + workspaceCellPaddingXPx), result.x);
+        result.y = Math.max(cellHeightPx, result.y);
         return result;
     }
 

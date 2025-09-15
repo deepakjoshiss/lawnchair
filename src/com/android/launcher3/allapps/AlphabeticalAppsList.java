@@ -23,6 +23,8 @@ import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_PREINSTALLED_APPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_USER_INSTALLED_APPS_COUNT;
 
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_MASK_DIVIDER;
+
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -41,6 +43,7 @@ import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -298,6 +301,29 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                             mActivityContext.getResources().getString(
                                     R.string.work_profile_edu_section), 0));
                 }
+                ArrayList<AdapterItem> freqItems = new ArrayList<>();
+                for (AppInfo info : mApps) {
+                    if(info.launchCount > 0) {
+                        freqItems.add(AdapterItem.asApp(info));
+//                        System.out.println(">>> adding adapter item " + info.getTargetPackage() + " " + info.launchCount + " " + info.foregroundTime);
+                    }
+                }
+                if(!freqItems.isEmpty()) {
+                    freqItems.sort(new Comparator<AdapterItem>() {
+                        @Override
+                        public int compare(AdapterItem o1, AdapterItem o2) {
+                            return o2.itemInfo.launchCount - o1.itemInfo.launchCount;
+                        }
+                    });
+                    int itemCount = freqItems.size() / mNumAppsPerRowAllApps *  mNumAppsPerRowAllApps;
+                    mAdapterItems.addAll(freqItems.subList(0, itemCount));
+                    String sectionName = "0";
+                    mFastScrollerSections.add(new FastScrollSectionInfo(sectionName, 0));
+                    mAdapterItems.add(new AdapterItem(VIEW_TYPE_MASK_DIVIDER));
+                    position += itemCount + 1;
+                    System.out.println(String.format(">>> usage showing %d of %d items", itemCount, freqItems.size()));
+                }
+
                 position = addAppsWithSections(mApps, position);
             }
             if (Flags.enablePrivateSpace()) {

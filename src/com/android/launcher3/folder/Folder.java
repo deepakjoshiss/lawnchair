@@ -129,6 +129,7 @@ import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
+import app.lawnchair.theme.drawable.ResourceDrawableToken;
 import app.lawnchair.util.EditTextExtensions;
 import app.lawnchair.util.LawnchairUtilsKt;
 
@@ -259,6 +260,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private boolean mSuppressFolderDeletion = false;
     private boolean mItemAddedBackToSelfViaIcon = false;
     private boolean mIsEditingName = false;
+    private boolean mShowFooter = false;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDestroyed;
@@ -311,18 +313,19 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         super.onFinishInflate();
         final DeviceProfile dp = mActivityContext.getDeviceProfile();
         final int paddingLeftRight = dp.folderContentPaddingLeftRight;
-
-        mBackground = DrawableTokens.RoundRectFolder.resolve(getContext());
-        var alpha = LawnchairUtilsKt.getFolderBackgroundAlpha(getContext());
-        mBackground.setAlpha(alpha);
-
+        final Context context = getContext();
+        mShowFooter = PreferenceExtensionsKt.firstBlocking(PreferenceManager2.getInstance(context).getShowFolderFooter());
+        mBackground = new ResourceDrawableToken<GradientDrawable>(R.drawable.round_rect_folder).resolve(context);
+        mBackground.setColor(dp.folderBackgroundColor);
+        
         mContent = findViewById(R.id.folder_content);
         mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);
         mContent.setFolder(this);
 
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFooter = findViewById(R.id.folder_footer);
-        mFooterHeight = dp.folderFooterHeightPx;
+        mFooter.setVisibility(mShowFooter ? VISIBLE : GONE);
+        mFooterHeight = mShowFooter? dp.folderFooterHeightPx : (int) (dp.folderContentPaddingTop * 1.5);
         mFolderName = findViewById(R.id.folder_name);
         mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.folderLabelTextSizePx);
         mFolderName.setOnBackKeyListener(this);
@@ -582,6 +585,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             setLayoutParams(lp);
         }
         mItemsInvalidated = true;
+        mInfo.isStackPreview = mActivityContext.getDeviceProfile().folderStackPreview;
         mInfo.addListener(this);
 
         if (!isEmpty(mInfo.title)) {

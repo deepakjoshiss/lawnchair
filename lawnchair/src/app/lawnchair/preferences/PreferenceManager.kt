@@ -63,6 +63,7 @@ class PreferenceManager private constructor(private val context: Context) :
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
+    val wallpaperShift: FloatPref = FloatPref("dj_pref_wallpaperShift", 0.5F)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
@@ -79,6 +80,7 @@ class PreferenceManager private constructor(private val context: Context) :
     val fontHeadingMedium = FontPref("pref_fontHeadingMedium", fontCache.uiMedium, recreate)
     val fontBody = FontPref("pref_fontBody", fontCache.uiText, recreate)
     val fontBodyMedium = FontPref("pref_fontBodyMedium", fontCache.uiTextMedium, recreate)
+    val fontSmartSpacer = FontPref("dj_ss_font_pref", fontCache.uiText, reloadGrid)
 
     // TODO REMOVE
     val deviceSearch = BoolPref("device_search", false, recreate)

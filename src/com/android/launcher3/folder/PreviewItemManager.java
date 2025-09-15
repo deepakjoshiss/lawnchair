@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.apppairs.AppPairIconDrawingParams;
@@ -110,6 +111,7 @@ public class PreviewItemManager {
     private final float mClipThreshold;
     private float mCurrentPageItemsTransX = 0;
     private boolean mShouldSlideInFirstPage;
+    private boolean mIsStackPreview;
 
     static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
     private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
@@ -121,8 +123,10 @@ public class PreviewItemManager {
     public PreviewItemManager(FolderIcon icon) {
         mContext = icon.getContext();
         mIcon = icon;
-        mIconSize = ActivityContext.lookupContext(
-                mContext).getDeviceProfile().folderChildIconSizePx;
+        DeviceProfile dp = ActivityContext.lookupContext(
+            mContext).getDeviceProfile(); 
+        mIconSize = dp.folderChildIconSizePx;
+        mIsStackPreview = dp.folderStackPreview;
         mClipThreshold = Utilities.dpToPx(1f);
     }
 
@@ -167,7 +171,7 @@ public class PreviewItemManager {
             mIcon.mBackground.setup(mIcon.getContext(), mIcon.mActivity, mIcon, mTotalWidth,
                     mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
-                    Utilities.isRtl(mIcon.getResources()));
+                    Utilities.isRtl(mIcon.getResources()), mIsStackPreview);
 
             updatePreviewItems(false);
         }

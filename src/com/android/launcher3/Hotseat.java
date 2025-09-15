@@ -250,6 +250,10 @@ public class Hotseat extends CellLayout implements Insettable {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mActivity.getDeviceProfile();
 
+        float paddingFactor = PreferenceExtensionsKt
+            .firstBlocking(preferenceManager2.getHotseatHorizontalFactor());
+        int sidePaddingPx = (int) (paddingFactor * getResources().getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding));
+
         if (grid.isVerticalBarLayout()) {
             mQsb.setVisibility(View.GONE);
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -269,7 +273,7 @@ public class Hotseat extends CellLayout implements Insettable {
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
-        setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        setPadding(sidePaddingPx, padding.top,sidePaddingPx, padding.bottom);
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
     }

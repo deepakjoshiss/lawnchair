@@ -407,6 +407,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
             }
         }
+        val dp = launcher.deviceProfile
+        val horizontalPadding = resources.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding )
+        setPadding(horizontalPadding, paddingTop, horizontalPadding, horizontalPadding / 2)
         requestLayout()
     }
 

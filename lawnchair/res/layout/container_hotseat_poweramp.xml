@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.hotseat.PowerampWidgetContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/search_container_workspace"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/qsb_widget_height_large"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <fragment
+        android:name="app.lawnchair.hotseat.PowerampWidgetContainerView$QsbFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="poweramp_view" />
+</app.lawnchair.hotseat.PowerampWidgetContainerView>

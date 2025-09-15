@@ -76,6 +76,9 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      * ID (multiple applications can have the same uid).
      */
     public int uid = -1;
+    
+    public int launchCount = 0;
+    public long foregroundTime = 0;
 
     public AppInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -116,6 +119,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         uid = info.uid;
+        launchCount = info.launchCount;
+        foregroundTime = info.foregroundTime;
     }
 
     @VisibleForTesting

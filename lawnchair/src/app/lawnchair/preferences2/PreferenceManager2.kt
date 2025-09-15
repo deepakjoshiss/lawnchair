@@ -193,6 +193,28 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_folder_color)),
     )
 
+    val drawerColor = preference(
+        key = stringPreferencesKey(name = "dj_drawer_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_folder_color)),
+    )
+
+    val ssFontColor = preference(
+        key = stringPreferencesKey(name = "dj_ss_font_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString("default"),
+    )
+
+    val ssWidgetOpacity = preference(
+        key = floatPreferencesKey(name = "dj_ss_widget_opacity"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_preview_background_opacity),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showNotificationCount = preference(
         key = booleanPreferencesKey(name = "show_notification_count"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_notification_count),
@@ -407,6 +429,18 @@ class PreferenceManager2 private constructor(private val context: Context) :
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val showFolderFooter = preference(
+        key = booleanPreferencesKey(name = "dj_show_folder_footer"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val showFolderStackIcon = preference(
+        key = booleanPreferencesKey(name = "dj_show_folder_stack_icon"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val showIconLabelsOnHomeScreen = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
@@ -469,6 +503,11 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val hotseatBottomFactor = preference(
         key = floatPreferencesKey(name = "hotseat_bottom_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_bottom_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+    val hotseatHorizontalFactor = preference(
+        key = floatPreferencesKey(name = "hotseat_horizontal_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_bottom_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
@@ -551,6 +590,12 @@ class PreferenceManager2 private constructor(private val context: Context) :
     val maxRecentResultCount = preference(
         key = intPreferencesKey(name = "max_recent_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_recent_max_result_count),
+    )
+
+    val homeBottomPaddingMultiplier = preference(
+        key = intPreferencesKey(name = "dj_home_bottom_padding_multiplier"),
+        defaultValue = 1,
+        onSet = { reloadHelper.reloadGrid() }
     )
 
     val enableSmartspace = preference(

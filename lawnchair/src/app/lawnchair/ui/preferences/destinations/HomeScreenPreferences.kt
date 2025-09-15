@@ -115,6 +115,14 @@ fun HomeScreenPreferences(
                 prefs.wallpaperScrolling.getAdapter(),
                 label = stringResource(id = R.string.wallpaper_scrolling_label),
             )
+            SliderPreference(
+                label = stringResource(id = R.string.dj_wallpaper_shift_label),
+                adapter = prefs.wallpaperShift.getAdapter(),
+                step = 0.05F,
+                valueRange = 0F..1F,
+                showAsPercentage = true,
+            )
+
             if (Utilities.ATLEAST_R) {
                 SwitchPreference(
                     prefs2.wallpaperDepthEffect.getAdapter(),
@@ -134,6 +142,13 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.home_screen_grid),
                 destination = HomeScreenGrid,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.dj_bottom_padding_multiplier),
+                adapter = prefs2.homeBottomPaddingMultiplier.getAdapter(),
+                step = 1,
+                valueRange = -100..100,
+                showAsPercentage = false,
             )
             SwitchPreference(
                 adapter = lockHomeScreenAdapter,
@@ -178,7 +193,7 @@ fun HomeScreenPreferences(
             SliderPreference(
                 label = stringResource(id = R.string.icon_sizes),
                 adapter = prefs2.homeIconSizeFactor.getAdapter(),
-                step = 0.1f,
+                step = 0.05f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
             )
@@ -191,7 +206,7 @@ fun HomeScreenPreferences(
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
-                    step = 0.1f,
+                    step = 0.05f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
                 )

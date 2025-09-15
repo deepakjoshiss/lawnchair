@@ -99,6 +99,8 @@ public class FolderInfo extends CollectionInfo {
     public int options;
 
     public FolderNameInfos suggestedFolderNames;
+    
+    public boolean isStackPreview ;
 
     /**
      * The apps and shortcuts

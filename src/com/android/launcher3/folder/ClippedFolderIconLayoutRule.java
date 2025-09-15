@@ -3,10 +3,12 @@ package com.android.launcher3.folder;
 public class ClippedFolderIconLayoutRule {
 
     public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
+    public static final int MAX_NUM_ITEMS_IN_PREVIEW_STACK = 3;
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
 
     private static final float MIN_SCALE = 0.44f;
     private static final float MAX_SCALE = 0.51f;
+    private static final float SCALE_STACK = 0.75f;
     private static final float MAX_RADIUS_DILATION = 0.25f;
     // The max amount of overlap the preview items can go outside of the background bounds.
     public static final float ICON_OVERLAP_FACTOR = 1 + (MAX_RADIUS_DILATION / 2f);
@@ -22,12 +24,14 @@ public class ClippedFolderIconLayoutRule {
     private float mIconSize;
     private boolean mIsRtl;
     private float mBaselineIconScale;
+    private boolean mIsStack;
 
-    public void init(int availableSpace, float intrinsicIconSize, boolean rtl) {
+    public void init(int availableSpace, float intrinsicIconSize, boolean rtl, boolean isStack) {
         mAvailableSpace = availableSpace;
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
         mIsRtl = rtl;
+        mIsStack = isStack;
         mBaselineIconScale = availableSpace / (intrinsicIconSize * 1f);
     }
 
@@ -85,6 +89,14 @@ public class ClippedFolderIconLayoutRule {
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {
+        if (mIsStack) {
+            getPositionStack(index, curNumItems, result);
+        } else {
+            getPositionFan(index, curNumItems, result);
+        }
+    }
+
+    private void getPositionFan(int index, int curNumItems, float[] result) {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
 
@@ -127,10 +139,35 @@ public class ClippedFolderIconLayoutRule {
 
     }
 
+    private void getPositionStack(int index, int curNumItems, float[] result) {
+        // The case of two items is homomorphic to the case of one.
+        if (index >= 3) {
+            result[0] =  mAvailableSpace;
+            result[1] =  mAvailableSpace;
+            return;
+        }
+        
+        float halfIconSize = mIconSize * scaleForItem(curNumItems);
+        float gapX = (mAvailableSpace * 1.1f - halfIconSize) / 2.0f;
+        float startY = -mAvailableSpace * 0.1f;
+        float gapY = (mAvailableSpace * 1.2f - halfIconSize) / 2.0f;
+
+        float posX = gapX * index;
+        float posY = startY + (2 - index) * gapY;
+
+        // Map the location along the circle, and offset the coordinates to represent the center
+        // of the icon, and to be based from the top / left of the preview area. The y component
+        // is inverted to match the coordinate system.
+        result[0] = posX;// (mAvailableSpace / 2 + (float) (radius * Math.cos(theta) / 2) - halfIconSize) / divider;
+        result[1] = posY; //(mAvailableSpace / 2 + (float) (- radius * Math.sin(theta) / 2) - halfIconSize) / divider;
+    }
+
     public float scaleForItem(int numItems) {
         // Scale is determined by the number of items in the preview.
         final float scale;
-        if (numItems <= 3) {
+        if (mIsStack) {
+            scale = SCALE_STACK;
+        } else if (numItems <= 3) {
             scale = MAX_SCALE;
         } else {
             scale = MIN_SCALE;
