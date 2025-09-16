@@ -22,6 +22,7 @@ import androidx.core.content.edit
 import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
+import java.lang.Exception
 import java.util.concurrent.CopyOnWriteArraySet
 import org.json.JSONObject
 
@@ -268,7 +269,12 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun get(): Float {
             if (!loaded) {
-                currentValue = sp.getFloat(key, defaultValue)
+                try {
+                    currentValue = sp.getFloat(key, defaultValue)
+                }catch (e: Exception) {
+                    currentValue = 0.5f
+                }
+
                 loaded = true
             }
             return currentValue

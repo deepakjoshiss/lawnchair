@@ -179,12 +179,12 @@ fun getFolderBackgroundAlpha(context: Context): Int {
 
 fun getAllAppsScrimColor(context: Context): Int {
     val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
-    val prefs2 = PreferenceManager2.getInstance(context)
-    var scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
-    val colorOptions: ColorOption = prefs2.appDrawerBackgroundColor.firstBlocking()
-    val color = colorOptions.colorPreferenceEntry.lightColor.invoke(context)
-    if (color != 0) {
-        scrimColor = color
+    // Load drawer color
+    val colorOption: ColorOption =
+        PreferenceManager2.getInstance(context).drawerColor.firstBlocking()
+    var scrimColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
+    if (scrimColor == 0) {
+        scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)
     }
     val alpha = (opacity * 255).roundToInt()
     return ColorUtils.setAlphaComponent(scrimColor, alpha)

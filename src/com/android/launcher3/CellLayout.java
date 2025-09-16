@@ -73,7 +73,6 @@ import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.ParcelableSparseArray;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -162,7 +161,7 @@ public class CellLayout extends ViewGroup {
     private RectF mVisualizeGridRect = new RectF();
     private Paint mVisualizeGridPaint = new Paint();
     private int mGridVisualizationRoundingRadius;
-    private float mGridAlpha = 0f;
+    private float mGridAlpha = 0.5f;
     private int mGridColor = 0;
     protected float mSpringLoadedProgress = 0f;
     private float mScrollProgress = 0f;
@@ -210,6 +209,7 @@ public class CellLayout extends ViewGroup {
     private static final Paint sPaint = new Paint();
     private int mRealCellWidth;
     private int mRealCellHeight;
+    private boolean mUseNormalSizes;
 
     // Related to accessible drag and drop
     DragAndDropAccessibilityDelegate mTouchHelper;
@@ -1018,7 +1018,7 @@ public class CellLayout extends ViewGroup {
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
         DeviceProfile dp = mActivity.getDeviceProfile();
@@ -1027,8 +1027,8 @@ public class CellLayout extends ViewGroup {
                     mCountX);
             int ch = DeviceProfile.calculateCellHeight(childHeightSize, mBorderSpace.y,
                     mCountY);
-            mRealCellWidth = Math.max(dp.cellWidthPx, cw);
-            mRealCellHeight = Math.max(dp.cellHeightPx, ch);
+            mRealCellWidth = mUseNormalSizes ? cw : Math.max(dp.cellWidthPx, cw);
+            mRealCellHeight = mUseNormalSizes ? ch :Math.max(dp.cellHeightPx, ch);
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
@@ -1057,6 +1057,14 @@ public class CellLayout extends ViewGroup {
         } else {
             setMeasuredDimension(widthSize, heightSize);
         }
+    }
+    
+    protected void printSizes() {
+        System.out.println(">>>> on hotseat measure " + mRealCellWidth + " " + mCellWidth + " " + mRealCellHeight + " " + mCellHeight + " " + mBorderSpace);
+    }
+    
+    protected void setUseNormalSizes(boolean useNormal) {
+        mUseNormalSizes = useNormal;
     }
 
     @Override

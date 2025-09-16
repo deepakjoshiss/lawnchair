@@ -241,8 +241,8 @@ open class PowerampWidgetContainerView : FrameLayout {
             if (showSetupIcon) {
                 requestQsbCreate()
                 val setupButton = v.findViewById<View>(R.id.btn_qsb_setup)
-                setupButton.visibility = VISIBLE
-                setupButton.setOnClickListener { v2: View? -> requestQsbCreate() }
+                setupButton?.visibility = VISIBLE
+                setupButton?.setOnClickListener { v2: View? -> requestQsbCreate() }
             }
             return v
         }

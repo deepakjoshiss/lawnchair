@@ -105,7 +105,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
         mQsb = LayoutInflater.from(context).inflate(layoutId, this, false);
         addView(mQsb);
-
+        setUseNormalSizes(true);
         setUpBackground();
     }
 
@@ -131,14 +131,15 @@ public class Hotseat extends CellLayout implements Insettable {
      * Returns orientation specific cell X given invariant order in the hotseat
      */
     public int getCellXFromOrder(int rank) {
-        return mHasVerticalHotseat ? 0 : rank;
+        return mHasVerticalHotseat ? 0 : rank % getCountX();
     }
 
     /**
      * Returns orientation specific cell Y given invariant order in the hotseat
      */
     public int getCellYFromOrder(int rank) {
-        return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
+        System.out.println(">>>> getting rank for " + rank + " " + rank / getCountX());
+        return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : rank / getCountX();
     }
 
     boolean isHasVerticalHotseat() {
@@ -180,7 +181,7 @@ public class Hotseat extends CellLayout implements Insettable {
         if (hasVerticalHotseat) {
             setGridSize(1, dp.numShownHotseatIcons);
         } else {
-            setGridSize(dp.numShownHotseatIcons, 1);
+            setGridSize(dp.numShownHotseatIcons, dp.numHotseatRows);
         }
     }
 
@@ -319,7 +320,7 @@ public class Hotseat extends CellLayout implements Insettable {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         DeviceProfile dp = mActivity.getDeviceProfile();
-
+//        printSizes();
         int width = getShortcutsAndWidgets().getMeasuredWidth();
         mQsb.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(dp.hotseatQsbHeight, MeasureSpec.EXACTLY));

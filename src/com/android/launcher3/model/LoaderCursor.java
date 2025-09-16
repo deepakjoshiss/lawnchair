@@ -37,6 +37,7 @@ import android.util.LongSparseArray;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -523,13 +524,14 @@ public class LoaderCursor extends CursorWrapper {
      */
     protected boolean checkItemPlacement(ItemInfo item, boolean isFirstPagePinnedItemEnabled) {
         int containerIndex = item.screenId;
+        DeviceProfile dp = mApp.getLauncher().getDeviceProfile();
         if (item.container == Favorites.CONTAINER_HOTSEAT) {
             final GridOccupancy hotseatOccupancy = mOccupied.get(Favorites.CONTAINER_HOTSEAT);
 
-            if (item.screenId >= mIDP.numDatabaseHotseatIcons) {
+            if (item.screenId >= dp.numRealHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId
-                        + ", position out of bounds: (0 to " + (mIDP.numDatabaseHotseatIcons - 1)
+                        + ", position out of bounds: (0 to " + (dp.numRealHotseatIcons- 1)
                         + ")");
                 return false;
             }
@@ -545,7 +547,7 @@ public class LoaderCursor extends CursorWrapper {
                     return true;
                 }
             } else {
-                final GridOccupancy occupancy = new GridOccupancy(mIDP.numDatabaseHotseatIcons, 1);
+                final GridOccupancy occupancy = new GridOccupancy(dp.numRealHotseatIcons, 1);
                 occupancy.cells[item.screenId][0] = true;
                 mOccupied.put(Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;

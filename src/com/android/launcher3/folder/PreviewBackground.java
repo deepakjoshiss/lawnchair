@@ -56,7 +56,9 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.preferences2.PreferenceManager2Kt;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -130,7 +132,10 @@ public class PreviewBackground extends DelegatedCellDrawing {
     protected boolean mIsHovered;
     @VisibleForTesting
     protected boolean mIsHoveredOrAnimating;
-
+    
+    private app.lawnchair.icons.shape.IconShape mIconShape;
+    private static final Path sTempPath = new Path();
+    
     private static final Property<PreviewBackground, Integer> STROKE_ALPHA = new Property<PreviewBackground, Integer>(
             Integer.class, "strokeAlpha") {
         @Override
@@ -187,13 +192,13 @@ public class PreviewBackground extends DelegatedCellDrawing {
     public void setup(Context context, ActivityContext activity, View invalidateDelegate,
             int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
-
+        
         DeviceProfile grid = activity.getDeviceProfile();
 
         // Load folder color
         
         mBgColor = grid.folderIconColor;
-
+        
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
         mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
         mStrokeColor = ColorTokens.FolderIconBorderColor.resolveColor(context);
@@ -218,6 +223,9 @@ public class PreviewBackground extends DelegatedCellDrawing {
                     Shader.TileMode.CLAMP);
         }
 
+        PreferenceManager2 prefs = PreferenceManager2.getInstance(mContext);
+        mIconShape =  PreferenceExtensionsKt.firstBlocking(prefs.getIconShape());
+        
         invalidate();
     }
 
@@ -257,6 +265,7 @@ public class PreviewBackground extends DelegatedCellDrawing {
 
     void invalidate() {
         mFullPath.reset();
+        mIconShape.addShape(mFullPath, getOffsetX(), getOffsetY(), getScaledRadius());
         if (mInvalidateDelegate != null) {
             mInvalidateDelegate.invalidate();
         }
@@ -282,13 +291,8 @@ public class PreviewBackground extends DelegatedCellDrawing {
     public void drawBackground(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
-
-        getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        canvas.drawPath(mFullPath, mPaint);
         drawShadow(canvas);
-    }
-
-    private ShapeDelegate getShape() {
-        return IconShape.INSTANCE.get(mContext).getShape();
     }
 
     public void drawShadow(Canvas canvas) {
@@ -325,7 +329,7 @@ public class PreviewBackground extends DelegatedCellDrawing {
         mPaint.setShader(null);
         if (canvas.isHardwareAccelerated()) {
             mPaint.setXfermode(mShadowPorterDuffXfermode);
-            getShape().drawShape(canvas, offsetX, offsetY, radius, mPaint);
+            canvas.drawPath(mFullPath, mPaint);
             mPaint.setXfermode(null);
         }
 
@@ -380,8 +384,9 @@ public class PreviewBackground extends DelegatedCellDrawing {
         mPaint.setStrokeWidth(mStrokeWidth);
 
         float inset = 1f;
-        getShape().drawShape(canvas,
-                getOffsetX() + inset, getOffsetY() + inset, getScaledRadius() - inset, mPaint);
+        sTempPath.reset();
+        mIconShape.addShape(sTempPath, getOffsetX() + inset, getOffsetY() + inset, getScaledRadius() - inset);
+        canvas.drawPath(sTempPath, mPaint);
     }
 
     /**
@@ -393,7 +398,9 @@ public class PreviewBackground extends DelegatedCellDrawing {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(color);
-        getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        sTempPath.reset();
+        mIconShape.addShape(sTempPath,  getOffsetX(), getOffsetY(), getScaledRadius());
+        canvas.drawPath(sTempPath, mPaint);
 
         mScale = originalScale;
     }
@@ -405,7 +412,7 @@ public class PreviewBackground extends DelegatedCellDrawing {
         float radiusDifference = radius - getRadius();
         float offsetX = basePreviewOffsetX - radiusDifference;
         float offsetY = basePreviewOffsetY - radiusDifference;
-        getShape().addToPath(mPath, offsetX, offsetY, radius);
+        mIconShape.addShape(mPath, offsetX, offsetY, radius);
         return mPath;
     }
 
@@ -416,11 +423,11 @@ public class PreviewBackground extends DelegatedCellDrawing {
         float radiusDifference = radius - getRadius();
         float offsetX = basePreviewOffsetX - radiusDifference;
         float offsetY = basePreviewOffsetY - radiusDifference;
-        getShape().addToPath(mFullPath, offsetX, offsetY, radius);
+        mIconShape.addShape(mFullPath, offsetX, offsetY, radius);
     }
     
     public Path getFullClipPath() {
-        if(mFullPath.isEmpty()) {
+        if(mFullPath.isEmpty() && mIconShape !=null) {
             setUpFullClipPath();
         }
         return mFullPath;

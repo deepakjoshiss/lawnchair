@@ -89,12 +89,12 @@ open class PowerampWidgetHostView(context: Context?) : NavigableAppWidgetHostVie
         fun getDefaultView(parent: ViewGroup): View {
             val v = LayoutInflater.from(parent.context)
                 .inflate(R.layout.qsb_default_view, parent, false)
-            v.findViewById<View>(R.id.btn_qsb_search).setOnClickListener { v2: View ->
+            v.findViewById<View>(R.id.btn_qsb_search)?.setOnClickListener { v2: View ->
                 Launcher.getLauncher(
                     v2.context,
                 ).startSearch("", false, null, true)
             }
-            v.findViewById<View>(R.id.qsb_background).clipToOutline = true
+            v.findViewById<View>(R.id.qsb_background)?.clipToOutline = true
             return v
         }
     }

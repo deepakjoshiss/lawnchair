@@ -234,6 +234,13 @@ class PreferenceManager2 private constructor(private val context: Context) :
             reloadHelper.reloadGrid()
         },
     )
+    val numHotseatRows = preference(
+        key = intPreferencesKey(name = "pref_hotseat_rows"),
+        defaultValue = 2,
+        onSet = {
+            reloadHelper.reloadGrid()
+        },
+    )
 
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),

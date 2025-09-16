@@ -233,6 +233,8 @@ public class DeviceProfile {
 
     // Hotseat
     public int numShownHotseatIcons;
+    public int numHotseatRows;
+    public int numRealHotseatIcons;
     public int hotseatCellHeightPx;
     private int mHotseatColumnSpan;
     private int mHotseatWidthPx; // not used in vertical bar layout
@@ -510,7 +512,7 @@ public class DeviceProfile {
         }
         folderLabelColor = ColorUtils.calculateLuminance(folderBackgroundColor) < 0.5F 
             ? ColorTokens.INSTANCE.getNeutral1_50().resolveColor(context): ColorTokens.INSTANCE.getNeutral1_900().resolveColor(context);
-        System.out.println(">>> color lumi " + ColorUtils.calculateLuminance(folderBackgroundColor));
+//        System.out.println(">>> color lumi " + ColorUtils.calculateLuminance(folderBackgroundColor));
         folderStackPreview = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowFolderStackIcon());
 
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
@@ -612,7 +614,8 @@ public class DeviceProfile {
         areNavButtonsInline = isTaskbarPresent && !isGestureMode;
         numShownHotseatIcons = isTwoPanels ? inv.numDatabaseHotseatIcons : inv.numShownHotseatIcons;
         mHotseatColumnSpan = inv.numColumns;
-
+        numHotseatRows = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getNumHotseatRows());
+        numRealHotseatIcons = numShownHotseatIcons * numHotseatRows;
         numShownAllAppsColumns = isTwoPanels ? inv.numDatabaseAllAppsColumns : inv.numAllAppsColumns;
 
         int hotseatBarBottomSpace = !isQsbEnable ? 0 : pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
@@ -958,8 +961,8 @@ public class DeviceProfile {
         // radius.
         int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
         var isLabelInDock = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableLabelInDock());
-
-        hotseatCellHeightPx = (int) (getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / 1.25);
+        var divisor = numHotseatRows > 1 ? 1.4 : 1.25;
+        hotseatCellHeightPx = (int) (getIconSizeWithOverlap(hotseatIconSizePx * 2) - hotseatIconSizePx / divisor);
         hotseatCellHeightPx += isLabelInDock ? iconTextHeight : 0;
         hotseatQsbSpace += isLabelInDock ? (iconTextHeight / 2) : 0;
 
@@ -975,11 +978,11 @@ public class DeviceProfile {
             hotseatBarSizePx = Math.max(hotseatIconSizePx, hotseatQsbVisualHeight)
                     + hotseatBarBottomSpacePx + space;
         } else {
-            hotseatBarSizePx = hotseatIconSizePx
+            hotseatBarSizePx = hotseatIconSizePx * numHotseatRows
                     + hotseatQsbSpace
                     + hotseatQsbVisualHeight
                     + hotseatBarBottomSpacePx
-                    + space;
+                    + space * numHotseatRows;
         }
         var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
         if (!isHotseatEnabled) {
@@ -2066,7 +2069,7 @@ public class DeviceProfile {
         if (isTaskbarPresent) { // QSB on top or inline
             return hotseatBarBottomSpacePx - (Math.abs(hotseatCellHeightPx - iconSizePx) / 2);
         } else {
-            return hotseatBarSizePx - hotseatCellHeightPx;
+            return hotseatBarSizePx - hotseatCellHeightPx * numHotseatRows;
         }
     }
 

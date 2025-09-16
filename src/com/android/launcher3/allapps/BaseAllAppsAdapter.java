@@ -258,7 +258,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
-            case VIEW_TYPE_ALL_APPS_DIVIDER, VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
+            case VIEW_TYPE_ALL_APPS_DIVIDER:
+                return new ViewHolder(mLayoutInflater.inflate(
+                    R.layout.all_apps_divider, parent, false));
+            case VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.private_space_divider, parent, false));
             case VIEW_TYPE_WORK_EDU_CARD:

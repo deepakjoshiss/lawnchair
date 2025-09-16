@@ -144,6 +144,12 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
         valueRange = 3..10,
     )
     SliderPreference(
+        label = stringResource(id = R.string.dock_rows),
+        adapter = prefs2.numHotseatRows.getAdapter(),
+        step = 1,
+        valueRange = 1..4,
+    )
+    SliderPreference(
         adapter = prefs2.hotseatBottomFactor.getAdapter(),
         label = stringResource(id = R.string.hotseat_bottom_space_label),
         valueRange = 0.0F..1.7F,
@@ -175,6 +181,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
         val adapters = listOf(
             prefs2.hotseatMode.getAdapter(),
             prefs.hotseatColumns.getAdapter(),
+            prefs2.numHotseatRows.getAdapter(),
             prefs2.themedHotseatQsb.getAdapter(),
             prefs.hotseatQsbCornerRadius.getAdapter(),
             prefs.hotseatQsbAlpha.getAdapter(),

@@ -1788,8 +1788,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             int count = canvas.save();
             canvas.clipPath(mClipPath);
             mBackground.draw(canvas);
-            canvas.restoreToCount(count);
             super.dispatchDraw(canvas);
+            canvas.restoreToCount(count);
         } else {
             mBackground.draw(canvas);
             super.dispatchDraw(canvas);

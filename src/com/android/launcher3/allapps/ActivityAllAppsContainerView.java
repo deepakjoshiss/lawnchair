@@ -831,15 +831,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     protected int getHeaderColor(float blendRatio) {
-        var opacity = pref.getDrawerOpacity().get();
-        var colorOptions = PreferenceExtensionsKt.firstBlocking(pref2.getAppDrawerBackgroundColor());
-        var color = colorOptions.getColorPreferenceEntry().getLightColor().invoke(mContext);
-        if (color != 0) {
-            mScrimColor = color;
-        }
+//        var opacity = pref.getDrawerOpacity().get();
+//        var colorOptions = PreferenceExtensionsKt.firstBlocking(pref2.getAppDrawerBackgroundColor());
+//        var color = colorOptions.getColorPreferenceEntry().getLightColor().invoke(mContext);
+//        if (color != 0) {
+//            mScrimColor = color;
+//        }
+//        return ColorUtils.setAlphaComponent(
+//                ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, blendRatio),
+//                Math.round(opacity * 255));
         return ColorUtils.setAlphaComponent(
-                ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, blendRatio),
-                Math.round(opacity * 255));
+            ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, blendRatio),
+            (int) (mSearchContainer.getAlpha() * 255));
     }
 
     /**

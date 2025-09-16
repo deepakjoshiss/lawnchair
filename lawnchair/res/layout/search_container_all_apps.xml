@@ -35,7 +35,7 @@
             android:id="@+id/hint"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="32dp"
             android:layout_marginEnd="28dp"
             android:clickable="false"
             android:ellipsize="end"
@@ -50,7 +50,7 @@
             android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="28dp"
+            android:layout_marginStart="32dp"
             android:layout_marginEnd="28dp"
             android:background="@android:color/transparent"
             android:ellipsize="end"
@@ -64,20 +64,21 @@
             android:singleLine="true"
             android:textColor="?android:textColorPrimary"
             android:textColorHint="?android:textColorTertiary"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
     </FrameLayout>
 
     <ImageButton
         android:id="@+id/search_icon"
-        android:layout_width="@dimen/search_box_height"
+        android:layout_width="@dimen/qsb_icon_width"
         android:layout_height="@dimen/search_box_height"
         android:layout_gravity="center|start"
         android:background="@drawable/pill_ripple"
         android:layout_marginEnd="6dp"
         android:clickable="true"
         android:contentDescription="@string/search_bar_label"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
+        android:padding="17dp"
         android:src="@drawable/ic_allapps_search"
         app:tint="?android:textColorSecondary" />
 

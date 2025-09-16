@@ -177,8 +177,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                 appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding, dp.cellWidthPx, 0);
         } else if (isChildQsb(child)) {
-            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpace);
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY, 1, 1,
+                    mBorderSpace, null, dp.cellWidthPx, dp.cellHeightPx);
             // No need to add padding for Qsb, which is either Smartspace (actual or
             // preview), or
             // QsbContainerView.

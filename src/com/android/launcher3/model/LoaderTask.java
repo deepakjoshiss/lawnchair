@@ -891,6 +891,9 @@ public class LoaderTask implements Runnable {
                         parcel.recycle();
                     }
                 }
+            } else {
+                System.out.println(">>> usage stats not allowed " + mode);
+
             }
         }
         System.out.println(">>> usage stats loaded " + usageStats.size());

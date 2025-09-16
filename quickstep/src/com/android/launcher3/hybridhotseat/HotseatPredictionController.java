@@ -128,7 +128,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     public HotseatPredictionController(QuickstepLauncher launcher) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
-        mHotSeatItemsCount = mLauncher.getDeviceProfile().numShownHotseatIcons;
+        mHotSeatItemsCount = mLauncher.getDeviceProfile().numRealHotseatIcons;
         mLauncher.getDragController().addDragListener(this);
 
         launcher.addOnDeviceProfileChangeListener(this);
@@ -432,7 +432,7 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     @Override
     public void onDeviceProfileChanged(DeviceProfile profile) {
-        this.mHotSeatItemsCount = profile.numShownHotseatIcons;
+        this.mHotSeatItemsCount = profile.numRealHotseatIcons;
     }
 
     @Override

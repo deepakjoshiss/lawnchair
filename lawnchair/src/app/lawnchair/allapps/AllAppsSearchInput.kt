@@ -183,14 +183,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         }
         val currentPaddingLeft = initialPaddingLeft
         val currentPaddingRight = initialPaddingRight
+        if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
+            input.setHint(R.string.all_apps_device_search_hint)
+        } else {
+            input.setHint(R.string.all_apps_search_bar_hint)
+        }
         input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
-                    input.setHint(R.string.all_apps_device_search_hint)
-                } else {
-                    input.setHint(R.string.all_apps_search_bar_hint)
-                }
-
                 if (input.text.toString().isEmpty()) {
                     searchAlgorithm?.doZeroStateSearch(this)
                 }
