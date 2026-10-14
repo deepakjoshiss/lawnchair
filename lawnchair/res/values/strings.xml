@@ -646,6 +646,8 @@
     <string name="gesture_handler_open_app_search">Open app search</string>
     <string name="gesture_handler_open_search">Open search</string>
     <string name="gesture_handler_open_assistant">Open assistant</string>
+    <!-- DJ(gesture-open-settings) -->
+    <string name="gesture_handler_open_settings">Open Lawnchair settings</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
 

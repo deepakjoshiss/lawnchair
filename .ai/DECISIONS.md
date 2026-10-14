@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#5**.
+Next entry: **#7**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -52,3 +52,23 @@ URL `DISABLED-read-only-remote`, refspec limited to `16-dev`, `tagOpt --no-tags`
 **Why:** reading upstream must never become publishing to it; syncing the mirror would be a push.
 
 **Cost:** none.
+
+## 5. Settings keys: same effect keeps the same name
+
+**Decided (2026-10-14, owner):** a setting ported from 15 keeps its 15 key name when it has the
+same effect on 16. If its meaning, type or range changes, it gets a new name.
+
+**Why:** an in-place update from the 15 build keeps the owner's settings wherever that is safe;
+a changed meaning under an old name would read stale values as the wrong thing.
+
+**Cost:** some 15 names stay that don't follow the `dj_` prefix (e.g. `pref_hotseat_rows`).
+
+## 6. Test emulator is `VinPix_Dev`
+
+**Decided (2026-10-14, owner):** Lawnchair is tested on the existing `VinPix_Dev` emulator.
+VinPix pauses its use of it meanwhile.
+
+**Why:** no second emulator to create or maintain.
+
+**Cost:** a Lawnchair debug build installed there can take over the home screen; if VinPix
+resumes, set its home app back or split the emulators.

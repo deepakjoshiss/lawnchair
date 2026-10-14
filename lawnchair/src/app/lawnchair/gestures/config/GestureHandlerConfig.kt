@@ -17,6 +17,7 @@ import app.lawnchair.gestures.handlers.OpenAssistantHandler
 import app.lawnchair.gestures.handlers.OpenNotificationsHandler
 import app.lawnchair.gestures.handlers.OpenQuickSettingsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.OpenSettingsGestureHandler
 import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import app.lawnchair.theme.color.tokens.ColorTokens
@@ -127,6 +128,14 @@ sealed class GestureHandlerConfig {
     data object OpenAssistant :
         Simple(R.string.gesture_handler_open_assistant, ::OpenAssistantHandler) {
         override val iconRes = R.drawable.ic_mic_flat
+    }
+
+    // DJ(gesture-open-settings): serial name kept from 15 so stored gestures survive (DECISIONS #5)
+    @Serializable
+    @SerialName("openSettings")
+    data object OpenSettings :
+        Simple(R.string.gesture_handler_open_settings, ::OpenSettingsGestureHandler) {
+        override val iconRes = R.drawable.ic_settings_monochrome
     }
 
     @Serializable

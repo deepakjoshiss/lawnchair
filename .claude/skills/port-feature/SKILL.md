@@ -35,7 +35,7 @@ keyword). Record the verdict in the spec's **On 16** section:
   `// DJ(<id>): <why>` (RULES.md).
 - Carry over odd branches from 15 unless 16 made them unnecessary. Never drop one you can't explain;
   find its commit (`git -C ~/work/apps/lawnchair-15-ref log -S '<constant>'`).
-- Settings keys: as the spec says (STATE open question 2 until decided).
+- Settings keys: same effect keeps the 15 name, changed meaning gets a new one (DECISIONS #5).
 - Submodule edits (`icon-tweaks`): the submodule is upstream's repo. Note in the spec how they are
   carried, and ask before committing anything inside it.
 

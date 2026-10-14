@@ -30,7 +30,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 
 | # | id | What it does | Main files on 15 | Status |
 |---|---|---|---|---|
-| 1 | `gesture-open-settings` | Gesture action that opens Lawnchair settings | `gestures/config/*`, `gestures/handlers/GestureHandler.kt` | todo |
+| 1 | `gesture-open-settings` | Gesture action that opens Lawnchair settings | `gestures/config/*`, `gestures/handlers/GestureHandler.kt` | done |
 | 2 | `smartspace-style` | At a Glance font, colour and opacity settings; card tweaks | `smartspace/*`, `SmartspacePreferences.kt` | todo |
 | 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | todo |
 | 4 | `depth-blur` | Background depth/blur animation fix | `DepthController.java`, `BaseDepthController.java` | todo |

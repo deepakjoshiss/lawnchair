@@ -1,24 +1,26 @@
 # Lawnchair state
 
-phase: 0 — AI setup done, migration to 16 not started · next: feature #1 spec · branch: dj-dev-16
+phase: 1 — porting features to 16 · 1/14 done · next: #2 smartspace-style · branch: dj-dev-16
 
 ## where things stand
 
-`dj-dev-16` = upstream `16-dev` @ `85335d904a` + the `.ai/` and `.claude/` setup, uncommitted.
-No DJ feature code on 16 yet. The 15 implementation is in `~/work/apps/lawnchair-15-ref`
+`dj-dev-16` = upstream `16-dev` @ `85335d904a` + the AI setup (`c219960f78`) + ported features.
+Done: `gesture-open-settings` (double tap by hand still pending). The 15 implementation is in `~/work/apps/lawnchair-15-ref`
 (DECISIONS #3). Feature list and order: ROADMAP.
 
 ## now
 
-- [ ] Create a Lawnchair emulator (only `VinPix_Dev` exists; system images android-35/36/37.1 are
-      installed). Needed before any feature can reach `done`.
-- [ ] `/port-feature gesture-open-settings` (ROADMAP #1): spec first.
+- [ ] Owner: double-tap the home screen once by hand (double tap is set to "Open Lawnchair
+      settings" on the emulator). adb cannot inject a double tap here (feature spec, results #2).
+- [ ] `/port-feature smartspace-style` (ROADMAP #2): spec first.
+
+Emulator: `VinPix_Dev` (API 37), Lawnchair debug is its home app (DECISIONS #6). Tap helpers:
+`adb shell input tap/swipe` work; double tap does not. Wait for the home screen to load
+(e.g. the dock's "Phone" label) before sending gestures.
 
 ## open questions (owner)
 
 1. **How do we take upstream updates?** Merge `upstream/16-dev` into `dj-dev-16`, or rebase onto
    it. Rebase keeps our changes as a clean stack on top; merge never rewrites pushed history.
-2. **Settings carry-over:** keep 15's `dj_*` key names so an in-place update keeps your
-   settings, or is a fresh install fine (free to rename)?
-3. **Workflows:** 15 deleted `.github/workflows` (`84ab193763`). Delete them again on 16, or
+2. **Workflows:** 15 deleted `.github/workflows` (`84ab193763`). Delete them again on 16, or
    leave upstream's in place?
