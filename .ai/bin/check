@@ -48,5 +48,8 @@ run() { # run <label> <cmd...>; prints the tail of the output on failure
 echo "check (JDK $jv)"
 run "spotless" ./gradlew --quiet spotlessCheck
 # A failed build leaves the previous APK in place, so the APK is only trustworthy after this passes.
-run "build"    ./gradlew --quiet assembleLawnWithQuickstepGithubDebug
+# Non-incremental Kotlin: an incremental build once produced an APK that crashed at start
+# (NoSuchFieldError $stable on BasePreferenceManager$StringPref) while the build passed. A full Kotlin
+# compile is ~35s here. ponytail: drop the flag if the Kotlin/Compose incremental bug is fixed upstream.
+run "build"    ./gradlew --quiet assembleLawnWithQuickstepGithubDebug -Pkotlin.incremental=false
 exit $fail

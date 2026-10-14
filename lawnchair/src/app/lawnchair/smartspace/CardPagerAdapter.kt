@@ -6,13 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
+import com.patrykmichalik.opto.core.firstBlocking
 
 class CardPagerAdapter(context: Context) : PagerAdapter() {
 
-    private val currentTextColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
+    // DJ(smartspace-style): the user's At a Glance text colour; "default" (0) keeps the theme's
+    private val currentTextColor = PreferenceManager2.getInstance(context).ssFontColor.firstBlocking()
+        .colorPreferenceEntry.lightColor(context)
+        .takeIf { it != 0 } ?: Themes.getAttrColor(context, R.attr.workspaceTextColor)
     private val targets = mutableListOf<SmartspaceTarget>()
     private var smartspaceTargets = targets
     private val holders = SparseArray<ViewHolder>()

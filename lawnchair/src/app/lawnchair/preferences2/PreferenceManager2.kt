@@ -788,6 +788,22 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.recreate() },
     )
 
+    // DJ(smartspace-style): At a Glance text colour and card opacity; key names kept from 15 (DECISIONS #5).
+    // recreate, not reloadGrid: on 16 a grid reload does not re-inflate At a Glance, so the change would not show.
+    val ssFontColor = preference(
+        key = stringPreferencesKey(name = "dj_ss_font_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.Default,
+    )
+
+    val ssWidgetOpacity = preference(
+        key = floatPreferencesKey(name = "dj_ss_widget_opacity"),
+        defaultValue = 1f,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val wallpaperDepthEffect = preference(
         key = booleanPreferencesKey(name = "enable_wallpaper_depth_effect"),
         defaultValue = true,

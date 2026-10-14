@@ -31,7 +31,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | # | id | What it does | Main files on 15 | Status |
 |---|---|---|---|---|
 | 1 | `gesture-open-settings` | Gesture action that opens Lawnchair settings | `gestures/config/*`, `gestures/handlers/GestureHandler.kt` | done |
-| 2 | `smartspace-style` | At a Glance font, colour and opacity settings; card tweaks | `smartspace/*`, `SmartspacePreferences.kt` | todo |
+| 2 | `smartspace-style` | At a Glance font, colour and opacity settings; card tweaks | `smartspace/*`, `SmartspacePreferences.kt` | done |
 | 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | todo |
 | 4 | `depth-blur` | Background depth/blur animation fix | `DepthController.java`, `BaseDepthController.java` | todo |
 | 5 | `drawer-look` | Drawer background colour and animation, row height, divider, search bar layout, bundled `sans_regular` font. Includes the uncommitted `search_input_fg.xml`, `FontManager.kt`, `DrawableTokens.kt` edits | `allapps/*`, `AllAppsSearchInput.kt`, `res/layout/all_apps_divider.xml` | todo |
@@ -44,6 +44,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | 12 | `dock-rows` | Dock rows and horizontal spacing; dock migration fix | `Hotseat.java`, `HotseatMode.kt`, `DockPreferences.kt`, `GridSizeMigrationUtil.java` (gone on 16) | todo |
 | 13 | `dock-poweramp` | Poweramp music widget docked in the hotseat | `PowerampWidgetContainerView.kt`, `PowerampWidgetHostView.kt` | todo |
 | 14 | `android16-fix` | 15-era fix for running on Android 16 (`cf19020393`); likely obsolete on a 16 base | to confirm | todo |
+| 15 | `home-text-shadow` | Lighter soft shadow on home-screen text (`workspaceAmbientShadowColor` `#40000000` → `#10000000`, light-text theme only). Decide from before/after screenshots | `res/values/styles.xml` (`e5ed825962`) | todo |
 
 Order is the table order: Lawnchair-layer features first, AOSP-heavy ones later, the Poweramp
 dock last. Reorder here, not in STATE.

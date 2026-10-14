@@ -146,6 +146,9 @@ class PreferenceManager @Inject constructor(
     val fontBody = FontPref("pref_fontBody", fontCache.uiText, recreate)
     val fontBodyMedium = FontPref("pref_fontBodyMedium", fontCache.uiTextMedium, recreate)
 
+    // DJ(smartspace-style): At a Glance font; key name kept from 15 (DECISIONS #5)
+    val fontSmartSpacer = FontPref("dj_ss_font_pref", fontCache.uiText, recreate)
+
     // TODO REMOVE
     val deviceSearch = BoolPref("device_search", false, recreate)
     val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", false)

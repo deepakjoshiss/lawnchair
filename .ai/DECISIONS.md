@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#7**.
+Next entry: **#9**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -72,3 +72,25 @@ VinPix pauses its use of it meanwhile.
 
 **Cost:** a Lawnchair debug build installed there can take over the home screen; if VinPix
 resumes, set its home app back or split the emulators.
+
+## 7. At a Glance layout compaction from 15 is not ported
+
+**Decided (2026-10-14, owner):** the 15 tweaks to At a Glance's size and spacing (height 104dp →
+92dp, page indicator padding 8dp → 4dp, fixed 16dp left padding, widget side padding; commit
+`e5ed825962`) are dropped. 16's own sizes stand.
+
+**Why:** upstream reworked this area after our base (new page indicator, new dimensions,
+margins matched to its reference design: `2bd3a2a76d`, `e1cdc78434`, `33432f46ab`).
+
+**Cost:** At a Glance looks as upstream draws it; revisit only from a screenshot.
+
+## 8. The gate compiles Kotlin non-incrementally
+
+**Decided (2026-10-14):** `.ai/bin/check` builds with `-Pkotlin.incremental=false`.
+
+**Why:** an incremental build left `BasePreferenceManager`'s nested pref classes without the
+Compose `$stable` field while other classes referenced it; the gate passed and the APK crashed at
+start. A forced full recompile fixed it (all six pref classes then had `$stable`, checked with
+`dexdump`).
+
+**Cost:** about 35 s more per check (full check measured at 1 min 14 s).

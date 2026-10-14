@@ -38,6 +38,14 @@ class ColorPreferenceModelList @Inject constructor(
                 dynamicEntries = dynamicColorsWithDefault,
             ),
         )
+        // DJ(smartspace-style)
+        registerModel(
+            ColorPreferenceModel(
+                prefObject = prefs.ssFontColor,
+                labelRes = R.string.home_screen_text_color,
+                dynamicEntries = dynamicColorsWithDefault,
+            ),
+        )
         registerModel(
             ColorPreferenceModel(
                 prefObject = prefs.appDrawerBackgroundColor,

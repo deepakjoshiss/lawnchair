@@ -648,6 +648,9 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
     <!-- DJ(gesture-open-settings) -->
     <string name="gesture_handler_open_settings">Open Lawnchair settings</string>
+    <!-- DJ(smartspace-style) -->
+    <string name="dj_smartspacer_opacity">Opacity</string>
+    <string name="dj_smartspacer_font">Font</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
 

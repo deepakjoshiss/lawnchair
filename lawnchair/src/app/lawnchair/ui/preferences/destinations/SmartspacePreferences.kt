@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.smartspace.SmartspaceViewContainer
 import app.lawnchair.smartspace.model.LawnchairSmartspace
@@ -47,6 +48,8 @@ import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.model.Smartspacer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.FontPreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
@@ -125,6 +128,7 @@ private fun LawnchairSmartspaceSettings(
     Column(
         modifier = modifier,
     ) {
+        SmartspaceStylePreferences() // DJ(smartspace-style)
         PreferenceGroup(
             heading = stringResource(id = R.string.what_to_show),
             modifier = Modifier.padding(top = 8.dp),
@@ -142,6 +146,31 @@ private fun LawnchairSmartspaceSettings(
                 }
         }
         SmartspaceDateAndTimePreferences()
+    }
+}
+
+// DJ(smartspace-style): text colour, card opacity and font for Lawnchair's own At a Glance
+@Composable
+private fun SmartspaceStylePreferences(
+    modifier: Modifier = Modifier,
+) {
+    PreferenceGroup(
+        heading = stringResource(id = R.string.style),
+        modifier = modifier.padding(top = 8.dp),
+    ) {
+        val prefs2 = preferenceManager2()
+        ColorPreference(preference = prefs2.ssFontColor)
+        SliderPreference(
+            label = stringResource(id = R.string.dj_smartspacer_opacity),
+            adapter = prefs2.ssWidgetOpacity.getAdapter(),
+            valueRange = 0f..1f,
+            step = 0.05f,
+            showAsPercentage = true,
+        )
+        FontPreference(
+            fontPref = preferenceManager().fontSmartSpacer,
+            label = stringResource(id = R.string.dj_smartspacer_font),
+        )
     }
 }
 

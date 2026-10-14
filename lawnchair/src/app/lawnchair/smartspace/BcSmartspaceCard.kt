@@ -11,10 +11,13 @@ import android.widget.TextView
 import androidx.core.text.layoutDirection
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import app.lawnchair.font.FontManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.model.hasIntent
 import com.android.launcher3.R
+import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import java.util.UUID
 
@@ -50,6 +53,12 @@ class BcSmartspaceCard @JvmOverloads constructor(
             nextAlarmImageView = it.findViewById(R.id.alarm_icon)
             nextAlarmTextView = it.findViewById(R.id.alarm_text)
         }
+
+        // DJ(smartspace-style): user's card opacity and font. Text colour is applied by CardPagerAdapter.
+        alpha = PreferenceManager2.getInstance(context).ssWidgetOpacity.firstBlocking()
+        val fontManager = FontManager.INSTANCE.get(context)
+        listOfNotNull(titleTextView, dateView, subtitleTextView)
+            .forEach { fontManager.setCustomFont(it, R.id.font_smart_spacer) }
     }
 
     fun setSmartspaceTarget(target: SmartspaceTarget, multipleCards: Boolean) {
