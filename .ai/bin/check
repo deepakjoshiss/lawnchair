@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# The machine gate. Agent-first: nobody reads a diff before it lands, so this script is the review.
+# Runs from the Stop hook (.claude/hooks/check.sh); a failure means the work is not done.
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Upstream 16 compiles for JDK 21 (gradle/libs.versions.toml: jdkRelease). The machine default is 17;
+# Android Studio's bundled JBR is newer. LAWNCHAIR_JAVA_HOME overrides both.
+major() { "$1/bin/java" -version 2>&1 | awk -F'"' '/version/{split($2,v,"."); print v[1]; exit}'; }
+JBR="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+if [ -n "${LAWNCHAIR_JAVA_HOME:-}" ]; then export JAVA_HOME="$LAWNCHAIR_JAVA_HOME"
+else jv=$(major "${JAVA_HOME:-/usr}"); [ "${jv:-0}" -ge 21 ] || export JAVA_HOME="$JBR"; fi
+jv=$(major "$JAVA_HOME"); [ "${jv:-0}" -ge 21 ] || { echo "check: no JDK 21+ (JAVA_HOME=$JAVA_HOME)"; exit 1; }
+
+# One check at a time: two concurrent Gradle builds here corrupted the KSP caches
+# (StreamCorruptedException in :unfold:kspDebugKotlin). A second run waits; a dead holder's lock is reclaimed.
+LOCK=$(git rev-parse --git-path ai-check.lock); waited=
+until mkdir "$LOCK" 2>/dev/null; do
+  pid=$(cat "$LOCK/pid" 2>/dev/null)
+  if [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null; then rm -rf "$LOCK"; continue; fi
+  [ -z "$waited" ] && { echo "check: waiting for the running check (pid ${pid:-?})"; waited=1; }
+  sleep 5
+done
+echo $$ > "$LOCK/pid"; trap 'rm -rf "$LOCK"' EXIT
+# Also wait out a ./gradlew build started outside this script: its wrapper client runs with this
+# folder as cwd until the build ends. Android Studio builds (Tooling API) are NOT detected.
+here=$(pwd -P)
+busy() {
+  local p; for p in $(pgrep -f "org.gradle.appname=gradlew"); do
+    [ "$(lsof -a -p "$p" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')" = "$here" ] && return 0
+  done; return 1
+}
+busy && { echo "check: waiting for a Gradle build already running here"; while busy; do sleep 5; done; }
+
+# The submodule must be at the commit 16 records, or the build compiles the wrong icon code.
+if git submodule status | grep -q '^[-+]'; then
+  echo "check: FAIL submodule not at the recorded commit — run: git submodule update --init"; exit 1
+fi
+
+fail=0
+run() { # run <label> <cmd...>; prints the tail of the output on failure
+  local label=$1; shift
+  local out; out=$("$@" 2>&1)
+  if [ $? -eq 0 ]; then printf '  ok    %s\n' "$label"
+  else printf '  FAIL  %s\n' "$label"; printf '%s\n' "$out" | grep -v '^\s*$' | tail -30 | sed 's/^/    | /'; fail=1; fi
+}
+
+echo "check (JDK $jv)"
+run "spotless" ./gradlew --quiet spotlessCheck
+# A failed build leaves the previous APK in place, so the APK is only trustworthy after this passes.
+run "build"    ./gradlew --quiet assembleLawnWithQuickstepGithubDebug
+exit $fail

@@ -20,3 +20,9 @@ __pycache__
 .vscode
 .fleet
 lawnWithQuickstep/release
+
+# AI setup (DJ)
+.ai/shots/
+.claude/settings.local.json
+.claude/worktrees/
+!/.ai/bin/

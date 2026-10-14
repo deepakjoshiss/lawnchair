@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "additionalDirectories": [
+      "~/work/apps/lawnchair-15-ref"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/block_upstream_publish.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/check.sh\"",
+            "timeout": 1800,
+            "statusMessage": "Running .ai/bin/check"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_start.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "autodev-syfe@synced": false
+  },
+  "skillOverrides": {
+    "backend-code-review": "off",
+    "branching-strategy": "off",
+    "design-brief": "off",
+    "design-flow": "off",
+    "docs": "off",
+    "docx": "off",
+    "fetch-figma-design": "off",
+    "generate-test-cases": "off",
+    "grill-me": "off",
+    "import-memory": "off",
+    "information-architecture": "off",
+    "jira-story-generator": "off",
+    "manual-testing": "off",
+    "metabase-qn-ent": "off",
+    "metabase-qn-sg": "off",
+    "oncall-debugger": "off",
+    "pdf": "off",
+    "pm-concept-riff": "off",
+    "pm-design-review": "off",
+    "pm-feedback-synthesis": "off",
+    "pptx": "off",
+    "prd-review": "off",
+    "proximus-api-detection": "off",
+    "pull-request-generator": "off",
+    "robot-test-trigger": "off",
+    "run-automation": "off",
+    "sentry-datadog-debugger": "off",
+    "ship-to-vibe": "off",
+    "skill-creator": "off",
+    "syfe-kubernetes-environment-context": "off",
+    "threat-modelling-stride": "off",
+    "xlsx": "off"
+  }
+}
