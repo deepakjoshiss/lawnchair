@@ -26,13 +26,13 @@ Inventory from `dj-dev-15` (commits since 2024-08 plus uncommitted edits). The g
 file lists were inferred from commit messages and touched files; each spec confirms its own.
 
 Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed on emulator) ·
-`dropped` (upstream covers it, see DECISIONS) · `obsolete`.
+`dropped` (upstream covers it, see DECISIONS) · `obsolete`. · `parked` (owner: do last, after every other row).
 
 | # | id | What it does | Main files on 15 | Status |
 |---|---|---|---|---|
 | 1 | `gesture-open-settings` | Gesture action that opens Lawnchair settings | `gestures/config/*`, `gestures/handlers/GestureHandler.kt` | done |
 | 2 | `smartspace-style` | At a Glance font, colour and opacity settings; card tweaks | `smartspace/*`, `SmartspacePreferences.kt` | done |
-| 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | todo |
+| 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | parked |
 | 4 | `depth-blur` | Background depth/blur animation fix | `DepthController.java`, `BaseDepthController.java` | todo |
 | 5 | `drawer-look` | Drawer background colour and animation, row height, divider, search bar layout, bundled `sans_regular` font. Includes the uncommitted `search_input_fg.xml`, `FontManager.kt`, `DrawableTokens.kt` edits | `allapps/*`, `AllAppsSearchInput.kt`, `res/layout/all_apps_divider.xml` | todo |
 | 6 | `drawer-frequent` | Frequent apps in the drawer | `AlphabeticalAppsList.java`, `AppInfo.java`, `LoaderTask.java` | todo |

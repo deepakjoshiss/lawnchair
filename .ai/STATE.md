@@ -1,6 +1,6 @@
 # Lawnchair state
 
-phase: 1 — porting features to 16 · 2/15 done · next: #3 feed-bridge · branch: dj-dev-16
+phase: 1 — porting features to 16 · 2/15 done · next: #4 depth-blur · branch: dj-dev-16
 
 ## where things stand
 
@@ -12,7 +12,9 @@ Done: `gesture-open-settings` (double tap by hand still pending), `smartspace-st
 
 - [ ] Owner: double-tap the home screen once by hand (double tap is set to "Open Lawnchair
       settings" on the emulator). adb cannot inject a double tap here (feature spec, results #2).
-- [ ] `/port-feature feed-bridge` (ROADMAP #3): spec first.
+- [ ] `/port-feature depth-blur` (ROADMAP #4): spec first.
+- Parked for last: `feed-bridge` (#3), see its spec. Emulator has AIDL Bridge installed, Show feed
+  on, provider AIDL Bridge.
 
 Emulator state: At a Glance is styled green / 50 % / condensed from the smartspace-style test;
 reset it (Settings → At a Glance → Style) before comparing anything against upstream.
