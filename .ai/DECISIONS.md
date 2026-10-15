@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#9**.
+Next entry: **#11**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -94,3 +94,29 @@ start. A forced full recompile fixed it (all six pref classes then had `$stable`
 `dexdump`).
 
 **Cost:** about 35 s more per check (full check measured at 1 min 14 s).
+
+## 9. depth-blur: 16's own wallpaper zoom and blur, nothing from 15
+
+**Decided (2026-10-15, owner):** none of `be82c989c6`'s depth changes are ported. 16's zoom
+(`setWallpaperZoomOut(depth)`) and blur stay as upstream ships them.
+
+**Why:** 16 already blurs harder than 15's tweak (30dp ≈ 79 px at 420 dpi vs 60 px, full at 30 %
+depth), fixed the Android 16 early-wakeup crash itself (`6fd747790d`), and the owner prefers 16's
+zoom to 15's ×1.75-capped-at-0.525 curve. Capping depth would also have touched the value 16's
+stuck-blur fixes read.
+
+**Cost:** none.
+
+## 10. drawer-look: only the finer sliders are ported
+
+**Decided (2026-10-15, owner):** from 15's drawer changes, only the finer slider steps are
+ported. Not ported: the 15 search bar look (translucent pill, outline, 18sp text, spacing,
+always-visible background; partly uncommitted on 15), the `hideWorkspaceLabelsIfNotEnoughSpace`
+disable, and `sans_regular.ttf`.
+
+**Why:** colour, opacity, header band behaviour (setting `all_apps_search_bar_background`) and the
+colour-animation fix are already in 16; 16 rebuilt the drawer search bar in Compose and the owner
+keeps it; the label-hiding rule only affects multi-window/vertical-bar layouts and its original
+problem is unknown; the font file is unreferenced.
+
+**Cost:** the drawer search bar looks like upstream's, not like 15.

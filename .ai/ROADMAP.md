@@ -33,9 +33,9 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | 1 | `gesture-open-settings` | Gesture action that opens Lawnchair settings | `gestures/config/*`, `gestures/handlers/GestureHandler.kt` | done |
 | 2 | `smartspace-style` | At a Glance font, colour and opacity settings; card tweaks | `smartspace/*`, `SmartspacePreferences.kt` | done |
 | 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | parked |
-| 4 | `depth-blur` | Background depth/blur animation fix | `DepthController.java`, `BaseDepthController.java` | todo |
-| 5 | `drawer-look` | Drawer background colour and animation, row height, divider, search bar layout, bundled `sans_regular` font. Includes the uncommitted `search_input_fg.xml`, `FontManager.kt`, `DrawableTokens.kt` edits | `allapps/*`, `AllAppsSearchInput.kt`, `res/layout/all_apps_divider.xml` | todo |
-| 6 | `drawer-frequent` | Frequent apps in the drawer | `AlphabeticalAppsList.java`, `AppInfo.java`, `LoaderTask.java` | todo |
+| 4 | `depth-blur` | Background depth/blur animation fix | `DepthController.java`, `BaseDepthController.java` | dropped |
+| 5 | `drawer-look` | Drawer background colour and animation, row height, divider, search bar layout, bundled `sans_regular` font. Includes the uncommitted `search_input_fg.xml`, `FontManager.kt`, `DrawableTokens.kt` edits | `allapps/*`, `AllAppsSearchInput.kt`, `res/layout/all_apps_divider.xml` | done |
+| 6 | `drawer-frequent` | Frequent apps in the drawer, plus the short accent divider shown with them (moved from drawer-look) | `AlphabeticalAppsList.java`, `AppInfo.java`, `LoaderTask.java` | todo |
 | 7 | `icon-tweaks` | Icon scale, shadow and clock icon changes. **Uncommitted, inside the submodule** on 15 | `platform_frameworks_libs_systemui/iconloaderlib/*` | todo |
 | 8 | `folder-look` | Folder rows, stacked folder icon, footer toggle, open/close animation, icon shape fix | `folder/*`, `FolderPreferences.kt` | todo |
 | 9 | `home-grid` | Grid size changes, extra bottom padding, widget resize and padding fixes | `CellLayout.java`, `DeviceProfile.java`, `ShortcutAndWidgetContainer.java`, `CellLayoutLayoutParams.java` | todo |
