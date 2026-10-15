@@ -47,6 +47,17 @@ run() { # run <label> <cmd...>; prints the tail of the output on failure
 
 echo "check (JDK $jv)"
 run "spotless" ./gradlew --quiet spotlessCheck
+
+# Pure-Kotlin logic with no Android dependency, checked standalone (the repo's own tests need a device).
+KOTLIN_BIN="/Applications/Android Studio.app/Contents/plugins/Kotlin/kotlinc/bin"
+if [ -x "$KOTLIN_BIN/kotlinc" ]; then
+  out_dir=$(mktemp -d)
+  run "frequent rows" sh -c '"$1/kotlinc" "$2" "$3" -d "$4/c.jar" -nowarn && "$1/kotlin" -cp "$4/c.jar" FrequentRowsCheckKt' _ \
+    "$KOTLIN_BIN" lawnchair/src/app/lawnchair/predictions/FrequentRows.kt .ai/checks/FrequentRowsCheck.kt "$out_dir"
+  rm -rf "$out_dir"
+else
+  echo "  skip  frequent rows — no kotlinc at $KOTLIN_BIN"
+fi
 # A failed build leaves the previous APK in place, so the APK is only trustworthy after this passes.
 # Non-incremental Kotlin: an incremental build once produced an APK that crashed at start
 # (NoSuchFieldError $stable on BasePreferenceManager$StringPref) while the build passed. A full Kotlin

@@ -77,6 +77,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private boolean mPredictionUiUpdatePaused = false;
 
+    // DJ(drawer-frequent): rows shown; the predictor only sends extra full rows for very frequently
+    // used apps (app.lawnchair.predictions.FrequentRows), at most 3 rows in total.
+    private static final int MAX_ROWS = 3;
+    private int mNumRows = 1;
+
     private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
 
     public PredictionRowView(@NonNull Context context) {
@@ -135,8 +140,35 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mNumRows > 1) { // DJ(drawer-frequent): grid of equal cells instead of one weighted row
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            int height = getExpectedHeight();
+            int cellWidth = (width - getPaddingLeft() - getPaddingRight()) / mNumPredictedAppsPerRow;
+            int cellHeight = (height - getPaddingTop() - getPaddingBottom()) / mNumRows;
+            for (int i = 0; i < getChildCount(); i++) {
+                getChildAt(i).measure(MeasureSpec.makeMeasureSpec(cellWidth, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(cellHeight, MeasureSpec.EXACTLY));
+            }
+            setMeasuredDimension(width, height);
+            return;
+        }
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(getExpectedHeight(),
                 MeasureSpec.EXACTLY));
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        if (mNumRows <= 1) {
+            super.onLayout(changed, l, t, r, b);
+            return;
+        }
+        // DJ(drawer-frequent): place icons row by row, left to right.
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            int left = getPaddingLeft() + (i % mNumPredictedAppsPerRow) * child.getMeasuredWidth();
+            int top = getPaddingTop() + (i / mNumPredictedAppsPerRow) * child.getMeasuredHeight();
+            child.layout(left, top, left + child.getMeasuredWidth(), top + child.getMeasuredHeight());
+        }
     }
 
     @Override
@@ -152,7 +184,8 @@ public class PredictionRowView<T extends Context & ActivityContext>
         int iconPadding = deviceProfile.getAllAppsProfile().getIconDrawablePaddingPx();
         int textHeight = Utilities.calculateTextHeight(
                 deviceProfile.getAllAppsProfile().getIconTextSizePx());
-        int totalHeight = iconHeight + iconPadding + textHeight + mVerticalPadding * 2;
+        // DJ(drawer-frequent): one cell height per row
+        int totalHeight = (iconHeight + iconPadding + textHeight + mVerticalPadding * 2) * mNumRows;
         // Prediction row height will be 4dp bigger than the regular apps in A-Z list when two line
         // is not enabled. Otherwise, the extra height will increase by just the textHeight.
         int extraHeight = deviceProfile.inv.enableTwoLinesInAllApps
@@ -223,12 +256,16 @@ public class PredictionRowView<T extends Context & ActivityContext>
         if (mPredictionUiUpdatePaused) {
             return;
         }
-        if (getChildCount() != mNumPredictedAppsPerRow) {
-            while (getChildCount() > mNumPredictedAppsPerRow) {
+        // DJ(drawer-frequent): enough icons for every full row of suggestions, up to MAX_ROWS
+        int perRow = Math.max(1, mNumPredictedAppsPerRow);
+        mNumRows = Math.max(1, Math.min(MAX_ROWS, mPredictedApps.size() / perRow));
+        int numIcons = mNumPredictedAppsPerRow * mNumRows;
+        if (getChildCount() != numIcons) {
+            while (getChildCount() > numIcons) {
                 removeViewAt(0);
             }
             LayoutInflater inflater = mActivityContext.getAppsView().getLayoutInflater();
-            while (getChildCount() < mNumPredictedAppsPerRow) {
+            while (getChildCount() < numIcons) {
                 BubbleTextView icon = (BubbleTextView) inflater.inflate(
                         R.layout.all_apps_prediction_row_icon, this, false);
                 icon.setOnClickListener(mActivityContext.getItemOnClickListener());
@@ -262,8 +299,8 @@ public class PredictionRowView<T extends Context & ActivityContext>
                 icon.setVisibility(View.VISIBLE);
                 WorkspaceItemInfo predictedItem = mPredictedApps.get(i);
                 predictedItem.rank = i;
-                predictedItem.cellX = i;
-                predictedItem.cellY = 0;
+                predictedItem.cellX = i % perRow; // DJ(drawer-frequent)
+                predictedItem.cellY = i / perRow;
                 icon.applyFromWorkspaceItem(predictedItem);
             } else {
                 icon.setVisibility(predictionCount == 0 ? GONE : INVISIBLE);

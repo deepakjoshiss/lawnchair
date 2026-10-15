@@ -1,5 +1,6 @@
 package app.lawnchair.predictions
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -154,10 +155,24 @@ class LawnchairAppPredictor(private val context: Context) : StatsLogCompatManage
         val occupiedHotseatItems = predictionEngine.getOccupiedHotseatItems(dataModel)
         val excludedHotseatItems = occupiedHotseatItems + currentDismissedApps
 
-        val allAppsTargets = predictionEngine.compileAppTargets(
+        // DJ(drawer-frequent): ask for up to three rows, keep the extra rows only for very frequently
+        // used apps (frequentSuggestionCount).
+        val allAppsColumns = idp.numDatabaseAllAppsColumns
+        val allAppsCandidates = predictionEngine.compileAppTargets(
             allAppsCandidateRanked,
-            idp.numDatabaseAllAppsColumns,
+            allAppsColumns * 3,
             currentDismissedApps,
+        )
+        val launchCounts = allAppsStore.getCounts()
+        val allAppsTargets = allAppsCandidates.take(
+            frequentSuggestionCount(
+                allAppsCandidates.map { target ->
+                    val className = target.className ?: return@map 0
+                    val key = predictionEngine.toStoreKey(ComponentName(target.packageName, className), target.user)
+                    launchCounts[key] ?: 0
+                },
+                allAppsColumns,
+            ),
         )
         val hotseatTargets = predictionEngine.compileAppTargets(
             hotseatCandidateRanked,

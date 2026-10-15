@@ -81,6 +81,11 @@ class LawnchairPredictionStore(
             .map { it.key }
     }
 
+    /** DJ(drawer-frequent): how many times each key occurs, i.e. its launch count in ordered mode. */
+    fun getCounts(): Map<String, Int> = synchronized(lock) {
+        cache.filter { it.isNotEmpty() }.groupingBy { it }.eachCount()
+    }
+
     /**
      * Removes entries whose package is no longer installed.
      */

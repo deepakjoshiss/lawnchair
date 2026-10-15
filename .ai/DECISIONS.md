@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#11**.
+Next entry: **#12**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -120,3 +120,18 @@ keeps it; the label-hiding rule only affects multi-window/vertical-bar layouts a
 problem is unknown; the font file is unreferenced.
 
 **Cost:** the drawer search bar looks like upstream's, not like 15.
+
+## 11. drawer-frequent: extra rows on 16's Suggestions, not the 15 frequent-apps block
+
+**Decided (2026-10-15, owner):** the 15 frequent-apps block (usage stats, hidden Parcel offset,
+own divider) is not ported. Instead 16's Suggestions row gains up to 2 extra full rows for apps
+launched at least half as often as row 1's least-launched app (and ≥ 3 times), shown inside the
+suggestions area.
+
+**Why:** 16 already has a suggestions row (on by default, per-launch updates, public APIs,
+blocked-apps list). The owner wants more than one row only for very frequently used apps, and
+the extra rows are suggestions, so they belong in that area.
+
+**Cost:** one upstream file edited (`PredictionRowView.java`, grid layout when rows > 1); the
+taskbar all-apps and secondary-display drawers share it and get the extra rows too. The 15
+accent divider is gone (16 uses its "All apps" label).
