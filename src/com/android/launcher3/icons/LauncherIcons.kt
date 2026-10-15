@@ -19,7 +19,9 @@ import android.content.Context
 import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.Drawable
 import android.os.UserHandle
+import app.lawnchair.icons.wrapLegacyIcon
 import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.dagger.ApplicationContext
@@ -66,6 +68,16 @@ internal constructor(
         if (!Flags.enableLauncherIconShapes()) return super.getShapePath(drawable, iconBounds)
         return themeManager.iconShape.getPath(iconBounds)
     }
+
+    // DJ(icon-tweaks): legacy icons that fill their square are wrapped larger, on a light vibrant
+    // tile (app.lawnchair.icons.wrapLegacyIcon); everything else takes upstream's path.
+    override fun normalizeAndWrapToAdaptiveIcon(icon: Drawable?, outScale: FloatArray): Drawable? = icon?.let { wrapLegacyIcon(mContext, mIconBitmapSize, it, outScale) }
+        ?: super.normalizeAndWrapToAdaptiveIcon(icon, outScale)
+
+    // DJ(icon-tweaks): softer ambient icon shadow
+    private var djShadowGenerator: ShadowGenerator? = null
+
+    override fun getShadowGenerator(): ShadowGenerator = djShadowGenerator ?: DjShadowGenerator(mIconBitmapSize).also { djShadowGenerator = it }
 
     override fun close() {
         recycle()

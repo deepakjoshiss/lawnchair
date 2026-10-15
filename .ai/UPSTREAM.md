@@ -23,6 +23,13 @@ git diff --name-only "$(git merge-base HEAD upstream/16-dev)" HEAD   # files we 
 git grep -n 'DJ('                                                     # every marked edit site
 ```
 
+## Duplicated upstream code (re-check when upstream changes it)
+
+| Our copy | Upstream original |
+|---|---|
+| `lawnchair/src/com/android/launcher3/icons/DjShadowGenerator.java` | `ShadowGenerator.drawShadow`, `addPathShadow` (submodule) |
+| `lawnchair/src/app/lawnchair/icons/DjLegacyIcons.kt` `wrapLegacyIcon` | legacy branch of `BaseIconFactory.normalizeAndWrapToAdaptiveIcon`, `IconPreferences.getWrapperBackgroundColor` (submodule) |
+
 ## How we take upstream changes
 
 Not decided yet (STATE open question): merge `upstream/16-dev` into `dj-dev-16`, or rebase

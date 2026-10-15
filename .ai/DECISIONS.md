@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#12**.
+Next entry: **#13**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -135,3 +135,17 @@ the extra rows are suggestions, so they belong in that area.
 **Cost:** one upstream file edited (`PredictionRowView.java`, grid layout when rows > 1); the
 taskbar all-apps and secondary-display drawers share it and get the extra rows too. The 15
 accent divider is gone (16 uses its "All apps" label).
+
+## 12. No edits inside the systemui submodule; icon tweaks are overrides
+
+**Decided (2026-10-15, owner):** `platform_frameworks_libs_systemui` stays exactly at upstream's
+recorded commit. The 15 icon tweaks are re-done from the main repo: `LauncherIcons.kt` overrides
+`normalizeAndWrapToAdaptiveIcon` and `getShadowGenerator`, with the logic in `lawnchair/src`.
+The clock-shape tweak is not ported (16 already shapes the clock background).
+
+**Why:** the submodule is upstream's repo; carrying edits there needs our own fork of it and a
+merge on every upstream bump. Overrides keep the submodule untouched.
+
+**Cost:** two upstream methods are duplicated in our code (`ShadowGenerator.drawShadow` /
+`addPathShadow`, the legacy branch of `normalizeAndWrapToAdaptiveIcon`) and must be re-checked
+when upstream changes them.

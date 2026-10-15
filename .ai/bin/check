@@ -54,6 +54,8 @@ if [ -x "$KOTLIN_BIN/kotlinc" ]; then
   out_dir=$(mktemp -d)
   run "frequent rows" sh -c '"$1/kotlinc" "$2" "$3" -d "$4/c.jar" -nowarn && "$1/kotlin" -cp "$4/c.jar" FrequentRowsCheckKt' _ \
     "$KOTLIN_BIN" lawnchair/src/app/lawnchair/predictions/FrequentRows.kt .ai/checks/FrequentRowsCheck.kt "$out_dir"
+  run "legacy icon fit" sh -c '"$1/kotlinc" "$2" "$3" -d "$4/l.jar" -nowarn && "$1/kotlin" -cp "$4/l.jar" LegacyIconFitCheckKt' _ \
+    "$KOTLIN_BIN" lawnchair/src/app/lawnchair/icons/LegacyIconFit.kt .ai/checks/LegacyIconFitCheck.kt "$out_dir"
   rm -rf "$out_dir"
 else
   echo "  skip  frequent rows — no kotlinc at $KOTLIN_BIN"
