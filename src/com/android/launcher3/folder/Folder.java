@@ -138,6 +138,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.folder.FolderLookKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
 import app.lawnchair.theme.color.tokens.ColorTokens;
@@ -349,6 +350,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFooter = findViewById(R.id.folder_footer);
         mFooterHeight = dp.folderFooterHeightPx;
+        // DJ(folder-look): "Show footer" off hides the folder name and page dots; a little padding
+        // stands in for them (15's value).
+        if (!FolderLookKt.showFolderFooter(getContext())) {
+            mFooter.setVisibility(GONE);
+            mFooterHeight = (int) (dp.folderContentPaddingTop * 1.5f);
+        }
         mFolderName = findViewById(R.id.folder_name);
         if (Flags.enableLauncherVisualRefresh()) {
             mFolderName.setTypeface(Typeface.create("google-sans-flex", Typeface.NORMAL));
@@ -681,6 +688,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     void bind(FolderInfo info) {
         mInfo = info;
+        if (!isInAppDrawer()) {
+            mFolderName.setTextColor(FolderLookKt.folderLabelColor(getContext())); // DJ(folder-look)
+        }
         mFromTitle = info.title;
         mFromLabelState = info.getFromLabelState();
         updateItemLocationsInDatabaseBatch(true);

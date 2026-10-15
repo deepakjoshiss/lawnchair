@@ -64,17 +64,27 @@ fun FolderPreferences(
             SliderPreference(
                 label = stringResource(id = R.string.folder_preview_bg_opacity_label),
                 adapter = prefs2.folderPreviewBackgroundOpacity.getAdapter(),
-                step = 0.1F,
+                step = 0.05F, // DJ(folder-look): finer steps
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
             SliderPreference(
                 label = stringResource(id = R.string.folder_bg_opacity_label),
                 adapter = prefs2.folderBackgroundOpacity.getAdapter(),
-                step = 0.1F,
+                step = 0.05F, // DJ(folder-look): finer steps
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            // DJ(folder-look): stack icon, footer toggle, label colour
+            SwitchPreference(
+                adapter = prefs2.folderStackIcon.getAdapter(),
+                label = stringResource(id = R.string.dj_folder_stack_icon),
+            )
+            SwitchPreference(
+                adapter = prefs2.showFolderFooter.getAdapter(),
+                label = stringResource(id = R.string.dj_folder_show_footer),
+            )
+            ColorPreference(preference = prefs2.folderLabelColor)
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
@@ -101,7 +111,7 @@ fun FolderPreferences(
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.homeIconLabelFolderSizeFactor.getAdapter(),
-                    step = 0.1f,
+                    step = 0.05f, // DJ(folder-look): finer steps
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
                 )

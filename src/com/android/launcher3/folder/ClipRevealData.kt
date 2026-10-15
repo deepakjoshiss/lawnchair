@@ -16,6 +16,7 @@
 
 package com.android.launcher3.folder
 
+import app.lawnchair.folder.isFolderStackIcon
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import com.android.launcher3.Utilities
@@ -72,10 +73,16 @@ data class ClipRevealData(
                 val pageStart = page * layoutParams.width
 
                 // Setup start and end area for revealing Folder Content
-                val extraRadius =
+                // DJ(folder-look): stack cards are clipped exactly to the folder shape in the icon,
+                // so reveal the content from that exact shape too; the extra margin made the
+                // overflow vanish in a single frame at the end of the close animation.
+                val extraRadius = if (isFolderStackIcon()) {
+                    0
+                } else {
                     ((deviceProfile.folderIconSizePx / initialFolderScale) *
                             EXTRA_FOLDER_REVEAL_RADIUS_PERCENTAGE)
                         .toInt()
+                }
                 val contentStart =
                     Rect(
                         (pageStart + (backgroundStartRect.left / initialFolderScale)).toInt() -

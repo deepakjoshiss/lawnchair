@@ -350,9 +350,10 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 workspace.resetTransitionTransform();
             }
 
-            int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);
+            int maxPreviewItems = ClippedFolderIconLayoutRule.maxPreviewItems(); // DJ(folder-look)
+            int numItemsInPreview = Math.min(maxPreviewItems, index + 1);
             boolean itemAdded = false;
-            if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+            if (itemReturnedOnFailedDrop || index >= maxPreviewItems) {
                 List<ItemInfo> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
                 getFolder().addFolderContent(item, index, false);
                 mCurrentPreviewItems.clear();
@@ -388,7 +389,7 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
                 to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                         center[1] - animateView.getMeasuredHeight() / 2);
 
-                float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 1f : 0f;
+                float finalAlpha = index < maxPreviewItems ? 1f : 0f; // DJ(folder-look)
 
                 float finalScale = scale * scaleRelativeToDragLayer;
 
@@ -555,7 +556,8 @@ public class FolderIcon extends FrameLayout implements FloatingIconViewCompanion
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
         mTmpParams = mPreviewItemManager.computePreviewItemDrawingParams(
-                Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index), curNumItems, mTmpParams);
+                Math.min(ClippedFolderIconLayoutRule.maxPreviewItems(), index), // DJ(folder-look)
+                curNumItems, mTmpParams);
 
         mTmpParams.transX += mBackground.basePreviewOffsetX;
         mTmpParams.transY += mBackground.basePreviewOffsetY;

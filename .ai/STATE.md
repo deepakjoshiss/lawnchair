@@ -1,19 +1,19 @@
 # Lawnchair state
 
-phase: 1 — porting features to 16 · 5/15 done, 1 dropped · next: #8 folder-look · branch: dj-dev-16
+phase: 1 — porting features to 16 · 6/15 done, 1 dropped · next: #9 home-grid · branch: dj-dev-16
 
 ## where things stand
 
 `dj-dev-16` = upstream `16-dev` @ `85335d904a` + the AI setup (`c219960f78`) + ported features.
 Done: `gesture-open-settings` (double tap by hand still pending), `smartspace-style`, `drawer-look`
-(sliders only), `drawer-frequent` (extra suggestion rows), `icon-tweaks`. Dropped: `depth-blur`. The 15 implementation is in `~/work/apps/lawnchair-15-ref`
+(sliders only), `drawer-frequent` (extra suggestion rows), `icon-tweaks`, `folder-look`. Dropped: `depth-blur`. The 15 implementation is in `~/work/apps/lawnchair-15-ref`
 (DECISIONS #3). Feature list and order: ROADMAP.
 
 ## now
 
 - [ ] Owner: double-tap the home screen once by hand (double tap is set to "Open Lawnchair
       settings" on the emulator). adb cannot inject a double tap here (feature spec, results #2).
-- [ ] `/port-feature folder-look` (ROADMAP #8): spec first.
+- [ ] `/port-feature home-grid` (ROADMAP #9): spec first.
 - Parked for last: `feed-bridge` (#3), see its spec. Emulator has AIDL Bridge installed, Show feed
   on, provider AIDL Bridge.
 

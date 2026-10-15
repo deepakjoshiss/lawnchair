@@ -498,6 +498,28 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // DJ(folder-look): folder footer and stack icon keep their 15 names (DECISIONS #5); see app.lawnchair.folder.FolderLook
+    val showFolderFooter = preference(
+        key = booleanPreferencesKey(name = "dj_show_folder_footer"),
+        defaultValue = true,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val folderStackIcon = preference(
+        key = booleanPreferencesKey(name = "dj_show_folder_stack_icon"),
+        defaultValue = true,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    // DJ(folder-look): new in 16; "default" = automatic light/dark from the folder colour
+    val folderLabelColor = preference(
+        key = stringPreferencesKey(name = "dj_folder_label_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.Default,
+    )
+
     val showIconLabelsOnHomeScreen = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),

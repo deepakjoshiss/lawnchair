@@ -37,7 +37,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | 5 | `drawer-look` | Drawer background colour and animation, row height, divider, search bar layout, bundled `sans_regular` font. Includes the uncommitted `search_input_fg.xml`, `FontManager.kt`, `DrawableTokens.kt` edits | `allapps/*`, `AllAppsSearchInput.kt`, `res/layout/all_apps_divider.xml` | done |
 | 6 | `drawer-frequent` | Frequent apps in the drawer, plus the short accent divider shown with them (moved from drawer-look) | `AlphabeticalAppsList.java`, `AppInfo.java`, `LoaderTask.java` | done |
 | 7 | `icon-tweaks` | Icon scale, shadow and clock icon changes. **Uncommitted, inside the submodule** on 15 | `platform_frameworks_libs_systemui/iconloaderlib/*` | done |
-| 8 | `folder-look` | Folder rows, stacked folder icon, footer toggle, open/close animation, icon shape fix | `folder/*`, `FolderPreferences.kt` | todo |
+| 8 | `folder-look` | Folder rows, stacked folder icon, footer toggle, open/close animation, icon shape fix | `folder/*`, `FolderPreferences.kt` | done |
 | 9 | `home-grid` | Grid size changes, extra bottom padding, widget resize and padding fixes | `CellLayout.java`, `DeviceProfile.java`, `ShortcutAndWidgetContainer.java`, `CellLayoutLayoutParams.java` | todo |
 | 10 | `widget-host` | Widget host view: transparent calendar widget, calendar widget by id | `NavigableAppWidgetHostView.java` | todo |
 | 11 | `wallpaper-shift` | Steady wallpaper centring and shift between pages | `WallpaperOffsetInterpolator.java` | todo |

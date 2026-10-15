@@ -184,7 +184,9 @@ public class PreviewItemManager {
         PreviewBackground bg = mIcon.getFolderBackground();
         Path clipPath = bg.getClipPath();
         PointF firstPageOffset = new PointF(bg.basePreviewOffsetX, bg.basePreviewOffsetY);
-        drawParams(canvas, mFirstPageParams, firstPageOffset, /* shouldClipPath */ false, clipPath);
+        // DJ(folder-look): stack cards overflow the folder shape, so clip them to it
+        drawParams(canvas, mFirstPageParams, firstPageOffset,
+                /* shouldClipPath */ mIcon.mPreviewLayoutRule.isStack(), clipPath);
         canvas.restoreToCount(saveCount);
     }
 

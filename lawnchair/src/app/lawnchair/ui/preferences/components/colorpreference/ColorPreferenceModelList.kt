@@ -38,6 +38,14 @@ class ColorPreferenceModelList @Inject constructor(
                 dynamicEntries = dynamicColorsWithDefault,
             ),
         )
+        // DJ(folder-look)
+        registerModel(
+            ColorPreferenceModel(
+                prefObject = prefs.folderLabelColor,
+                labelRes = R.string.dj_folder_label_color,
+                dynamicEntries = dynamicColorsWithDefault,
+            ),
+        )
         // DJ(smartspace-style)
         registerModel(
             ColorPreferenceModel(

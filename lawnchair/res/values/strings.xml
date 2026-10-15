@@ -651,6 +651,10 @@
     <!-- DJ(smartspace-style) -->
     <string name="dj_smartspacer_opacity">Opacity</string>
     <string name="dj_smartspacer_font">Font</string>
+    <!-- DJ(folder-look) -->
+    <string name="dj_folder_stack_icon">Stack icon</string>
+    <string name="dj_folder_show_footer">Show footer</string>
+    <string name="dj_folder_label_color">Label color</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
 

@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#13**.
+Next entry: **#14**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -149,3 +149,18 @@ merge on every upstream bump. Overrides keep the submodule untouched.
 **Cost:** two upstream methods are duplicated in our code (`ShadowGenerator.drawShadow` /
 `addPathShadow`, the legacy branch of `normalizeAndWrapToAdaptiveIcon`) and must be re-checked
 when upstream changes them.
+
+## 13. folder-look: stack icon with app 1 in front; footer toggle; auto/custom label colour
+
+**Decided (2026-10-15, owner):** port the stack folder icon (default on, 15 key), with **app 1 as
+the front card** (15 put app 3 in front) and the open/close animation kept in stack order; port
+the footer toggle and 15's folder spacing; label colour gets auto (contrast) plus custom colours.
+Not ported: 15's folder colour plumbing and folder-icon shape (covered by 16's settings) and its
+animation tweaks (16 uses the spring animation).
+
+**Why:** owner's look. App 1 in front reads naturally; the animation fix follows from it because
+open-folder views draw in rank order, opposite to the stack.
+
+**Cost:** edits in 7 upstream folder files (layout rule, organizer, preview manager, icon, paged
+view, folder, resources); the layout rule and organizer read the setting through
+`LawnchairApp.instance`.

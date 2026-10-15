@@ -16,6 +16,7 @@
 
 package com.android.launcher3.folder;
 
+import app.lawnchair.folder.FolderLookKt;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
 import android.graphics.Point;
@@ -177,7 +178,9 @@ public class FolderGridOrganizer {
                 result.add((R) contents.get(i));
             }
 
-            if (result.size() == MAX_NUM_ITEMS_IN_PREVIEW) {
+            // DJ(folder-look): 3 apps on the first page in stack mode
+            if (result.size() == (page == 0
+                    ? ClippedFolderIconLayoutRule.maxPreviewItems() : MAX_NUM_ITEMS_IN_PREVIEW)) {
                 break;
             }
         }
@@ -205,6 +208,10 @@ public class FolderGridOrganizer {
      * @return True iff the icon is in the 2x2 upper left quadrant of the Folder.
      */
     public boolean isItemInPreview(int page, int rank) {
+        // DJ(folder-look): the stack shows the first 3 apps, not the upper-left 2x2 quadrant
+        if (page == 0 && FolderLookKt.isFolderStackIcon()) {
+            return rank < ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW_STACK;
+        }
         // First page items are laid out such that the first 4 items are always in the upper
         // left quadrant. For all other pages, we need to check the row and col.
         if (page > 0 || mDisplayingUpperLeftQuadrant) {

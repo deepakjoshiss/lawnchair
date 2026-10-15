@@ -1,10 +1,27 @@
 package com.android.launcher3.folder;
 
+import app.lawnchair.folder.FolderLookKt;
 import com.android.launcher3.Flags;
 
 public class ClippedFolderIconLayoutRule {
 
     public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
+
+    // DJ(folder-look): stack icon. The first 3 apps as overlapping cards, app 1 in front
+    // (bottom-left), app 3 at the back (top-right); cards overflowing the shape are clipped.
+    public static final int MAX_NUM_ITEMS_IN_PREVIEW_STACK = 3;
+    private static final float SCALE_STACK = 0.75f;
+    private boolean mIsStack;
+
+    /** DJ(folder-look): number of apps shown in the folder icon preview. */
+    public static int maxPreviewItems() {
+        return FolderLookKt.isFolderStackIcon() ? MAX_NUM_ITEMS_IN_PREVIEW_STACK : MAX_NUM_ITEMS_IN_PREVIEW;
+    }
+
+    /** DJ(folder-look) */
+    public boolean isStack() {
+        return mIsStack;
+    }
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
 
     public static final float MIN_SCALE = 0.44f;
@@ -43,6 +60,7 @@ public class ClippedFolderIconLayoutRule {
         mIsRtl = rtl;
         mBaselineIconScale = availableSpace / intrinsicIconSize;
         mNumFolderColumns = numFolderColumns;
+        mIsStack = FolderLookKt.isFolderStackIcon(); // DJ(folder-look)
     }
 
     /**
@@ -66,7 +84,8 @@ public class ClippedFolderIconLayoutRule {
             // 0 1
             // 2 3 * <-- Enter position (row 1, col 2)
             getGridPosition(1, 2, mTmpPoint);
-        } else if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+        } else if (index >= MAX_NUM_ITEMS_IN_PREVIEW
+                || (mIsStack && index >= MAX_NUM_ITEMS_IN_PREVIEW_STACK)) { // DJ(folder-look)
             // Items beyond those displayed in the preview are animated to the center
             mTmpPoint[0] = mTmpPoint[1] = mAvailableSpace / 2 - (mIconSize * totalScale) / 2;
         } else {
@@ -98,8 +117,11 @@ public class ClippedFolderIconLayoutRule {
         float transX;
         float transY;
 
-        if (numItemsInPage <= MAX_NUM_ITEMS_IN_PREVIEW) {
-            getPosition(index, numItemsInPage, mTmpPoint);
+        if (mIsStack && page == 0 && index < MAX_NUM_ITEMS_IN_PREVIEW_STACK) {
+            // DJ(folder-look): the stack cards open from (and close back to) their card positions
+            getPositionStack(index, mTmpPoint);
+        } else if (numItemsInPage <= MAX_NUM_ITEMS_IN_PREVIEW) {
+            getPositionFan(index, numItemsInPage, mTmpPoint); // DJ(folder-look): was getPosition
         } else {
             getGridPosition(index / mNumFolderColumns, index % mNumFolderColumns, mTmpPoint);
         }
@@ -125,11 +147,12 @@ public class ClippedFolderIconLayoutRule {
      */
     private void getGridPosition(int row, int col, float[] result) {
         // We use position 0 and 3 to calculate the x and y distances between items.
-        getPosition(0, 4, result);
+        // DJ(folder-look): always from the 2x2 layout, also in stack mode
+        getPositionFan(0, 4, result);
         float left = result[0];
         float top = result[1];
 
-        getPosition(3, 4, result);
+        getPositionFan(3, 4, result);
         float dx = result[0] - left;
         float dy = result[1] - top;
 
@@ -138,6 +161,29 @@ public class ClippedFolderIconLayoutRule {
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {
+        // DJ(folder-look): stack positions for the stack cards, upstream's layout otherwise
+        if (mIsStack && index < MAX_NUM_ITEMS_IN_PREVIEW_STACK) {
+            getPositionStack(index, result);
+        } else {
+            getPositionFan(index, curNumItems, result);
+        }
+    }
+
+    /**
+     * DJ(folder-look): card [index] of the stack (15's geometry). Cards are 0.75 of the preview,
+     * offset right and up per card; index 0 sits bottom-left and is drawn on top.
+     */
+    private void getPositionStack(int index, float[] result) {
+        float cardSize = mIconSize * SCALE_STACK * mBaselineIconScale;
+        float gapX = (mAvailableSpace * 1.1f - cardSize) / 2.0f;
+        float gapY = (mAvailableSpace * 1.2f - cardSize) / 2.0f;
+        float startY = -mAvailableSpace * 0.1f;
+        int fromFront = Math.min(index, MAX_NUM_ITEMS_IN_PREVIEW_STACK - 1);
+        result[0] = mIsRtl ? mAvailableSpace - cardSize - gapX * fromFront : gapX * fromFront;
+        result[1] = startY + (MAX_NUM_ITEMS_IN_PREVIEW_STACK - 1 - fromFront) * gapY;
+    }
+
+    private void getPositionFan(int index, int curNumItems, float[] result) {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
 
@@ -197,7 +243,9 @@ public class ClippedFolderIconLayoutRule {
      */
     public float scaleForItem(int numItems, int page) {
         float scale;
-        if (page > 0) {
+        if (mIsStack && page == 0) {
+            scale = SCALE_STACK; // DJ(folder-look)
+        } else if (page > 0) {
             scale = MIN_SCALE;
         } else if (numItems <= 3) {
             scale = MAX_SCALE;

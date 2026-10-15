@@ -36,6 +36,7 @@ import android.view.ViewDebug;
 
 import androidx.annotation.Nullable;
 
+import app.lawnchair.folder.FolderLookKt;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -356,6 +357,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
                 } else {
                     ((BubbleTextView) icon).applyFromItemInfoWithIcon((ItemInfoWithIcon) item);
                 }
+                // DJ(folder-look): label colour for home-screen folders (auto contrast or chosen)
+                ((BubbleTextView) icon).setTextColor(FolderLookKt.folderLabelColor(getContext()));
             }
         }
 
@@ -470,6 +473,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
                 ItemInfo info = (ItemInfo) v.getTag();
                 lp.setCellXY(mOrganizer.getPosForRank(rank));
                 currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
+                // DJ(folder-look): the open animation starts from the stack, where app 1 is the
+                // front card; views draw in rank order, so lift the first apps (app 1 highest).
+                int stackCards = ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW_STACK;
+                v.setTranslationZ(FolderLookKt.isFolderStackIcon() && rank < stackCards
+                        ? 0.1f * (stackCards - rank) : 0f);
 
                 if (mOrganizer.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
