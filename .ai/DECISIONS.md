@@ -3,7 +3,7 @@
 Short ADR log. **Append-only**; never renumber, never delete. Each entry: decision, why, and what
 it costs. A reversed decision gets a *new* entry saying so. Cite from code as `DECISIONS #N`.
 
-Next entry: **#14**.
+Next entry: **#15**.
 
 
 ## 1. Base is upstream `16-dev`
@@ -164,3 +164,19 @@ open-folder views draw in rank order, opposite to the stack.
 **Cost:** edits in 7 upstream folder files (layout rule, organizer, preview manager, icon, paged
 view, folder, resources); the layout rule and organizer read the setting through
 `LawnchairApp.instance`.
+
+## 14. home-grid: overlapping cells on a fine grid, not a subgrid
+
+**Decided (2026-10-16, owner):** for free placement and fine widget resizing, port 15's
+overlapping-cells approach (icons drawn full size on a fine grid, e.g. the owner's 15 × 22), with
+its bugs fixed, plus the larger grid limit, always-scale/never-hide-labels, the bottom padding
+slider, the tighter widget resize frame and finer icon/label sliders. Compact spacing is decided
+after the grid works.
+
+**Why:** it is how the owner's 15 setup already works; positions stay whole cells, so the 15
+layout carries over with no conversion; about half the work of a subgrid (icons spanning 2×2/4×4
+of a finer grid, Nova-style), which stays an option for later.
+
+**Cost:** icons placed in adjacent small cells overlap visually (as on 15); edits to the core
+grid placement code (`CellLayout`, `CellLayoutLayoutParams`, `ShortcutAndWidgetContainer`,
+`DeviceProfile`).

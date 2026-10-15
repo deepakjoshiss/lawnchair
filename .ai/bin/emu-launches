@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# usage: launches.sh "<label>:<times>" ...   — launches each app from the Lawnchair drawer N times.
+set -u
+U="bash $(dirname "$0")/emu-ui"
+e() { adb -s emulator-5554 "$@"; }
+focus() { e shell dumpsys window | grep -m1 mCurrentFocus; }
+wait_focus() { # wait_focus <regex> <want: yes|no>, bounded
+  for _ in $(seq 1 20); do
+    if focus | grep -q -E "$1"; then [ "$2" = yes ] && return 0; else [ "$2" = no ] && return 0; fi
+  done; return 1; }
+open_drawer() {
+  e shell input keyevent KEYCODE_HOME; wait_focus LawnchairLauncher yes || return 1
+  e shell input swipe 540 1000 540 1000 800
+  $U waitfor 'Apps list' >/dev/null && $U tap 'Apps list' >/dev/null && $U waitfor 'Calendar' >/dev/null; }
+ok=0; fail=0
+for spec in "$@"; do
+  label=${spec%:*}; times=${spec##*:}
+  for n in $(seq 1 "$times"); do
+    if open_drawer && $U tap "$label" >/dev/null && wait_focus LawnchairLauncher no; then
+      ok=$((ok+1))
+    else
+      fail=$((fail+1)); echo "FAILED $label #$n (focus: $(focus | tr -s ' '))"
+    fi
+    e shell input keyevent KEYCODE_HOME
+  done
+  echo "$label x$times done"
+done
+echo "launches ok=$ok failed=$fail"

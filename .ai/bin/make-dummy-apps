@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Builds code-free dummy apps with legacy (non-adaptive, PNG-only) launcher icons, for testing
+# Lawnchair's legacy-icon wrapping. Output: $OUT/*.apk. Sign key is a throwaway made here.
+set -euo pipefail
+OUT=${1:?out dir}
+SDK=~/Library/Android/sdk
+BT=$(ls -d $SDK/build-tools/* | tail -1)
+AJAR=$SDK/platforms/android-36/android.jar
+FF="$HOME/work/apps/jellyfin/jellyfin-ffmpeg/ffmpeg"  # ffmpeg is not on PATH; see ~/.claude/CLAUDE.md
+JBR="/Applications/Android Studio.app/Contents/jbr/Contents/Home/bin"
+mkdir -p "$OUT"; cd "$OUT"
+
+[ -f dummy.jks ] || "$JBR/keytool" -genkeypair -keystore dummy.jks -storepass dummy123 -keypass dummy123 \
+  -alias dummy -keyalg RSA -keysize 2048 -validity 3650 -dname "CN=Dummy" >/dev/null 2>&1
+
+# name|package|label|ffmpeg filter producing a 192x192 RGBA icon
+APPS=(
+  "blue|com.dj.dummy.blue|Dummy Blue|color=c=0x1565C0:s=192x192,format=rgba,drawbox=x=56:y=56:w=80:h=80:color=white:t=fill"
+  "green|com.dj.dummy.green|Dummy Green|color=c=0x1B5E20:s=192x192,format=rgba,drawbox=x=96:y=96:w=96:h=96:color=0xFFEB3B:t=fill"
+  "red|com.dj.dummy.red|Dummy Red|color=c=0xE53935:s=96x96,format=rgba,pad=192:192:48:48:color=black@0.0"
+)
+for spec in "${APPS[@]}"; do
+  IFS='|' read -r name pkg label filter <<<"$spec"
+  d=src-$name; rm -rf "$d"; mkdir -p "$d/res/mipmap-xxxhdpi"
+  "$FF" -hide_banner -loglevel error -y -f lavfi -i "$filter" -frames:v 1 "$d/res/mipmap-xxxhdpi/ic_launcher.png"
+  cat > "$d/AndroidManifest.xml" <<EOF
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="$pkg">
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
+    <application android:hasCode="false" android:label="$label" android:icon="@mipmap/ic_launcher">
+        <activity android:name="android.app.Activity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+EOF
+  "$BT/aapt2" compile --dir "$d/res" -o "$d/res.zip"
+  "$BT/aapt2" link -I "$AJAR" --manifest "$d/AndroidManifest.xml" -o "$d/unsigned.apk" "$d/res.zip"
+  "$BT/zipalign" -f 4 "$d/unsigned.apk" "$d/aligned.apk"
+  "$BT/apksigner" sign --ks dummy.jks --ks-pass pass:dummy123 --out "dummy-$name.apk" "$d/aligned.apk"
+  echo "built dummy-$name.apk ($label)"
+done
