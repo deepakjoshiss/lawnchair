@@ -19,6 +19,7 @@ import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -54,14 +55,14 @@ public class SpringLoadedState extends LauncherState {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        float shrunkTop = grid.getCellLayoutSpringLoadShrunkTop();
         float scale = grid.getWorkspaceSpringLoadScale(launcher);
 
-        float halfHeight = ws.getHeight() / 2;
-        float myCenter = ws.getTop() + halfHeight;
-        float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
-        float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new ScaleAndTranslation(scale, 0, shrunkTop - actualCellTop);
+        // DJ(home-grid): shrink the page around its own centre (upstream pins its top under the
+        // drop-target bar), so it doesn't move down and items stay under the finger
+        float myCenter = ws.getTop() + ws.getHeight() / 2f;
+        View page = ws.getChildAt(0);
+        float pageCenter = ws.getTop() + page.getTop() + page.getHeight() / 2f;
+        return new ScaleAndTranslation(scale, 0, (pageCenter - myCenter) * (1 - scale));
     }
 
     @Override

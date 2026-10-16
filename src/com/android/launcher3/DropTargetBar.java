@@ -59,6 +59,7 @@ public class DropTargetBar extends FrameLayout
     private ButtonDropTarget[] mTempTargets;
     private ViewPropertyAnimator mCurrentAnimation;
 
+    private int mDjVeilTop; // DJ(home-grid): height of the veil above the buttons
     private boolean mIsVertical = true;
 
     public DropTargetBar(Context context, AttributeSet attrs) {
@@ -116,6 +117,11 @@ public class DropTargetBar extends FrameLayout
         }
         lp.height = deviceProfile.getDropTargetProfile().getBarSizePx();
         lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        // DJ(home-grid): the bar's veil reaches up to the top of the screen; the buttons stay
+        // where they were (see onMeasure / onLayout)
+        mDjVeilTop = Math.max(0, lp.topMargin);
+        lp.topMargin -= mDjVeilTop;
+        lp.height += mDjVeilTop;
 
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int horizontalPadding = dp.getDropTargetProfile().getHorizontalPaddingPx();
@@ -142,7 +148,7 @@ public class DropTargetBar extends FrameLayout
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        int heightSpec = MeasureSpec.makeMeasureSpec(height - mDjVeilTop, MeasureSpec.EXACTLY); // DJ(home-grid)
 
         int visibleCount = getVisibleButtons(mTempTargets);
         if (visibleCount == 1) {
@@ -288,6 +294,9 @@ public class DropTargetBar extends FrameLayout
                 rightButton.layout(rightButtonStart, 0, rightButtonEnd,
                         rightButton.getMeasuredHeight());
             }
+        }
+        for (int i = 0; i < visibleCount; i++) {
+            mTempTargets[i].offsetTopAndBottom(mDjVeilTop); // DJ(home-grid): below the veil top
         }
     }
 

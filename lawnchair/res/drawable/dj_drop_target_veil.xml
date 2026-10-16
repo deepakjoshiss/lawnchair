@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DJ(home-grid): veil behind the long-press drop targets, from the top of the screen: 75% black
+     at the top easing to 60% at the text, then fading out over the 8dp that lies over the page.
+     Pinned (not theme-following) with pinned light ink: at least 60% black behind the text keeps
+     light-accent text at ~4.9:1 over a white wallpaper. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:bottom="8dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#BF000000"
+                android:endColor="#99000000" />
+        </shape>
+    </item>
+    <item
+        android:gravity="bottom|fill_horizontal"
+        android:height="8dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#99000000"
+                android:endColor="#00000000" />
+        </shape>
+    </item>
+</layer-list>

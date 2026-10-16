@@ -1966,7 +1966,10 @@ public class DeviceProfile {
             // workspace cell vs a hotseat cell.
             float workspaceCellWidth = (float) mDeviceProperties.getWidthPx() / inv.numColumns;
             float hotseatCellWidth = (float) mDeviceProperties.getWidthPx() / numShownHotseatIcons;
-            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            // DJ(home-grid): never negative; on a dense grid (e.g. 15 columns) it pushed the dock
+            // past the screen edges. Clamped, the dock sits as on a grid with as many columns
+            int hotseatAdjustment = Math.max(0,
+                    Math.round((workspaceCellWidth - hotseatCellWidth) / 2));
             hotseatBarPadding.set(
                     hotseatAdjustment + workspacePadding.left + cellLayoutPaddingPx.left
                             + mInsets.left,

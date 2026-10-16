@@ -20,7 +20,9 @@
     android:focusable="false"
     android:alpha="0"
     android:theme="@style/HomeScreenElementTheme"
+    android:background="@drawable/dj_drop_target_veil"
     android:visibility="invisible">
+    <!-- DJ(home-grid): full-width veil behind the drop targets -->
 
     <!-- Delete target -->
     <com.android.launcher3.DeleteDropTarget

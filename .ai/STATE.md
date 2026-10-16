@@ -10,25 +10,24 @@ Done: `gesture-open-settings`, `smartspace-style`, `drawer-look` (sliders only),
 (extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid` (E open). Dropped: `depth-blur`. Parked: `feed-bridge`.
 The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order: ROADMAP.
 
-## now — NEXT ACTION: long-press edit mode, then widget-host
+## now — NEXT ACTION: home-grid E leftovers, then widget-host
 
-- [ ] **Long-press edit mode** (owner, 2026-10-16): smaller drop-target buttons at the top and less
-      page shrink, so a widget doesn't jump cells when the finger moves slightly. Explore first
-      (overlaps home-grid E: 15's compact drop-target bar).
-- [ ] home-grid **E** (cell x padding, page indicator, drop-target bar), from screenshots.
-- [ ] **widget-host** (ROADMAP #10).
+- [ ] home-grid **E** leftovers, from screenshots: cell x padding 8→4dp, page indicator 24→16dp
+      (the drop-target bar part was done in the edit-mode work, DECISIONS #16).
+- [ ] **widget-host** (ROADMAP #10): transparent calendar widget, calendar widget by id.
 - [ ] Owner, by hand: double-tap the home screen once (gesture-open-settings; adb can't inject
       a double tap here).
-- Known, not fixed: grid sliders sometimes apply only on the next reload (PreferenceManager2
-      cache refreshed async, `83658ce7eb`); see home-grid spec "Open".
+- Watch: widgets found moved twice with no matching test touch (home-grid spec, "Long-press
+      edit mode"). Grid sliders sometimes apply only on the next reload (PreferenceManager2
+      cache refreshed async, `83658ce7eb`).
 - Parked for last: `feed-bridge` (#3), see its spec.
 
 ## emulator (`VinPix_Dev`, API 37, DECISIONS #6)
 
 - Lawnchair debug is the home app; reinstalls can drop the role:
   `adb shell cmd role add-role-holder android.app.role.HOME app.lawnchair.debug`.
-- Current state: grid **15 × 22** with "Increase maximum grid size limit" on; Chrome Dino and
-  World clock widgets, two folders. Grid can be set by editing `pref_workspaceColumns/Rows` in
+- Current state: grid **15 × 22** ("Increase maximum grid size limit" on), horizontal padding
+  25 %, vertical 0 % (owner's); World clock, Lawnchair and Chrome Dino (page 2) widgets, folders. Grid can be set by editing `pref_workspaceColumns/Rows` in
   `shared_prefs/com.android.launcher3.prefs.xml` via `run-as` (app stopped). Dummy legacy-icon apps
   `com.dj.dummy.blue/.green/.red`. Drawer launch history seeded (two suggestion rows).
   At a Glance styled green / 50 % / condensed (reset before comparing with upstream).

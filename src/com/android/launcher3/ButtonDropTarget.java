@@ -122,7 +122,8 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     private void setTextColor() {
-        int normalColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
+        // DJ(home-grid): light ink pinned to match the pinned dark veil behind the bar
+        int normalColor = ColorTokens.INSTANCE.getAccent1_100().resolveColor(getContext());
         int selectedColor = ColorTokens.DropTargetHoverTextColor.resolveColor(getContext());
         setTextColor(new ColorStateList(
                 new int[][] { new int[] { -android.R.attr.state_selected },

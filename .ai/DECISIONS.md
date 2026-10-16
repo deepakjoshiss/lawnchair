@@ -201,3 +201,20 @@ at 15 × 22) picked their smallest layouts.
 `ShortcutAndWidgetContainer`, `DeviceProfile`, `AppWidgetResizeFrame`, `WidgetSizes`,
 `LauncherAppWidgetProviderInfo`, `dimens.xml`, `app_widget_resize_frame.xml`), all marked
 `DJ(home-grid)`.
+
+## 16. Long-press edit mode: veil bar over the page, centre-pinned shrink, edge gutter; dock clamp
+
+**Decided (2026-10-16, owner):** the drop-target bar becomes a full-width veil from the top of
+the screen (gradient, pinned dark with pinned light ink, no button outlines) whose bottom 8dp lies
+over the page and counts as drop area; the page shrinks as little as the screen allows (0.961 on
+the emulator), around its own centre, with a 1px page gap so a sliver of the next page shows and
+a 24dp edge gutter for switching pages. The dock's side padding is clamped at 0 on dense grids.
+
+**Why:** on a fine grid, upstream's 0.74 shrink pinned under a tall bar shifted items by more
+than a cell between press and drop; the owner rejected an anchored drop (outline would lag the
+finger) in favour of less zoom. With almost no shrink, the neighbour page is a sliver, so page
+switching needs the gutter. 60% black is the floor for ~4.9:1 light-accent text over white.
+
+**Cost:** one-line hooks in upstream `DropTargetBar` (3), `ButtonDropTarget`, `SpringLoadedState`,
+`Workspace` (page gap, gutter), `DeviceProfile` (dock clamp), `drop_target_bar.xml`; the rest is
+flavor resources. Top/bottom rows can still shift ~30px (under half a row).

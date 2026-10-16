@@ -394,7 +394,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
             int maxInsets = Math.max(insets.left, insets.right);
-            int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
+            // DJ(home-grid): no edge-margin gap, so a sliver of the next page shows in edit mode
+            int maxPadding = padding.left + 1;
             setPageSpacing(Math.max(maxInsets, maxPadding));
         }
 
@@ -2895,6 +2896,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             CellLayout layout = verifyInsidePage(pageIndex, touchX, touchY);
             if (layout != null) {
                 return layout;
+            }
+        }
+        // DJ(home-grid): the shrunk page leaves only a sliver of its neighbours on screen, so a
+        // strip at each screen edge also counts as being over the neighbour page
+        float[] screenXy = {d.x, d.y};
+        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, screenXy, true);
+        int gutter = getResources().getDimensionPixelSize(R.dimen.dj_drag_page_switch_gutter);
+        boolean atLeft = screenXy[0] < gutter;
+        boolean atRight = screenXy[0] > mLauncher.getDragLayer().getWidth() - gutter;
+        if (atLeft || atRight) {
+            int edgePage = atLeft != mIsRtl ? nextPage - 1 : nextPage + (isTwoPanelEnabled() ? 2 : 1);
+            if (edgePage >= 0 && edgePage < getPageCount()) {
+                return (CellLayout) getChildAt(edgePage);
             }
         }
         return null;

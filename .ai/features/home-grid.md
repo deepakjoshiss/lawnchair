@@ -160,4 +160,20 @@ Geometry: slot 69 × 74 px, drawn 182 × 239 px (overlap 113 / 165), so cell *i*
   the bottom padding slider. Same mechanism as upstream's own padding sliders. Not fixed.
 - Once, the first long-press on the clock widget after a reinstall moved it from column 9 / row 3
   to column 10 / row 1. Not reproduced in four more tries at different grab points.
-- E (compact spacing) to decide from the screenshots.
+- E (compact spacing): the drop-target bar part is done (below); cell x padding 8→4dp and page
+  indicator 24→16dp still to decide.
+
+## Long-press edit mode (2026-10-16, owner, DECISIONS #16)
+
+- Drop-target bar: a full-width veil from the top of the screen (75% → 60% black, fading out
+  over its bottom 8dp, which lies over the page and is part of the drop area), no button
+  outlines, pinned light text; bar 36dp, 16dp up into the empty part of the status bar.
+  Values in `lawnchair/res/values/dimens.xml`, veil `lawnchair/res/drawable/dj_drop_target_veil.xml`.
+- Page: shrinks around its own centre (scale 0.961 here; was 0.741), page gap 1px so ~20px of
+  the next page shows, 24dp edge gutter switches page while dragging.
+- Measured: page centre 976 normal / 977 edit mode; 7 press-and-releases on three widgets kept
+  their cells. Calculated: up to ~30px shift at the top/bottom rows (half a row = 33px).
+- Dock: upstream's dock side padding went negative on dense grids (−94px at 15 columns, dock
+  past the screen edges); clamped at 0, the dock follows the home horizontal padding again.
+- Not explained: twice a widget was found moved (one row up; Chrome Dino to page 2) with no
+  matching touch from the tests; the owner may have been using the emulator. Watch for it.

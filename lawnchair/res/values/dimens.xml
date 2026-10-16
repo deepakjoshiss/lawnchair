@@ -129,4 +129,22 @@
     <dimen name="aspect_ratio_portrait">1</dimen>
     <dimen name="aspect_ratio_portrait_and_square">1.05</dimen>
 
+    <!-- DJ(home-grid): long-press edit mode. A compact drop-target bar and small margins leave
+         more room, so the page shrinks less (upstream values in brackets). The bar is a
+         full-width veil whose lower 8dp lies over the page; that strip is part of the drop area
+         (drag padding 0), and the text sits in the upper 28dp. -->
+    <dimen name="dynamic_grid_drop_target_size">36dp</dimen> <!-- 56dp -->
+    <dimen name="drop_target_top_margin">-16dp</dimen> <!-- 32dp; negative: up into the empty part of the status bar -->
+    <dimen name="drop_target_bottom_margin">-8dp</dimen> <!-- 16dp -->
+    <dimen name="drop_target_drag_padding">0dp</dimen> <!-- 14dp -->
+    <dimen name="drop_target_bar_margin_horizontal">0dp</dimen>
+    <dimen name="drop_target_text_size">14sp</dimen> <!-- 16sp -->
+    <dimen name="drop_target_button_drawable_size">16dp</dimen> <!-- 20dp -->
+    <dimen name="drop_target_button_drawable_horizontal_padding">12dp</dimen> <!-- 16dp -->
+    <dimen name="drop_target_button_drawable_vertical_padding">2dp</dimen> <!-- 8dp -->
+    <dimen name="spring_loaded_hotseat_top_margin">8dp</dimen> <!-- 76dp -->
+    <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">8dp</dimen> <!-- 48dp -->
+    <!-- DJ(home-grid): holding a dragged item this close to a screen edge switches page -->
+    <dimen name="dj_drag_page_switch_gutter">24dp</dimen>
+
 </resources>

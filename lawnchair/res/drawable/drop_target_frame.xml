@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DJ(home-grid): overrides upstream's outlined button; the buttons sit on the bar's veil, so the
+     resting state draws nothing. The hover fill (drop_target_frame_hover) is unchanged. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+    <corners android:radius="@dimen/drop_target_button_frame_radius" />
+</shape>
