@@ -909,6 +909,10 @@ public class DeviceProfile {
         // LC-Note: Hidden dock labels need no text space; keep the minimum touch target.
         hotseatCellHeightPx = app.lawnchair.util.DockCellSize.calculate(
                 hotseatIconSizePx, iconTextHeight, isLabelInDock, pxFromDp(48, mMetrics));
+        // DJ(dock-rows): "Dock row height" setting, 50..150 %
+        hotseatCellHeightPx = Math.round(hotseatCellHeightPx * Utilities.boundToRange(
+                PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getDockRowHeight()),
+                0.5f, 1.5f));
         hotseatQsbSpace = mHotseatQsbSpaceBase;
         hotseatQsbSpace += isQsbEnable && isLabelInDock ? (iconTextHeight / 2) : 0;
         

@@ -13,6 +13,7 @@ default 100 %, portrait only. The Dock settings preview follows all of them.
 | key | type | default | where in Settings |
 |---|---|---|---|
 | `hotseat_horizontal_factor` | float 0–1.7 | 1.0 | Dock → Horizontal spacing |
+| `dj_dock_row_height_factor` | float 0.5–1.5 | 1.0 | Dock → Dock row height (new in 16) |
 
 Key kept from 15 (DECISIONS #5); upstream's `pref_hotseatRows`, `pref_dockPages` cover rows/pages.
 
@@ -36,3 +37,11 @@ same feature on 15.
 1. Phone (first dock icon) left edge: 0 % → 0px, 100 % → 40–43px (16dp = 42px), 170 % → 73px.
 2. Applies as soon as settings are left (0 % applied live).
 3. Dock settings preview follows the slider (`.ai/shots/dockprev-pair.png`, 100 % vs 5 %).
+
+## Dock row height (new in 16, owner 2026-10-17, DECISIONS #26)
+
+Dock → "Dock row height", 50–150 % in 5 % steps, 100 % = upstream. Scales the dock row height
+(`hotseatCellHeightPx`), so the gap between rows and the dock's height follow. Below about 70 % a
+row is shorter than its icon and, at 50 %, the bottom row is drawn over the dock search bar;
+owner chose to leave that as is. Measured on VinPix_Dev: 193px at 100 %, 290 at 150 %, 97 at
+50 % (`.ai/shots/drh-sheet.png`, taken with the earlier −50..+50 scale, same values).

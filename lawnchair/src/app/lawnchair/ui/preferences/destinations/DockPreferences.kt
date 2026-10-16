@@ -183,6 +183,14 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
             step = 1,
             valueRange = 1..2,
         )
+        // DJ(dock-rows): row height, 100 % = normal
+        SliderPreference(
+            label = stringResource(id = R.string.dj_dock_row_height),
+            adapter = prefs2.dockRowHeight.getAdapter(),
+            step = 0.05F,
+            valueRange = 0.5F..1.5F,
+            showAsPercentage = true,
+        )
         SliderPreference(
             label = stringResource(id = R.string.dock_pages),
             adapter = dockPagesAdapter,
@@ -235,6 +243,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs.hotseatQsbStrokeWidth.getAdapter(),
             prefs2.hotseatBottomFactor.getAdapter(),
             prefs2.hotseatHorizontalFactor.getAdapter(), // DJ(dock-rows): re-render on spacing change
+            prefs2.dockRowHeight.getAdapter(), // DJ(dock-rows): and on row height change
             prefs2.strokeColorStyle.getAdapter(),
             prefs2.enableLabelInDock.getAdapter(),
             prefs.hotseatBG.getAdapter(),

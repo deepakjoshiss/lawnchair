@@ -324,3 +324,14 @@ owner's release key (`keystore.properties`, owner's choice).
 **Why:** try 16 on the real phone without replacing the daily launcher.
 
 **Cost:** one block in `build.gradle`; the two installs keep separate settings and layouts.
+
+## 26. Dock row height setting, 50–150 %
+
+**Decided (2026-10-17, owner):** new Dock setting "Dock row height" (`dj_dock_row_height_factor`,
+0.5–1.5, default 1) scaling the dock row height. Values that make a row shorter than its icon are
+allowed, including the bottom row overlapping the dock search bar.
+
+**Why:** owner wants tighter or looser dock rows; owner chose the full range over clamping.
+
+**Cost:** one hook in `DeviceProfile.updateHotseatSizes`. Read from the preference cache like
+upstream's dock factors, so it can apply only on the next reload (`83658ce7eb`).
