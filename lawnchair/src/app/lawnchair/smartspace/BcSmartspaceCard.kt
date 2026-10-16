@@ -16,8 +16,9 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.model.hasIntent
+import app.lawnchair.util.repeatOnAttached
+import app.lawnchair.util.subscribeBlocking
 import com.android.launcher3.R
-import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import java.util.UUID
 
@@ -54,8 +55,12 @@ class BcSmartspaceCard @JvmOverloads constructor(
             nextAlarmTextView = it.findViewById(R.id.alarm_text)
         }
 
-        // DJ(smartspace-style): user's card opacity and font. Text colour is applied by CardPagerAdapter.
-        alpha = PreferenceManager2.getInstance(context).ssWidgetOpacity.firstBlocking()
+        // DJ(smartspace-style): user's card opacity, followed while attached so the settings preview
+        // updates with the slider; font below. Text colour is applied by CardPagerAdapter.
+        repeatOnAttached {
+            PreferenceManager2.getInstance(context).ssWidgetOpacity.get()
+                .subscribeBlocking(this) { alpha = it }
+        }
         val fontManager = FontManager.INSTANCE.get(context)
         listOfNotNull(titleTextView, dateView, subtitleTextView)
             .forEach { fontManager.setCustomFont(it, R.id.font_smart_spacer) }
