@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import app.lawnchair.util.OverlapGrid;
+
 /**
  * Represents the logic of where a view is in a CellLayout and its size
  */
@@ -128,6 +130,17 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
     public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
             int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
             @Nullable Rect inset) {
+        setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, cellScaleX,
+                cellScaleY, borderSpace, inset, 0, 0);
+    }
+
+    /**
+     * DJ(home-grid): as above, with cells drawn at least {@code drawnCellWidth} x
+     * {@code drawnCellHeight}, overlapping their neighbours ({@link OverlapGrid}).
+     */
+    public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
+            int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
+            @Nullable Rect inset, int drawnCellWidth, int drawnCellHeight) {
         if (isLockedToGrid) {
             final int myCellHSpan = cellHSpan;
             final int myCellVSpan = cellVSpan;
@@ -138,16 +151,18 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
                 myCellX = colCount - myCellX - cellHSpan;
             }
 
-            int hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
-            int vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
-
-            float myCellWidth = ((myCellHSpan * cellWidth) + hBorderSpacing) / cellScaleX;
-            float myCellHeight = ((myCellVSpan * cellHeight) + vBorderSpacing) / cellScaleY;
+            // DJ(home-grid): upstream's span/position maths, generalised to overlapping cells
+            float myCellWidth = OverlapGrid.length(myCellX, myCellHSpan, cellWidth,
+                    borderSpace.x, drawnCellWidth, colCount) / cellScaleX;
+            float myCellHeight = OverlapGrid.length(myCellY, myCellVSpan, cellHeight,
+                    borderSpace.y, drawnCellHeight, rowCount) / cellScaleY;
 
             width = Math.round(myCellWidth) - leftMargin - rightMargin;
             height = Math.round(myCellHeight) - topMargin - bottomMargin;
-            x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpace.x);
-            y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpace.y);
+            x = leftMargin + OverlapGrid.start(myCellX, cellWidth, borderSpace.x, drawnCellWidth,
+                    colCount);
+            y = topMargin + OverlapGrid.start(myCellY, cellHeight, borderSpace.y, drawnCellHeight,
+                    rowCount);
 
             if (inset != null) {
                 x += inset.left;

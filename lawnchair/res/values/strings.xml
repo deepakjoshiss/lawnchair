@@ -655,6 +655,8 @@
     <string name="dj_folder_stack_icon">Stack icon</string>
     <string name="dj_folder_show_footer">Show footer</string>
     <string name="dj_folder_label_color">Label color</string>
+    <!-- DJ(home-grid) -->
+    <string name="dj_bottom_padding_multiplier">Bottom padding multiplier</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
 

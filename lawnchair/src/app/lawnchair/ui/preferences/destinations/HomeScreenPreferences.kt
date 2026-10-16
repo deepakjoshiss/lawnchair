@@ -171,6 +171,13 @@ fun HomeScreenPreferences(
                 valueRange = 0F..2F,
                 showAsPercentage = true,
             )
+            // DJ(home-grid): space between the grid and the dock only, ~1dp per step
+            SliderPreference(
+                label = stringResource(id = R.string.dj_bottom_padding_multiplier),
+                adapter = prefs2.homeBottomPaddingMultiplier.getAdapter(),
+                valueRange = -100..100,
+                step = 1,
+            )
             SwitchPreference(
                 adapter = lockHomeScreenAdapter,
                 label = stringResource(id = R.string.home_screen_lock),
@@ -205,7 +212,7 @@ fun HomeScreenPreferences(
             SliderPreference(
                 label = stringResource(id = R.string.icon_sizes),
                 adapter = prefs2.homeIconSizeFactor.getAdapter(),
-                step = 0.1f,
+                step = 0.05f, // DJ(home-grid): finer steps
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
             )
@@ -217,7 +224,7 @@ fun HomeScreenPreferences(
                 SliderPreference(
                     label = stringResource(id = R.string.label_size),
                     adapter = prefs2.homeIconLabelSizeFactor.getAdapter(),
-                    step = 0.1f,
+                    step = 0.05f, // DJ(home-grid): finer steps
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
                 )

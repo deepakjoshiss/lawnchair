@@ -62,6 +62,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     private int mCellWidth;
     private int mCellHeight;
+    // DJ(home-grid): size cells are drawn at when bigger than the slot (OverlapGrid); 0 = slot
+    private int mDrawnCellWidth;
+    private int mDrawnCellHeight;
     private Point mBorderSpace;
 
     private int mCountX;
@@ -100,6 +103,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         mCountX = countX;
         mCountY = countY;
         mBorderSpace = borderSpace;
+    }
+
+    /** DJ(home-grid): see {@link app.lawnchair.util.OverlapGrid}. */
+    public void setDrawnCellSize(int width, int height) {
+        mDrawnCellWidth = width;
+        mDrawnCellHeight = height;
     }
 
     public View getChildAt(int cellX, int cellY) {
@@ -150,10 +159,11 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             DeviceProfile profile = mActivity.getDeviceProfile();
             final PointF appWidgetScale = profile.getAppWidgetScale((ItemInfo) child.getTag());
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, profile.widgetPadding);
+                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, profile.widgetPadding,
+                    mDrawnCellWidth, mDrawnCellHeight); // DJ(home-grid)
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpace);
+                    1f, 1f, mBorderSpace, null, mDrawnCellWidth, mDrawnCellHeight); // DJ(home-grid)
         }
     }
 
@@ -175,16 +185,17 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         if (child instanceof NavigableAppWidgetHostView) {
             final PointF appWidgetScale = dp.getAppWidgetScale((ItemInfo) child.getTag());
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding);
+                    appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding,
+                    mDrawnCellWidth, mDrawnCellHeight); // DJ(home-grid)
         } else if (isChildQsb(child)) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpace);
+                    1f, 1f, mBorderSpace, null, mDrawnCellWidth, mDrawnCellHeight); // DJ(home-grid)
             // No need to add padding for Qsb, which is either Smartspace (actual or
             // preview), or
             // QsbContainerView.
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    mBorderSpace);
+                    1f, 1f, mBorderSpace, null, mDrawnCellWidth, mDrawnCellHeight); // DJ(home-grid)
             // Center the icon/folder
             int cHeight = getCellContentHeight();
             int cellPaddingY = dp.cellYPaddingPx >= 0 && mContainerType == WORKSPACE

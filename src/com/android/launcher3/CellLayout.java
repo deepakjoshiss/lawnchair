@@ -92,6 +92,7 @@ import java.util.Stack;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
+import app.lawnchair.util.OverlapGrid;
 
 public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
@@ -106,6 +107,9 @@ public class CellLayout extends ViewGroup {
     @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellHeight;
     private int mFixedCellWidth;
+    // DJ(home-grid): size home cells are drawn at when bigger than their slot; 0 = slot size
+    private int mDrawnCellWidth;
+    private int mDrawnCellHeight;
     private int mFixedCellHeight;
     @ViewDebug.ExportedProperty(category = "launcher")
     protected Point mBorderSpace;
@@ -633,8 +637,11 @@ public class CellLayout extends ViewGroup {
 
     protected void visualizeGrid(Canvas canvas) {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        int paddingX = Math.min((mCellWidth - dp.iconSizePx) / 2, dp.gridVisualizationPaddingX);
-        int paddingY = Math.min((mCellHeight - dp.iconSizePx) / 2, dp.gridVisualizationPaddingY);
+        // DJ(home-grid): drawn cell size, so outlines don't grow when cells overlap
+        int paddingX = Math.min((Math.max(mCellWidth, mDrawnCellWidth) - dp.iconSizePx) / 2,
+                dp.gridVisualizationPaddingX);
+        int paddingY = Math.min((Math.max(mCellHeight, mDrawnCellHeight) - dp.iconSizePx) / 2,
+                dp.gridVisualizationPaddingY);
 
         mVisualizeGridPaint.setStrokeWidth(8);
 
@@ -884,8 +891,16 @@ public class CellLayout extends ViewGroup {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = (x - hStartPadding) / (mCellWidth + mBorderSpace.x);
-        result[1] = (y - vStartPadding) / (mCellHeight + mBorderSpace.y);
+        if (mDrawnCellWidth > mCellWidth || mDrawnCellHeight > mCellHeight) {
+            // DJ(home-grid): overlapping cells; take the cell whose centre is nearest
+            result[0] = Math.round((x - hStartPadding - Math.max(mCellWidth, mDrawnCellWidth) / 2f)
+                    / getCellStepX());
+            result[1] = Math.round((y - vStartPadding
+                    - Math.max(mCellHeight, mDrawnCellHeight) / 2f) / getCellStepY());
+        } else {
+            result[0] = (x - hStartPadding) / (mCellWidth + mBorderSpace.x);
+            result[1] = (y - vStartPadding) / (mCellHeight + mBorderSpace.y);
+        }
 
         final int xAxis = mCountX;
         final int yAxis = mCountY;
@@ -1004,6 +1019,16 @@ public class CellLayout extends ViewGroup {
         return mCellHeight;
     }
 
+    /** DJ(home-grid): distance from one cell to the next, overlap included. */
+    public float getCellStepX() {
+        return OverlapGrid.step(mCellWidth, mBorderSpace.x, mDrawnCellWidth, mCountX);
+    }
+
+    /** DJ(home-grid): distance from one cell to the next, overlap included. */
+    public float getCellStepY() {
+        return OverlapGrid.step(mCellHeight, mBorderSpace.y, mDrawnCellHeight, mCountY);
+    }
+
     public void setFixedSize(int width, int height) {
         mFixedWidth = width;
         mFixedHeight = height;
@@ -1029,6 +1054,13 @@ public class CellLayout extends ViewGroup {
                 mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
                         mBorderSpace);
             }
+        }
+        if (mContainerType == WORKSPACE) {
+            // DJ(home-grid): home cells never shrink below icon + label; they overlap instead
+            DeviceProfile dp = mActivity.getDeviceProfile();
+            mDrawnCellWidth = Math.max(mCellWidth, dp.cellWidthPx);
+            mDrawnCellHeight = Math.max(mCellHeight, dp.cellHeightPx);
+            mShortcutsAndWidgets.setDrawnCellSize(mDrawnCellWidth, mDrawnCellHeight);
         }
 
         int newWidth = childWidthSize;
@@ -1301,8 +1333,9 @@ public class CellLayout extends ViewGroup {
         // For items with a spanX / spanY > 1, the passed in point (relativeXPos, relativeYPos)
         // corresponds to the center of the item, but we are searching based on the top-left cell,
         // so we translate the point over to correspond to the top-left.
-        relativeXPos = (int) (relativeXPos - (mCellWidth + mBorderSpace.x) * (spanX - 1) / 2f);
-        relativeYPos = (int) (relativeYPos - (mCellHeight + mBorderSpace.y) * (spanY - 1) / 2f);
+        // DJ(home-grid): cell step instead of cell + border, so overlapping cells line up
+        relativeXPos = (int) (relativeXPos - getCellStepX() * (spanX - 1) / 2f);
+        relativeYPos = (int) (relativeYPos - getCellStepY() * (spanY - 1) / 2f);
 
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
@@ -1862,12 +1895,17 @@ public class CellLayout extends ViewGroup {
                 + (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
         final int vStartPadding = getPaddingTop();
 
-        int x = hStartPadding + (cellX * mBorderSpace.x) + (cellX * cellWidth)
+        // DJ(home-grid): same geometry as item layout (CellLayoutLayoutParams), overlap included
+        int x = hStartPadding
+                + OverlapGrid.start(cellX, cellWidth, mBorderSpace.x, mDrawnCellWidth, mCountX)
                 + getTranslationXForCell(cellX, cellY);
-        int y = vStartPadding + (cellY * mBorderSpace.y) + (cellY * cellHeight);
+        int y = vStartPadding
+                + OverlapGrid.start(cellY, cellHeight, mBorderSpace.y, mDrawnCellHeight, mCountY);
 
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * mBorderSpace.x);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * mBorderSpace.y);
+        int width = OverlapGrid.length(cellX, cellHSpan, cellWidth, mBorderSpace.x,
+                mDrawnCellWidth, mCountX);
+        int height = OverlapGrid.length(cellY, cellVSpan, cellHeight, mBorderSpace.y,
+                mDrawnCellHeight, mCountY);
 
         resultRect.set(x, y, x + width, y + height);
     }

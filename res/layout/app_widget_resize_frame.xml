@@ -25,12 +25,14 @@
         android:layout_height="match_parent" >
 
         <!-- Frame -->
+        <!-- DJ(home-grid): frame padding = handle margin, as on 15 -->
         <ImageView
             android:id="@+id/widget_resize_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/resize_frame_margin"
+            android:padding="@dimen/widget_handle_margin"
             android:src="@drawable/widget_resize_frame" />
 
         <!-- Left -->

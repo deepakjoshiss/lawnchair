@@ -176,7 +176,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mBackgroundPadding = getResources()
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
-        mTouchTargetWidth = 2 * mBackgroundPadding;
+        mTouchTargetWidth = 4 * mBackgroundPadding; // DJ(home-grid): bigger grab area (upstream 2x)
         mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
 
         for (int i = 0; i < HANDLE_COUNT; i++) {
@@ -499,9 +499,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         if (!(wlp instanceof CellLayoutLayoutParams)) {
             return;
         }
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        float xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
-        float yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
+        // DJ(home-grid): one step = one cell, overlap included
+        float xThreshold = mCellLayout.getCellStepX();
+        float yThreshold = mCellLayout.getCellStepY();
 
         int hSpanInc = getSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
         int vSpanInc = getSpanIncrement((mDeltaY + mDeltaYAddOn) / yThreshold - mRunningVInc);
@@ -588,9 +588,9 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     private void onTouchUp() {
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        int xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
-        int yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
+        // DJ(home-grid): one step = one cell, overlap included
+        int xThreshold = Math.round(mCellLayout.getCellStepX());
+        int yThreshold = Math.round(mCellLayout.getCellStepY());
 
         mDeltaXAddOn = mRunningHInc * xThreshold;
         mDeltaYAddOn = mRunningVInc * yThreshold;

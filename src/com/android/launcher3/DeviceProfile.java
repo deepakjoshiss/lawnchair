@@ -349,6 +349,7 @@ public class DeviceProfile {
     private float workspacePaddingHorizontalFactor;
     private float workspacePaddingVerticalFactor;
     private float widgetPaddingFactor;
+    private int homeBottomPaddingDp; // DJ(home-grid)
     private float drawerPaddingTopFactor;
     private PreferenceManager2 preferenceManager2 = null;
 
@@ -375,6 +376,9 @@ public class DeviceProfile {
                 .firstCached(preferenceManager2.getWidgetPaddingFactor()), 0f, 2f);
         drawerPaddingTopFactor = Utilities.boundToRange(PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getDrawerPaddingTopFactor()), 1f, 2f);
+        // DJ(home-grid): bottom padding multiplier, ~1dp per step
+        homeBottomPaddingDp = Utilities.boundToRange(PreferenceCacheExtensionsKt
+                .firstCached(preferenceManager2.getHomeBottomPaddingMultiplier()), -100, 100);
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
@@ -1160,7 +1164,8 @@ public class DeviceProfile {
         final int maxHeight = getCellLayoutHeight();
         float extraHeight = Math.max(0, maxHeight - usedHeight);
         float scaleY = maxHeight / usedHeight;
-        boolean shouldScale = scaleY < 1f;
+        // DJ(home-grid): phone grids never shrink to fit; home cells overlap instead (OverlapGrid)
+        boolean shouldScale = false;
 
         float scaleX = 1f;
         if (mIsScalableGrid) {
@@ -1337,7 +1342,9 @@ public class DeviceProfile {
                     + iconDrawablePaddingPx
                     + Utilities.calculateTextHeight(iconTextSizePx);
             maxIconTextLineCount = 1;
-            int cellPaddingY = (getCellSize().y - cellHeightPx) / 2;
+            // DJ(home-grid): a dense grid's cell is smaller than its content (cells overlap);
+            // never let that pull the label up into the icon
+            int cellPaddingY = Math.max(0, (getCellSize().y - cellHeightPx) / 2);
             if (iconDrawablePaddingPx > cellPaddingY && !isVerticalLayout
                     && !mDeviceProperties.isMultiWindowMode()) {
                 // Ensures that the label is closer to its corresponding icon. This is not an issue
@@ -1786,6 +1793,10 @@ public class DeviceProfile {
             int bottomHotseatReserve = Math.min(hotseatBarSizePx, paddingBottom);
             paddingBottom = bottomHotseatReserve
                     + Math.round((paddingBottom - bottomHotseatReserve) * workspacePaddingVerticalFactor);
+            // DJ(home-grid): extra space between the grid and the dock (negative = less)
+            // (pxFromDp returns -1 for any negative size, so convert the magnitude)
+            paddingBottom = Math.max(0, paddingBottom + Integer.signum(homeBottomPaddingDp)
+                    * pxFromDp(Math.abs(homeBottomPaddingDp), mMetrics));
 
             padding.set(paddingLeft, paddingTop, paddingRight, paddingBottom);
         }

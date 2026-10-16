@@ -1,33 +1,35 @@
 # Lawnchair state
 
-phase: 1 — porting features to 16 · 6/15 done, 1 dropped, 1 parked · next: #9 home-grid (build) · branch: dj-dev-16
+phase: 1 — porting features to 16 · 7/15 done, 1 dropped, 1 parked · next: #10 widget-host · branch: dj-dev-16
 
 ## where things stand
 
 `dj-dev-16` = upstream `16-dev` @ `85335d904a` + the AI setup + ported features, all committed
-(last feature commit `9f4c52d8f0`, folder-look). Not pushed.
+(last feature commit: home-grid). Not pushed.
 Done: `gesture-open-settings`, `smartspace-style`, `drawer-look` (sliders only), `drawer-frequent`
-(extra suggestion rows), `icon-tweaks`, `folder-look`. Dropped: `depth-blur`. Parked: `feed-bridge`.
+(extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid` (E open). Dropped: `depth-blur`. Parked: `feed-bridge`.
 The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order: ROADMAP.
 
-## now — NEXT ACTION: build home-grid
+## now — NEXT ACTION: long-press edit mode, then widget-host
 
-- [ ] **home-grid** (ROADMAP #9): approach decided (DECISIONS #14), build list and acceptance
-      outline in `.ai/features/home-grid.md` § "Owner context and decisions". Write the
-      acceptance checks into the spec first, then build A (overlapping cells, 15 bugs fixed),
-      B (grid limit 24/29), C (always scale, never hide labels), D (bottom padding slider),
-      F (widget resize frame), finer icon/label sliders. E (compact spacing) is decided after
-      the grid works, from screenshots.
+- [ ] **Long-press edit mode** (owner, 2026-10-16): smaller drop-target buttons at the top and less
+      page shrink, so a widget doesn't jump cells when the finger moves slightly. Explore first
+      (overlaps home-grid E: 15's compact drop-target bar).
+- [ ] home-grid **E** (cell x padding, page indicator, drop-target bar), from screenshots.
+- [ ] **widget-host** (ROADMAP #10).
 - [ ] Owner, by hand: double-tap the home screen once (gesture-open-settings; adb can't inject
       a double tap here).
+- Known, not fixed: grid sliders sometimes apply only on the next reload (PreferenceManager2
+      cache refreshed async, `83658ce7eb`); see home-grid spec "Open".
 - Parked for last: `feed-bridge` (#3), see its spec.
 
 ## emulator (`VinPix_Dev`, API 37, DECISIONS #6)
 
 - Lawnchair debug is the home app; reinstalls can drop the role:
   `adb shell cmd role add-role-holder android.app.role.HOME app.lawnchair.debug`.
-- Current state: grid **15 × 20** with "Increase maximum grid size limit" on (stock 16 max;
-  home icons shrink to fragments — the home-grid "before"). Dummy legacy-icon apps
+- Current state: grid **15 × 22** with "Increase maximum grid size limit" on; Chrome Dino and
+  World clock widgets, two folders. Grid can be set by editing `pref_workspaceColumns/Rows` in
+  `shared_prefs/com.android.launcher3.prefs.xml` via `run-as` (app stopped). Dummy legacy-icon apps
   `com.dj.dummy.blue/.green/.red`. Drawer launch history seeded (two suggestion rows).
   At a Glance styled green / 50 % / condensed (reset before comparing with upstream).
   AIDL Bridge installed, Show feed on. Folder stack on, footer on, label colour auto.

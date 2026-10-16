@@ -498,6 +498,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // DJ(home-grid): extra space (dp) between the home grid and the dock; key kept from 15 (DECISIONS #5)
+    val homeBottomPaddingMultiplier = preference(
+        key = intPreferencesKey(name = "dj_home_bottom_padding_multiplier"),
+        defaultValue = 1,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     // DJ(folder-look): folder footer and stack icon keep their 15 names (DECISIONS #5); see app.lawnchair.folder.FolderLook
     val showFolderFooter = preference(
         key = booleanPreferencesKey(name = "dj_show_folder_footer"),

@@ -180,3 +180,24 @@ of a finer grid, Nova-style), which stays an option for later.
 **Cost:** icons placed in adjacent small cells overlap visually (as on 15); edits to the core
 grid placement code (`CellLayout`, `CellLayoutLayoutParams`, `ShortcutAndWidgetContainer`,
 `DeviceProfile`).
+
+## 15. home-grid as built: widgets overlap like icons, report their drawn size; 32 dp grab area
+
+**Decided (2026-10-16, owner):** on the home screen every item (icons, folders, widgets, At a
+Glance) uses one geometry (`app.lawnchair.util.OverlapGrid`): cells drawn at least icon + label
+size, overlap spread evenly, widgets in both directions (15: width only). Widgets are told the
+size they are drawn at, and their default/min/max spans are worked out on it (`WidgetSizes`,
+`LauncherAppWidgetProviderInfo`); 15 got this from flooring `getCellSize()` globally. Phone grids
+never shrink to fit. The resize-frame grab area is 4 × 8 dp = 32 dp, smaller than upstream's
+48 dp; kept. Bottom padding is added to the workspace bottom padding directly (15 went through the
+page-indicator overlap). Not carried: 15's `DeviceGridState` char encoding (16 parses "15,22"
+with `split`), its red debug grid.
+
+**Why:** one formula means the item, its drop outline, hit-testing and the resize frame cannot
+disagree, which is where 15's bugs came from; widgets told their slot size (69 × 74 px per cell
+at 15 × 22) picked their smallest layouts.
+
+**Cost:** 9 upstream files touched (`CellLayout`, `CellLayoutLayoutParams`,
+`ShortcutAndWidgetContainer`, `DeviceProfile`, `AppWidgetResizeFrame`, `WidgetSizes`,
+`LauncherAppWidgetProviderInfo`, `dimens.xml`, `app_widget_resize_frame.xml`), all marked
+`DJ(home-grid)`.

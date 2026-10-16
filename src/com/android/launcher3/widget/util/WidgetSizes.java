@@ -37,6 +37,8 @@ import com.android.launcher3.model.WidgetItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.lawnchair.util.OverlapGrid;
+
 /** A utility class for widget sizes related calculations. */
 public final class WidgetSizes {
 
@@ -57,15 +59,17 @@ public final class WidgetSizes {
 
     /** Returns the size, in pixels, a widget of given spans & {@code profile}. */
     public static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY) {
-        final int hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
-        final int vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
-
         Point cellSize = profile.getCellSize();
         Rect padding = profile.widgetPadding;
 
-        return new Size(
-                (spanX * cellSize.x) + hBorderSpacing - padding.left - padding.right,
-                (spanY * cellSize.y) + vBorderSpacing - padding.top - padding.bottom);
+        // DJ(home-grid): the size the widget is drawn at when home cells overlap (OverlapGrid);
+        // upstream's span * cell + borders when they don't
+        int width = OverlapGrid.length(0, spanX, cellSize.x, profile.cellLayoutBorderSpacePx.x,
+                profile.cellWidthPx, profile.inv.numColumns);
+        int height = OverlapGrid.length(0, spanY, cellSize.y, profile.cellLayoutBorderSpacePx.y,
+                profile.cellHeightPx, profile.inv.numRows);
+        return new Size(width - padding.left - padding.right,
+                height - padding.top - padding.bottom);
     }
 
     /**

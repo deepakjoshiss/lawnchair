@@ -25,6 +25,8 @@ import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 
+import app.lawnchair.util.OverlapGrid;
+
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
  * a common object for describing both framework provided AppWidgets as well as custom widgets
@@ -121,31 +123,41 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo impleme
             }
 
             dp.getCellSize(cellSize);
+            // DJ(home-grid): home cells may be drawn bigger than their slot, overlapping; n of
+            // them cover (n - 1) * step + drawn, which is getSpan()'s n * cell + (n - 1) * spacing
+            // with cell = drawn and spacing = step - drawn (OverlapGrid)
+            int drawnX = Math.max(cellSize.x, dp.cellWidthPx);
+            int drawnY = Math.max(cellSize.y, dp.cellHeightPx);
+            int spacingX = Math.round(OverlapGrid.step(cellSize.x, dp.cellLayoutBorderSpacePx.x,
+                    drawnX, dp.inv.numColumns)) - drawnX;
+            int spacingY = Math.round(OverlapGrid.step(cellSize.y, dp.cellLayoutBorderSpacePx.y,
+                    drawnY, dp.inv.numRows)) - drawnY;
+            cellSize.set(drawnX, drawnY);
             Rect widgetPadding = dp.widgetPadding;
 
             minSpanX = Math.max(minSpanX,
-                    getSpanX(widgetPadding, minResizeWidth, dp.cellLayoutBorderSpacePx.x,
+                    getSpanX(widgetPadding, minResizeWidth, spacingX,
                             cellSize.x));
             minSpanY = Math.max(minSpanY,
-                    getSpanY(widgetPadding, minResizeHeight, dp.cellLayoutBorderSpacePx.y,
+                    getSpanY(widgetPadding, minResizeHeight, spacingY,
                             cellSize.y));
 
             if (Utilities.ATLEAST_S) {
                 if (maxResizeWidth > 0) {
                     maxSpanX = Math.min(maxSpanX, getSpanX(widgetPadding, maxResizeWidth,
-                        dp.cellLayoutBorderSpacePx.x, cellSize.x));
+                        spacingX, cellSize.x));
                 }
                 if (maxResizeHeight > 0) {
                     maxSpanY = Math.min(maxSpanY, getSpanY(widgetPadding, maxResizeHeight,
-                        dp.cellLayoutBorderSpacePx.y, cellSize.y));
+                        spacingY, cellSize.y));
                 }
             }
 
             spanX = Math.max(spanX,
-                    getSpanX(widgetPadding, minWidth, dp.cellLayoutBorderSpacePx.x,
+                    getSpanX(widgetPadding, minWidth, spacingX,
                             cellSize.x));
             spanY = Math.max(spanY,
-                    getSpanY(widgetPadding, minHeight, dp.cellLayoutBorderSpacePx.y,
+                    getSpanY(widgetPadding, minHeight, spacingY,
                             cellSize.y));
         }
 
