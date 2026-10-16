@@ -587,6 +587,13 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    // DJ(dock-rows): dock side padding = factor × dj_hotseat_side_padding; key kept from 15 (DECISIONS #5)
+    val hotseatHorizontalFactor = preference(
+        key = floatPreferencesKey(name = "hotseat_horizontal_factor"),
+        defaultValue = 1f,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val hotseatBottomFactor = preference(
         key = floatPreferencesKey(name = "hotseat_bottom_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_hotseat_bottom_factor),

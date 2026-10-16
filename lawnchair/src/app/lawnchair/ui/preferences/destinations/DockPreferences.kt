@@ -196,6 +196,14 @@ fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
             step = 0.1F,
             showAsPercentage = true,
         )
+        // DJ(dock-rows): side padding of the dock, as on 15
+        SliderPreference(
+            adapter = prefs2.hotseatHorizontalFactor.getAdapter(),
+            label = stringResource(id = R.string.dj_hotseat_horizontal_spacing),
+            valueRange = 0.0F..1.7F,
+            step = 0.05F,
+            showAsPercentage = true,
+        )
         SliderPreference(
             adapter = prefs2.pageIndicatorHeightFactor.getAdapter(),
             label = stringResource(id = R.string.page_indicator_height),
@@ -226,6 +234,7 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs.hotseatQsbAlpha.getAdapter(),
             prefs.hotseatQsbStrokeWidth.getAdapter(),
             prefs2.hotseatBottomFactor.getAdapter(),
+            prefs2.hotseatHorizontalFactor.getAdapter(), // DJ(dock-rows): re-render on spacing change
             prefs2.strokeColorStyle.getAdapter(),
             prefs2.enableLabelInDock.getAdapter(),
             prefs.hotseatBG.getAdapter(),

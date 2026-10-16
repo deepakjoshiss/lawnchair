@@ -65,6 +65,7 @@ import app.lawnchair.hotseat.LawnchairHotseat;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 /**
  * View class that represents the bottom dock of the home screen.
@@ -423,6 +424,14 @@ public class Hotseat extends FrameLayout implements Insettable {
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
+        if (!grid.isVerticalBarLayout()) {
+            // DJ(dock-rows): "Horizontal spacing" sets the side padding, as on 15. Read from the
+            // store, not the cache, so a slider change is never applied stale.
+            float factor = PreferenceExtensionsKt.firstBlocking(
+                    preferenceManager2.getHotseatHorizontalFactor());
+            padding.left = padding.right = Math.round(factor
+                    * getResources().getDimensionPixelSize(R.dimen.dj_hotseat_side_padding));
+        }
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);

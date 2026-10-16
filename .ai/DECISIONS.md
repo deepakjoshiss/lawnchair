@@ -230,3 +230,16 @@ height" slider covers it. The compact drop-target bar is DECISIONS #16.
 drawn cell); a setting already exists for the page indicator.
 
 **Cost:** one-line hook in `DeviceProfile`.
+
+## 18. dock-rows: rows, pages and dock widgets from upstream 16; only horizontal spacing ported
+
+**Decided (2026-10-16, owner):** upstream 16's dock rows (1–2), dock pages (1–5) and widgets on
+the dock cover what the owner wants; only 15's "Horizontal spacing" is ported (dock side padding
+= factor × 16dp, key `hotseat_horizontal_factor`). 15's dock migration fix is not ported: the file
+it patched (`GridSizeMigrationUtil.java`) is gone on 16.
+
+**Why:** owner tested the upstream dock and it behaves as wanted; the spacing slider is the one
+15 control missing.
+
+**Cost:** one hook in `Hotseat.setInsets`; the rest is Lawnchair layer. At 100 % the dock is
+inset 16dp regardless of the home horizontal padding (upstream derives it from the home grid).

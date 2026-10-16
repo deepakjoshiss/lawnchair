@@ -657,6 +657,8 @@
     <string name="dj_folder_label_color">Label color</string>
     <!-- DJ(home-grid) -->
     <string name="dj_bottom_padding_multiplier">Bottom padding multiplier</string>
+    <!-- DJ(dock-rows) -->
+    <string name="dj_hotseat_horizontal_spacing">Horizontal spacing</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
 

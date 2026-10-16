@@ -1,20 +1,21 @@
 # Lawnchair state
 
-phase: 1 — porting features to 16 · 7/15 done, 1 dropped, 1 parked · next: dock behaviour (owner to describe) · branch: dj-dev-16
+phase: 1 — porting features to 16 · 8/15 done, 1 dropped, 1 parked · next: #10 widget-host · branch: dj-dev-16
 
 ## where things stand
 
 `dj-dev-16` = upstream `16-dev` @ `85335d904a` + the AI setup + ported features, all committed
-(last feature commit: home-grid). Not pushed.
+(last feature commit: dock-rows). Not pushed.
 Done: `gesture-open-settings`, `smartspace-style`, `drawer-look` (sliders only), `drawer-frequent`
-(extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid` (E open). Dropped: `depth-blur`. Parked: `feed-bridge`.
+(extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid`, `dock-rows`. Dropped: `depth-blur`. Parked: `feed-bridge`.
 The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order: ROADMAP.
 
-## now — NEXT ACTION: dock behaviour
+## now — NEXT ACTION: widget-host
 
-- [ ] **Dock behaviour** (owner, 2026-10-16): the owner will describe how the dock should change;
-      write the spec first. Related ROADMAP items: `dock-rows` (#12), `dock-poweramp` (#13).
-- [ ] **widget-host** (ROADMAP #10) after that.
+- [ ] **widget-host** (ROADMAP #10): transparent calendar widget, calendar widget by id. Spec
+      first (`/port-feature widget-host`).
+- Then in ROADMAP order: `wallpaper-shift` (#11), `dock-poweramp` (#13), `android16-fix` (#14),
+  `home-text-shadow` (#15).
 - Watch: widgets found moved twice with no matching test touch (home-grid spec, "Long-press
       edit mode"). Grid sliders sometimes apply only on the next reload (PreferenceManager2
       cache refreshed async, `83658ce7eb`).

@@ -41,7 +41,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | 9 | `home-grid` | Grid size changes, extra bottom padding, widget resize and padding fixes | `CellLayout.java`, `DeviceProfile.java`, `ShortcutAndWidgetContainer.java`, `CellLayoutLayoutParams.java` | done |
 | 10 | `widget-host` | Widget host view: transparent calendar widget, calendar widget by id | `NavigableAppWidgetHostView.java` | todo |
 | 11 | `wallpaper-shift` | Steady wallpaper centring and shift between pages | `WallpaperOffsetInterpolator.java` | todo |
-| 12 | `dock-rows` | Dock rows and horizontal spacing; dock migration fix | `Hotseat.java`, `HotseatMode.kt`, `DockPreferences.kt`, `GridSizeMigrationUtil.java` (gone on 16) | todo |
+| 12 | `dock-rows` | Dock rows and horizontal spacing; dock migration fix | `Hotseat.java`, `HotseatMode.kt`, `DockPreferences.kt`, `GridSizeMigrationUtil.java` (gone on 16) | done |
 | 13 | `dock-poweramp` | Poweramp music widget docked in the hotseat | `PowerampWidgetContainerView.kt`, `PowerampWidgetHostView.kt` | todo |
 | 14 | `android16-fix` | 15-era fix for running on Android 16 (`cf19020393`); likely obsolete on a 16 base | to confirm | todo |
 | 15 | `home-text-shadow` | Lighter soft shadow on home-screen text (`workspaceAmbientShadowColor` `#40000000` → `#10000000`, light-text theme only). Decide from before/after screenshots | `res/values/styles.xml` (`e5ed825962`) | todo |
