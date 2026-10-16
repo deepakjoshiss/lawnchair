@@ -1,24 +1,25 @@
 # Lawnchair state
 
-phase: 1 — porting features to 16 · 9/15 done, 2 dropped, 1 parked · next: #10 widget-host · branch: dj-dev-16
+phase: 1 — porting features to 16 · 10/15 done, 4 dropped, widget-host built · next: owner checks widget-host on a device; then phase 2 · branch: dj-dev-16
 
 ## where things stand
 
 `dj-dev-16` = upstream `16-dev` @ `85335d904a` + the AI setup + ported features, all committed
 (last feature commit: wallpaper-shift). Not pushed.
 Done: `gesture-open-settings`, `smartspace-style`, `drawer-look` (sliders only), `drawer-frequent`
-(extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid`, `dock-rows`, `wallpaper-shift`. Dropped: `depth-blur`, `dock-poweramp`. Parked: `feed-bridge`.
+(extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid`, `dock-rows`, `wallpaper-shift`, `home-text-shadow`; `widget-host` built, unverified. Dropped: `depth-blur`, `dock-poweramp`, `android16-fix`, `feed-bridge`.
 The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order: ROADMAP.
 
-## now — NEXT ACTION: widget-host
+## now — NEXT ACTION: verify widget-host
 
-- [ ] **widget-host** (ROADMAP #10): transparent calendar widget, calendar widget by id. Spec
-      first (`/port-feature widget-host`).
-- Then: `android16-fix` (#14), `home-text-shadow` (#15). `dock-poweramp` dropped (DECISIONS #19).
+- [ ] **widget-host** built (DECISIONS #21) but its look is unverified: the emulator's Google
+      Calendar is not signed in, so the agenda widget shows a "Sign in" card, not the list the
+      styling targets. Owner will check it on a device with a signed-in Calendar (2026-10-17).
+      Test widget placed on home page 3 of the emulator.
+- After that, phase 1 (porting) is complete: all 15 ROADMAP features are done or dropped.
 - Watch: widgets found moved twice with no matching test touch (home-grid spec, "Long-press
       edit mode"). Grid sliders sometimes apply only on the next reload (PreferenceManager2
       cache refreshed async, `83658ce7eb`).
-- Parked for last: `feed-bridge` (#3), see its spec.
 
 ## emulator (`VinPix_Dev`, API 37, DECISIONS #6)
 

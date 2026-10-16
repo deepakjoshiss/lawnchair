@@ -62,7 +62,8 @@
         <item name="isWorkspaceDarkText">false</item>
         <item name="workspaceTextColor">@color/workspace_text_color_light</item>
         <item name="workspaceShadowColor">#B0000000</item>
-        <item name="workspaceAmbientShadowColor">#40000000</item>
+        <!-- DJ(home-text-shadow): lighter soft shadow under home text on dark wallpapers (upstream #40000000) -->
+        <item name="workspaceAmbientShadowColor">#10000000</item>
         <item name="workspaceKeyShadowColor">#89000000</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="pageIndicatorDotColor">@color/page_indicator_dot_color_light</item>

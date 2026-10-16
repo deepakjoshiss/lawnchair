@@ -32,6 +32,8 @@ import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 
+import app.lawnchair.widget.CalendarScheduleWidget;
+
 /**
  * Extension of AppWidgetHostView with support for controlled keyboard navigation.
  */
@@ -53,6 +55,7 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     protected final ActivityContext mActivity;
 
     private boolean mDisableSetPadding = false;
+    private boolean mDjCalendarSchedule; // DJ(widget-host)
 
     public NavigableAppWidgetHostView(Context context) {
         super(context);
@@ -152,6 +155,15 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         mDisableSetPadding = true;
         super.setAppWidget(appWidgetId, info);
         mDisableSetPadding = false;
+        // DJ(widget-host): Google Calendar's agenda widget without its card
+        mDjCalendarSchedule = CalendarScheduleWidget.matches(info);
+        if (mDjCalendarSchedule) CalendarScheduleWidget.applyPadding(this);
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+        if (mDjCalendarSchedule) CalendarScheduleWidget.style(this, child); // DJ(widget-host)
     }
 
     @Override

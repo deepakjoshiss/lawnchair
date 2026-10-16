@@ -267,3 +267,36 @@ the first real offset could never be 0.5.
 
 **Cost:** two one-line call-site hooks and the handler start value in
 `WallpaperOffsetInterpolator`; the formula lives in `app.lawnchair.wallpaper.WallpaperShift`.
+
+## 21. widget-host: Google Calendar agenda widget without its card, matched by provider
+
+**Decided (2026-10-17, owner):** port 15's transparent "Calendar schedule" widget (no card or
+add-event button, stripes at 65 %, tighter month headers, 6dp gaps, faded list edges, 16/8dp
+padding), hard-coded as on 15, but matched by its provider
+(`com.google.android.calendar` / `com.android.calendar.widget.CalendarAppWidgetProvider`) instead
+of the English label.
+
+**Why:** owner's look; the label match fails in any other language.
+
+**Cost:** two hooks in `NavigableAppWidgetHostView` (`setAppWidget` padding, `addView`); logic in
+`app.lawnchair.widget.CalendarScheduleWidget`. Depends on Calendar's internal view names; if they
+change, the widget silently keeps its own look.
+
+## 22. android16-fix dropped: nothing left on 16
+
+**Decided (2026-10-17):** `cf19020393`'s nav-button half targets a hidden API call that 16 no
+longer makes; its icon half is `icon-tweaks` (DECISIONS #12).
+
+**Why:** verified with `git grep` on 16 and the icon-tweaks commit `d474dee633`.
+
+**Cost:** none.
+
+## 23. feed-bridge dropped
+
+**Decided (2026-10-17, owner):** the one-line `onServiceDisconnected` reset is not ported; the
+signature bypass and forced feed were already declined (DECISIONS #9).
+
+**Why:** on the emulator Android re-bound the bridge by itself after both force-stop and crash
+(feed-bridge spec, Measurements); the fix showed no effect.
+
+**Cost:** none. Revisit if the feed is ever seen staying blank after a bridge update on a device.

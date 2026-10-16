@@ -1,7 +1,8 @@
 # feed-bridge: feed reconnects after the bridge disconnects
 
-status: parked (owner, 2026-10-14: do last). Open choice: port the one-line disconnect fix or drop
-it; changes 1–2 are not ported either way. End-to-end check belongs on the owner's Pixel once it runs 16.
+status: dropped 2026-10-17 (owner; DECISIONS #23). Nothing ported: the measurements below showed
+Android re-binds the bridge by itself, so the disconnect fix had no effect; changes 1–2 were
+already declined (DECISIONS #9).
 
 ## What the user sees
 
@@ -27,7 +28,8 @@ Commit `3fac2fc31f` (2024-08-11, "…feed fixes…", on the 14 base), three chan
 
 ## On 16
 
-- Change 3: still needed. 16's `onServiceDisconnected` is empty (checked 2026-10-14). **Ported.**
+- Change 3: 16's `onServiceDisconnected` is still empty (checked 2026-10-14, 2026-10-17). Not ported
+  (owner, 2026-10-17): no measured effect, see below.
 - Changes 1 and 2: **not ported** (DECISIONS #9). The owner's feed app is AIDL Bridge v3
   (`amirz.aidlbridge`); its certificate's `Signature.hashCode()` is `0xb662cc2f`, equal to 16's
   whitelist entry (computed from the APK on the owner's Pixel, Java hash reproduced against two
@@ -35,8 +37,7 @@ Commit `3fac2fc31f` (2024-08-11, "…feed fixes…", on the 14 base), three chan
   a provider chosen, `resolveBridge` uses it in debug builds as well. The bypass also let any app
   pose as the feed.
 
-Upstream file edited: `lawnchair/src/com/google/android/libraries/launcherclient/BaseClientService.java`
-(one line, `DJ(feed-bridge)`).
+No upstream file edited.
 
 ## Acceptance
 

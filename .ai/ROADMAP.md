@@ -32,19 +32,19 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 |---|---|---|---|---|
 | 1 | `gesture-open-settings` | Gesture action that opens Lawnchair settings | `gestures/config/*`, `gestures/handlers/GestureHandler.kt` | done |
 | 2 | `smartspace-style` | At a Glance font, colour and opacity settings; card tweaks | `smartspace/*`, `SmartspacePreferences.kt` | done |
-| 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | parked |
+| 3 | `feed-bridge` | Changes to the Google feed connection (purpose to confirm) | `FeedBridge.kt`, `BaseClientService.java` | dropped |
 | 4 | `depth-blur` | Background depth/blur animation fix | `DepthController.java`, `BaseDepthController.java` | dropped |
 | 5 | `drawer-look` | Drawer background colour and animation, row height, divider, search bar layout, bundled `sans_regular` font. Includes the uncommitted `search_input_fg.xml`, `FontManager.kt`, `DrawableTokens.kt` edits | `allapps/*`, `AllAppsSearchInput.kt`, `res/layout/all_apps_divider.xml` | done |
 | 6 | `drawer-frequent` | Frequent apps in the drawer, plus the short accent divider shown with them (moved from drawer-look) | `AlphabeticalAppsList.java`, `AppInfo.java`, `LoaderTask.java` | done |
 | 7 | `icon-tweaks` | Icon scale, shadow and clock icon changes. **Uncommitted, inside the submodule** on 15 | `platform_frameworks_libs_systemui/iconloaderlib/*` | done |
 | 8 | `folder-look` | Folder rows, stacked folder icon, footer toggle, open/close animation, icon shape fix | `folder/*`, `FolderPreferences.kt` | done |
 | 9 | `home-grid` | Grid size changes, extra bottom padding, widget resize and padding fixes | `CellLayout.java`, `DeviceProfile.java`, `ShortcutAndWidgetContainer.java`, `CellLayoutLayoutParams.java` | done |
-| 10 | `widget-host` | Widget host view: transparent calendar widget, calendar widget by id | `NavigableAppWidgetHostView.java` | todo |
+| 10 | `widget-host` | Widget host view: transparent calendar widget, calendar widget by id | `NavigableAppWidgetHostView.java` | wip |
 | 11 | `wallpaper-shift` | Steady wallpaper centring and shift between pages | `WallpaperOffsetInterpolator.java` | done |
 | 12 | `dock-rows` | Dock rows and horizontal spacing; dock migration fix | `Hotseat.java`, `HotseatMode.kt`, `DockPreferences.kt`, `GridSizeMigrationUtil.java` (gone on 16) | done |
 | 13 | `dock-poweramp` | Poweramp music widget docked in the hotseat | `PowerampWidgetContainerView.kt`, `PowerampWidgetHostView.kt` | dropped |
-| 14 | `android16-fix` | 15-era fix for running on Android 16 (`cf19020393`); likely obsolete on a 16 base | to confirm | todo |
-| 15 | `home-text-shadow` | Lighter soft shadow on home-screen text (`workspaceAmbientShadowColor` `#40000000` → `#10000000`, light-text theme only). Decide from before/after screenshots | `res/values/styles.xml` (`e5ed825962`) | todo |
+| 14 | `android16-fix` | 15-era fix for running on Android 16 (`cf19020393`); likely obsolete on a 16 base | to confirm | dropped |
+| 15 | `home-text-shadow` | Lighter soft shadow on home-screen text (`workspaceAmbientShadowColor` `#40000000` → `#10000000`, light-text theme only). Decide from before/after screenshots | `res/values/styles.xml` (`e5ed825962`) | done |
 
 Order is the table order: Lawnchair-layer features first, AOSP-heavy ones later, the Poweramp
 dock last. Reorder here, not in STATE.
