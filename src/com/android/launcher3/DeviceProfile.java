@@ -517,7 +517,9 @@ public class DeviceProfile {
         workspaceSpringLoadedMinNextPageVisiblePx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_spring_loaded_min_next_space_visible);
 
-        workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
+        // DJ(home-grid): home only, so labels on dense grids truncate less (upstream
+        // dynamic_grid_cell_padding_x, 8dp, also sizes drawer folder icons)
+        workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dj_home_cell_padding_x);
 
         HotseatMode hotseatMode = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getHotseatMode());
         boolean isQsbEnable = hotseatMode.getLayoutResourceId() != R.layout.empty_view;

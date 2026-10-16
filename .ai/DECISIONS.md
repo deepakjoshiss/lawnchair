@@ -218,3 +218,15 @@ switching needs the gutter. 60% black is the floor for ~4.9:1 light-accent text 
 **Cost:** one-line hooks in upstream `DropTargetBar` (3), `ButtonDropTarget`, `SpringLoadedState`,
 `Workspace` (page gap, gutter), `DeviceProfile` (dock clamp), `drop_target_bar.xml`; the rest is
 flavor resources. Top/bottom rows can still shift ~30px (under half a row).
+
+## 17. home-grid E: home-only 4dp cell padding; page indicator via 16's setting
+
+**Decided (2026-10-16, owner):** home icon cells get 4dp side padding (15's value) through a new
+`dj_home_cell_padding_x`, leaving upstream's `dynamic_grid_cell_padding_x` (also used by drawer
+folder icons) at 8dp. 15's 24→16dp page indicator is not ported: 16's Dock → "Page indicator
+height" slider covers it. The compact drop-target bar is DECISIONS #16.
+
+**Why:** owner's look, kept although the gain at 15 × 22 is small (labels 140→161px in a 182px
+drawn cell); a setting already exists for the page indicator.
+
+**Cost:** one-line hook in `DeviceProfile`.

@@ -144,6 +144,8 @@
     <dimen name="drop_target_button_drawable_vertical_padding">2dp</dimen> <!-- 8dp -->
     <dimen name="spring_loaded_hotseat_top_margin">8dp</dimen> <!-- 76dp -->
     <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">8dp</dimen> <!-- 48dp -->
+    <!-- DJ(home-grid): side padding inside a home icon's cell (upstream 8dp) -->
+    <dimen name="dj_home_cell_padding_x">4dp</dimen>
     <!-- DJ(home-grid): holding a dragged item this close to a screen edge switches page -->
     <dimen name="dj_drag_page_switch_gutter">24dp</dimen>
 

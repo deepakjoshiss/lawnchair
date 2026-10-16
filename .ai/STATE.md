@@ -1,6 +1,6 @@
 # Lawnchair state
 
-phase: 1 — porting features to 16 · 7/15 done, 1 dropped, 1 parked · next: #10 widget-host · branch: dj-dev-16
+phase: 1 — porting features to 16 · 7/15 done, 1 dropped, 1 parked · next: dock behaviour (owner to describe) · branch: dj-dev-16
 
 ## where things stand
 
@@ -10,13 +10,11 @@ Done: `gesture-open-settings`, `smartspace-style`, `drawer-look` (sliders only),
 (extra suggestion rows), `icon-tweaks`, `folder-look`, `home-grid` (E open). Dropped: `depth-blur`. Parked: `feed-bridge`.
 The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order: ROADMAP.
 
-## now — NEXT ACTION: home-grid E leftovers, then widget-host
+## now — NEXT ACTION: dock behaviour
 
-- [ ] home-grid **E** leftovers, from screenshots: cell x padding 8→4dp, page indicator 24→16dp
-      (the drop-target bar part was done in the edit-mode work, DECISIONS #16).
-- [ ] **widget-host** (ROADMAP #10): transparent calendar widget, calendar widget by id.
-- [ ] Owner, by hand: double-tap the home screen once (gesture-open-settings; adb can't inject
-      a double tap here).
+- [ ] **Dock behaviour** (owner, 2026-10-16): the owner will describe how the dock should change;
+      write the spec first. Related ROADMAP items: `dock-rows` (#12), `dock-poweramp` (#13).
+- [ ] **widget-host** (ROADMAP #10) after that.
 - Watch: widgets found moved twice with no matching test touch (home-grid spec, "Long-press
       edit mode"). Grid sliders sometimes apply only on the next reload (PreferenceManager2
       cache refreshed async, `83658ce7eb`).

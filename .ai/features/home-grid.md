@@ -1,6 +1,6 @@
 # home-grid: home screen grid, spacing, bottom padding, widget sizing
 
-status: done 2026-10-16 (DECISIONS #14, #15); E (compact spacing) still open
+status: done 2026-10-16 (DECISIONS #14, #15, #16, #17)
 
 ## On 15 (reference) and verdict on 16
 
@@ -160,8 +160,10 @@ Geometry: slot 69 × 74 px, drawn 182 × 239 px (overlap 113 / 165), so cell *i*
   the bottom padding slider. Same mechanism as upstream's own padding sliders. Not fixed.
 - Once, the first long-press on the clock widget after a reinstall moved it from column 9 / row 3
   to column 10 / row 1. Not reproduced in four more tries at different grab points.
-- E (compact spacing): the drop-target bar part is done (below); cell x padding 8→4dp and page
-  indicator 24→16dp still to decide.
+- E (compact spacing), closed (DECISIONS #17): home cell x padding 8→4dp (home only, new
+  `dj_home_cell_padding_x`; labels gain ~21px, little visible at 15 × 22 since the drawn cell is
+  182px); page indicator covered by 16's Dock → "Page indicator height" (70 % ≈ 16.8dp); compact
+  drop-target bar done in the edit-mode work.
 
 ## Long-press edit mode (2026-10-16, owner, DECISIONS #16)
 

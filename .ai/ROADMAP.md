@@ -38,7 +38,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | 6 | `drawer-frequent` | Frequent apps in the drawer, plus the short accent divider shown with them (moved from drawer-look) | `AlphabeticalAppsList.java`, `AppInfo.java`, `LoaderTask.java` | done |
 | 7 | `icon-tweaks` | Icon scale, shadow and clock icon changes. **Uncommitted, inside the submodule** on 15 | `platform_frameworks_libs_systemui/iconloaderlib/*` | done |
 | 8 | `folder-look` | Folder rows, stacked folder icon, footer toggle, open/close animation, icon shape fix | `folder/*`, `FolderPreferences.kt` | done |
-| 9 | `home-grid` | Grid size changes, extra bottom padding, widget resize and padding fixes | `CellLayout.java`, `DeviceProfile.java`, `ShortcutAndWidgetContainer.java`, `CellLayoutLayoutParams.java` | done (E open) |
+| 9 | `home-grid` | Grid size changes, extra bottom padding, widget resize and padding fixes | `CellLayout.java`, `DeviceProfile.java`, `ShortcutAndWidgetContainer.java`, `CellLayoutLayoutParams.java` | done |
 | 10 | `widget-host` | Widget host view: transparent calendar widget, calendar widget by id | `NavigableAppWidgetHostView.java` | todo |
 | 11 | `wallpaper-shift` | Steady wallpaper centring and shift between pages | `WallpaperOffsetInterpolator.java` | todo |
 | 12 | `dock-rows` | Dock rows and horizontal spacing; dock migration fix | `Hotseat.java`, `HotseatMode.kt`, `DockPreferences.kt`, `GridSizeMigrationUtil.java` (gone on 16) | todo |
