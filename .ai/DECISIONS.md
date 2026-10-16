@@ -243,3 +243,27 @@ it patched (`GridSizeMigrationUtil.java`) is gone on 16.
 
 **Cost:** one hook in `Hotseat.setInsets`; the rest is Lawnchair layer. At 100 % the dock is
 inset 16dp regardless of the home horizontal padding (upstream derives it from the home grid).
+
+## 19. dock-poweramp dropped: the dock takes any widget
+
+**Decided (2026-10-16, owner):** 15's Poweramp music widget docked in the hotseat (a special
+`HotseatMode` container with its own host views) is not ported.
+
+**Why:** on 16 the dock accepts any widget (upstream `6d084bfa43`, DECISIONS #18), so the
+Poweramp widget can simply be placed in the dock.
+
+**Cost:** none; the 15 code stays in the reference checkout.
+
+## 20. wallpaper-shift: 15's formula, mirrored in RTL, applied live
+
+**Decided (2026-10-16, owner):** port 15's "Wallpaper center shift" (`offset = s + (1 − s) ×
+upstream`, pinned cases at `s`; key `dj_pref_wallpaperShift` in the SharedPreferences store) with
+two changes: RTL mirrors (`(1 − s) × upstream`, so the first page is at `1 − s` both scrolling and
+pinned; 15 jumped between the two), and a slider change re-syncs the wallpaper at once. Upstream's
+offset handler now starts at −1 instead of 0.5, else a 50 % first offset was never sent.
+
+**Why:** owner's look from 15; the RTL jump looked unintended; the handler start value assumed
+the first real offset could never be 0.5.
+
+**Cost:** two one-line call-site hooks and the handler start value in
+`WallpaperOffsetInterpolator`; the formula lives in `app.lawnchair.wallpaper.WallpaperShift`.

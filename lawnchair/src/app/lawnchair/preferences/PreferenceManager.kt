@@ -122,6 +122,13 @@ class PreferenceManager @Inject constructor(
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
+
+    // DJ(wallpaper-shift): first-page wallpaper position; key and store kept from 15 (DECISIONS #5).
+    // Re-syncs at once so the wallpaper moves without a swipe.
+    val wallpaperShift = FloatPref("dj_pref_wallpaperShift", 0.5F) {
+        LawnchairLauncher.instance?.workspace?.let { it.post(it::computeScroll) }
+        Unit
+    }
     val infiniteScrolling = BoolPref("pref_infiniteScrolling", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
     val vibrationFeedbackLevel: IntPref = IntPref(

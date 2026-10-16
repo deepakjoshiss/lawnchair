@@ -137,6 +137,14 @@ fun HomeScreenPreferences(
                 prefs.wallpaperScrolling.getAdapter(),
                 label = stringResource(id = R.string.wallpaper_scrolling_label),
             )
+            // DJ(wallpaper-shift)
+            SliderPreference(
+                label = stringResource(id = R.string.dj_wallpaper_shift_label),
+                adapter = prefs.wallpaperShift.getAdapter(),
+                valueRange = 0F..1F,
+                step = 0.05F,
+                showAsPercentage = true,
+            )
             ExpandAndShrink(visible = Utilities.ATLEAST_R) {
                 SwitchPreference(
                     prefs2.wallpaperDepthEffect.getAdapter(),

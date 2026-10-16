@@ -20,6 +20,8 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 
+import app.lawnchair.wallpaper.WallpaperShift;
+
 /**
  * Utility class to handle wallpaper scrolling along with workspace.
  */
@@ -131,6 +133,7 @@ public class WallpaperOffsetInterpolator {
 
     public float wallpaperOffsetForScroll(int scroll) {
         wallpaperOffsetForScroll(scroll, getNumScrollableScreensExcludingEmpty(), sTempInt);
+        WallpaperShift.applyTo(sTempInt, prefs.getWallpaperShift().get(), mIsRtl); // DJ(wallpaper-shift)
         return ((float) sTempInt[0]) / sTempInt[1];
     }
 
@@ -169,6 +172,7 @@ public class WallpaperOffsetInterpolator {
         int numScreens = getNumScrollableScreensExcludingEmpty();
         // LC-Note: Use wrap-aware scroll to preserve wallpaper parallax during infinite scrolling.
         wallpaperOffsetForScroll(mWorkspace.getScrollForWallpaper(), numScreens, sTempInt);
+        WallpaperShift.applyTo(sTempInt, prefs.getWallpaperShift().get(), mIsRtl); // DJ(wallpaper-shift)
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
                 mWindowToken);
         if (numScreens != mNumScreens) {
@@ -233,7 +237,9 @@ public class WallpaperOffsetInterpolator {
         private final Interpolator mInterpolator;
         private final WallpaperManager mWM;
 
-        private float mCurrentOffset = 0.5f; // to force an initial update
+        // DJ(wallpaper-shift): -1, not 0.5: with a centre shift the first real offset can be 0.5,
+        // which then never got sent
+        private float mCurrentOffset = -1f; // to force an initial update
         private boolean mAnimating;
         private long mAnimationStartTime;
         private float mAnimationStartOffset;
