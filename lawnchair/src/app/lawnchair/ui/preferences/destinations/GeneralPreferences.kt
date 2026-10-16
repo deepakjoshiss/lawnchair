@@ -117,7 +117,7 @@ fun GeneralPreferences(modifier: Modifier = Modifier) {
             PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,
-                    label = stringResource(R.string.fontWorkspace),
+                    label = stringResource(R.string.dj_font_icon_labels), // DJ(icon-label-font)
                 )
                 FontPreference(
                     fontPref = prefs.fontHeading,

@@ -29,7 +29,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.data.Converters
-import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.SleepMode
 import app.lawnchair.gestures.type.GestureType
@@ -461,8 +460,9 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_font_selection),
         onSet = { newValue ->
             if (!newValue) {
-                val fontCache = FontCache.INSTANCE.get(context)
-                LawnchairPreferenceManager.getInstance(context).fontWorkspace.set(newValue = fontCache.uiText)
+                // DJ(icon-label-font): back to the icon label default, not upstream's uiText
+                val fontWorkspace = LawnchairPreferenceManager.getInstance(context).fontWorkspace
+                fontWorkspace.set(newValue = fontWorkspace.defaultValue)
             }
         },
     )

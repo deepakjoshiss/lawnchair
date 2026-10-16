@@ -335,3 +335,17 @@ allowed, including the bottom row overlapping the dock search bar.
 
 **Cost:** one hook in `DeviceProfile.updateHotseatSizes`. Read from the preference cache like
 upstream's dock factors, so it can apply only on the next reload (`83658ce7eb`).
+
+## 27. Icon labels font: "General" renamed, default sans-serif-condensed, drawer included
+
+**Decided (2026-10-17, owner):** upstream's "General" font setting (`pref_workspaceFont`, role
+`font_base_icon`) only ever applied to icon labels, so it is relabelled "Icon labels" (key kept,
+so a chosen font carries over) and defaults to `sans-serif-condensed`. App drawer labels (drawer,
+suggestions, drawer folders, search result icons) now follow it too: their style's fixed Google
+Sans Flex (`variable-title-small`) is removed. Turning font selection off resets it to the new
+default. The setting stays in the experimental font group.
+
+**Why:** one font for every icon label, condensed to fit more of each label.
+
+**Cost:** one item removed from upstream's `BaseIcon.AllApps` style; default and reset in the
+Lawnchair layer. Translations of "General" are not used for this label any more.

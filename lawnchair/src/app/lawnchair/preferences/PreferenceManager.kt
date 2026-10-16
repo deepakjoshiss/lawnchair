@@ -147,7 +147,10 @@ class PreferenceManager @Inject constructor(
     val recentActionOrder = StringPref("pref_recentActionOrder", "0,1,2,3,4", recreate)
 
     private val fontCache = FontCache.INSTANCE.get(context)
-    val fontWorkspace = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
+
+    // DJ(icon-label-font): the icon label font ("Icon labels", upstream "General", only ever used
+    // for icon labels); default sans-serif-condensed instead of Google Sans Flex (DECISIONS #27)
+    val fontWorkspace = FontPref("pref_workspaceFont", FontCache.SystemFont("sans-serif-condensed"), recreate)
     val fontHeading = FontPref("pref_fontHeading", fontCache.uiRegular, recreate)
     val fontHeadingMedium = FontPref("pref_fontHeadingMedium", fontCache.uiMedium, recreate)
     val fontBody = FontPref("pref_fontBody", fontCache.uiText, recreate)

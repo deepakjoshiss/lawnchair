@@ -408,9 +408,8 @@
         <item name="android:stateListAnimator">@animator/all_apps_fastscroll_icon_anim</item>
         <item name="android:paddingLeft">@dimen/dynamic_grid_cell_padding_x</item>
         <item name="android:paddingRight">@dimen/dynamic_grid_cell_padding_x</item>
-        <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">
-            variable-title-small
-        </item>
+        <!-- DJ(icon-label-font): no fixed Google Sans Flex here, so drawer labels use the
+             "Icon labels" font like every other icon label (upstream: variable-title-small) -->
     </style>
 
 
