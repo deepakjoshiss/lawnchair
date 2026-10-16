@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Print the wallpaper x offset the launcher last requested (0 = left edge, 1 = right edge).
+# usage: emu-wallpaper-x   DEV overrides the device (default emulator-5554)
+adb -s "${DEV:-emulator-5554}" shell dumpsys window | grep -m1 -o 'mWallpaperX=[0-9.]*'

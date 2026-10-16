@@ -236,7 +236,14 @@ android {
         }
 
         release {
-            resValue("string", "derived_app_name", "Lawnchair")
+            // DJ(side-by-side): -PdjSideBySide builds app.lawnchair.dj ("Lawnchair DJ"), which
+            // installs next to a regular Lawnchair release (DECISIONS #25)
+            if (project.hasProperty("djSideBySide")) {
+                applicationIdSuffix ".dj"
+                resValue("string", "derived_app_name", "Lawnchair DJ")
+            } else {
+                resValue("string", "derived_app_name", "Lawnchair")
+            }
             minifyEnabled true
             shrinkResources true
             pseudoLocalesEnabled false

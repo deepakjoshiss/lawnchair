@@ -300,3 +300,27 @@ signature bypass and forced feed were already declined (DECISIONS #9).
 (feed-bridge spec, Measurements); the fix showed no effect.
 
 **Cost:** none. Revisit if the feed is ever seen staying blank after a bridge update on a device.
+
+## 24. Upstream updates by rebase; upstream workflows deleted
+
+**Decided (2026-10-17, owner):** `dj-dev-16` takes upstream updates by rebasing onto
+`upstream/16-dev` (how-to in UPSTREAM.md), which means force-pushing `origin/dj-dev-16` after
+each update. Upstream's `.github/workflows` are deleted, as on 15 (`84ab193763`); the rest of
+`.github/` (issue templates, Renovate config) stays.
+
+**Why:** our changes stay a readable stack on top of upstream and are re-resolved commit by
+commit; only the owner uses the branch, so rewriting it is safe. The workflows are upstream's CI,
+release and Crowdin jobs, not ours.
+
+**Cost:** every update rewrites `origin/dj-dev-16`; anyone else tracking it would need to reset.
+
+## 25. Side-by-side release build: `-PdjSideBySide`
+
+**Decided (2026-10-17, owner):** a release build with `-PdjSideBySide` gets package
+`app.lawnchair.dj` and the name "Lawnchair DJ", so the 16 build installs on the owner's Pixel
+next to the existing Lawnchair. Without the flag the release build is unchanged. Signed with the
+owner's release key (`keystore.properties`, owner's choice).
+
+**Why:** try 16 on the real phone without replacing the daily launcher.
+
+**Cost:** one block in `build.gradle`; the two installs keep separate settings and layouts.

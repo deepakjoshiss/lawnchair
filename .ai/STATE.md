@@ -33,7 +33,8 @@ The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order
   AIDL Bridge installed, Show feed on. Folder stack on, footer on, label colour auto.
 - Helpers in `.ai/bin/`: `emu-ui` (texts / tap "<text>" / waitfor / shot), `emu-launches`
   (launch apps from the drawer N times), `pred-counts` (decode the predictions DataStore —
-  not `strings`), `make-dummy-apps` (build the dummy apps). ffmpeg/ffprobe: see
+  not `strings`), `make-dummy-apps` (build the dummy apps), `emu-drag` (long-press drag),
+  `emu-slider` (set a settings slider by tapping), `emu-wallpaper-x` (wallpaper offset). ffmpeg/ffprobe: see
   `~/.claude/CLAUDE.md` (not on PATH).
 - Gestures: `adb shell input tap/swipe` work; double tap does not; wait for the dock's "Phone"
   label before gestures. Open the drawer via long-press on home → "Apps list" (a swipe was
@@ -52,7 +53,4 @@ The 15 implementation is in `~/work/apps/lawnchair-15-ref` (DECISIONS #3). Order
 
 ## open questions (owner)
 
-1. **How do we take upstream updates?** Merge `upstream/16-dev` into `dj-dev-16`, or rebase onto
-   it. Rebase keeps our changes as a clean stack on top; merge never rewrites pushed history.
-2. **Workflows:** 15 deleted `.github/workflows` (`84ab193763`). Delete them again on 16, or
-   leave upstream's in place?
+None. Upstream updates: rebase (DECISIONS #24, UPSTREAM.md).

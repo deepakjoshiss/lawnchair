@@ -14,6 +14,12 @@ reviewed-to: 85335d904a1c8b9790e40c581226684c59166297
 commit whose changes to our touchpoints have been triaged (`/track-upstream`). Both are read by
 `.claude/skills/orient/probe.sh`; keep the `key: <full sha>` shape.
 
+## Taking upstream updates: rebase (DECISIONS #24)
+
+`git rebase upstream/16-dev` on `dj-dev-16`, so our commits stay a stack on top of upstream; then
+update `base` above and force-push `origin/dj-dev-16` with `--force-with-lease` (only with the
+owner's explicit permission for that push). Never merge `upstream/16-dev` into `dj-dev-16`.
+
 ## Touchpoints
 
 Not listed by hand, derived on demand:

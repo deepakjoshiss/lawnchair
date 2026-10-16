@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Open a Lawnchair settings page, find the slider under <label>, tap it at x, print the new value,
+# go home. Tap, don't drag: a drag starting near the left edge is taken as the system back gesture.
+# A settings page may reopen at the settings root; pass the root entry to tap as <entry>.
+# usage: emu-slider <route> <entry> "<label>" <x>   e.g. emu-slider home-screen "Home screen" "Label size" 600
+set -u
+e() { adb -s "${DEV:-emulator-5554}" "$@"; }
+dir=$(dirname "$0")
+e shell am start -W -a android.intent.action.VIEW -d "lawnchair://settings/$1" >/dev/null; sleep 2
+"$dir/emu-ui" texts | grep -q 'text="General"' && { "$dir/emu-ui" tap "$2" >/dev/null; sleep 2; }
+for _ in 1 2 3; do e shell input swipe 540 700 540 2000 200; done; sleep 0.5
+y=""
+for _ in 1 2 3 4 5 6 7 8; do
+  y=$(e exec-out uiautomator dump /dev/tty 2>/dev/null | grep -o '<node [^>]*>' | grep -A4 "text=\"$3\"" \
+    | grep SeekBar | head -1 | grep -oE 'bounds="[^"]*"' | grep -oE '[0-9]+' | sed -n '2p;4p' | paste -sd+ - | bc)
+  [ -n "$y" ] && [ "$y" -lt 4400 ] && [ "$y" -gt 600 ] && break
+  y=""; e shell input swipe 540 1700 540 1300 500; sleep 1
+done
+[ -z "$y" ] && { echo "slider '$3' not found"; exit 1; }
+e shell input tap "$4" $(( y / 2 )); sleep 1.2
+e exec-out uiautomator dump /dev/tty 2>/dev/null | grep -o 'text="[^"]*"' | grep -A1 "text=\"$3\"" | tail -1
+e shell input keyevent KEYCODE_HOME
