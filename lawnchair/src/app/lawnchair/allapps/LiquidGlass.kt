@@ -1,6 +1,8 @@
 package app.lawnchair.allapps
 
+import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
+import android.graphics.Shader
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -68,4 +70,54 @@ fun Modifier.liquidGlass(cornerRadiusPx: Float, highlight: Float, shade: Float, 
         drawContent()
         drawRect(brush)
     }
+}
+
+/**
+ * Refraction for scroll-under (step 4): within [band] px of the pill's edge, content is sampled
+ * further inside, so apps behind the rim bend like light through a lens, with a slight colour
+ * split. Applied after the blur. Coordinates are the backdrop layer's, the pill at [x], [y].
+ */
+private const val LIQUID_REFRACT_AGSL = """
+uniform shader content;
+uniform float2 origin;
+uniform float2 size;
+uniform float radius;
+uniform float band;
+uniform float strength;
+
+float sdRound(float2 p, float2 b, float r) {
+    float2 q = abs(p) - b + r;
+    return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+}
+
+half4 main(float2 xy) {
+    float2 h = size * 0.5;
+    float2 p = xy - origin - h;
+    float d = sdRound(p, h, radius);
+    if (d > 0.0) return content.eval(xy);
+
+    float2 n = normalize(float2(
+        sdRound(p + float2(1.0, 0.0), h, radius) - sdRound(p - float2(1.0, 0.0), h, radius),
+        sdRound(p + float2(0.0, 1.0), h, radius) - sdRound(p - float2(0.0, 1.0), h, radius)) + 0.00001);
+    float t = clamp(1.0 + d / band, 0.0, 1.0);
+    float2 off = -n * strength * band * t * t;
+
+    half4 g = content.eval(xy + off);
+    return half4(content.eval(xy + off * 1.08).r, g.g, content.eval(xy + off * 0.92).b, g.a);
+}
+"""
+
+@RequiresApi(33)
+fun liquidRefraction(blurPx: Float, x: Float, y: Float, width: Float, height: Float, band: Float): RenderEffect {
+    val shader = RuntimeShader(LIQUID_REFRACT_AGSL).apply {
+        setFloatUniform("origin", x, y)
+        setFloatUniform("size", width, height)
+        setFloatUniform("radius", height / 2f)
+        setFloatUniform("band", band)
+        setFloatUniform("strength", 1.2f)
+    }
+    return RenderEffect.createChainEffect(
+        RenderEffect.createRuntimeShaderEffect(shader, "content"),
+        RenderEffect.createBlurEffect(blurPx, blurPx, Shader.TileMode.DECAL),
+    )
 }

@@ -1,6 +1,6 @@
 # drawer-glass: glass search bar in the full-screen app drawer
 
-status: wip (steps 1–3 done 2026-10-19; step 4 open) — new on 16, no 15 version. DECISIONS #29, #30.
+status: wip (steps 1–4 built 2026-10-19; owner's Pixel sign-off open) — new on 16, no 15 version. DECISIONS #29–#32.
 
 ## What the user sees
 
@@ -20,7 +20,7 @@ Full-screen drawer only (DECISIONS #28); the bottom sheet keeps upstream's pill.
 2. Liquid glass light effects — done (DECISIONS #30), `LiquidGlass.kt`.
 3. Scroll-under — done (DECISIONS #30), `DrawerScrollUnder.kt`: lists and suggestion rows run to
    the screen top; blurred only in the pill (24dp) and behind the status bar (72dp).
-4. Liquid glass refraction of the scroll-under backdrop — open.
+4. Liquid glass refraction of the scroll-under backdrop — done (DECISIONS #32), 1.2 × 24dp.
 
 ## Acceptance
 
@@ -36,3 +36,7 @@ Full-screen drawer only (DECISIONS #28); the bottom sheet keeps upstream's pill.
   status bar → pill 63px (24dp), pill → box bottom 32px (12dp). `95-gap-rest.png`.
 - Status bar tint (DECISIONS #31): at ~⅓ box-height scroll the strip read 22,22,28 vs 25,26,31
   unscrolled (≈12 % black, as expected); `97`–`99-tint-*.png`.
+- Refraction (DECISIONS #32): an exaggerated 2.4 × 40dp build changed only the rim band (diff 53
+  at the edge, 0 in the middle and outside), so the lens is applied and local; `f51/refract-3.png`.
+- Light theme (2026-10-19): Liquid hint 5.6:1 at rest, 5.4:1 worst over frosted apps; status bar
+  tint is white (strip 231 → 245 when scrolled), status icons stay black. `104`–`106-light-liquid-*`.

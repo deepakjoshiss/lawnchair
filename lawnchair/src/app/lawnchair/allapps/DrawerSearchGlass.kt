@@ -52,7 +52,7 @@ object DrawerSearchGlass {
     fun hintColor(launcher: LawnchairLauncher) = HintColor.resolveColor(launcher)
 
     /** Liquid glass needs AGSL (Android 13+); below that, or when not chosen, Frost. */
-    private fun isLiquid(launcher: LawnchairLauncher) = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+    fun isLiquid(launcher: LawnchairLauncher) = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
         PreferenceManager2.getInstance(launcher).drawerSearchGlass.firstCached() == LIQUID
 
     fun isDark(launcher: LawnchairLauncher) = UiColorMode(Themes.getAttrInteger(launcher, R.attr.uiColorMode)).isDarkTheme

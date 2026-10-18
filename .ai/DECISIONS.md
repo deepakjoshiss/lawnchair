@@ -421,3 +421,15 @@ height (76dp).
 **Why:** status icons stay readable over app icons passing behind them.
 
 **Cost:** drawn by the scroll-under backdrop; no new hooks. Light theme not checked on screen.
+
+## 32. Liquid glass refraction under the pill; status bar tint up to 60 %
+
+**Decided (2026-10-19, owner):** with Liquid glass (Android 13+) and scroll-under both on, a second
+AGSL pass bends the blurred apps within 24dp of the pill's rim (strength 1.2, slight colour split),
+like the edge of a lens; chosen over 0.6 × 16dp (unnoticeable) and 2.4 × 40dp (heavy fringes).
+The status bar tint (DECISIONS #31) now reaches 60 % instead of 40 %.
+
+**Why:** owner's look.
+
+**Cost:** runs on the backdrop's small pill layer only; the lens is rebuilt when the pill changes
+size. Not measured on a phone.

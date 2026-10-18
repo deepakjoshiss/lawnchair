@@ -38,10 +38,11 @@ object DrawerScrollUnder {
 
     private const val PILL_BLUR_DP = 24f
     private const val STATUS_BAR_BLUR_DP = 72f // owner's choice
+    private const val REFRACT_BAND_DP = 24f
 
     // Status bar tint behind the status icons: black under the dark theme's white icons, white
     // under the light theme's dark ones. Fades in over one search box height of scrolling.
-    private const val STATUS_BAR_TINT_ALPHA = .4f
+    private const val STATUS_BAR_TINT_ALPHA = .6f // owner: 60 % at full scroll
 
     @JvmStatic
     fun isOn(context: Context, dp: DeviceProfile) = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -151,6 +152,13 @@ object DrawerScrollUnder {
             color = if (DrawerSearchGlass.isDark(apps.context.launcher)) Color.BLACK else Color.WHITE
         }
 
+        // Liquid glass bends the frosted apps at the pill's rim (Android 13+, step 4).
+        private val refract = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            DrawerSearchGlass.isLiquid(apps.context.launcher)
+        private val refractBand = Utilities.dpToPx(REFRACT_BAND_DP).toFloat()
+        private var refractW = 0f
+        private var refractH = 0f
+
         private fun blurNode(name: String, radius: Int) = RenderNode(name).apply {
             setRenderEffect(RenderEffect.createBlurEffect(radius.toFloat(), radius.toFloat(), Shader.TileMode.DECAL))
         }
@@ -193,6 +201,15 @@ object DrawerScrollUnder {
             // Each layer records only its own area plus the blur's reach, so the blur stays small.
             record(statusNode, rv, -statusBlur * 2, screenTop - statusBlur * 2, width + statusBlur * 2, (statusBottom + statusBlur * 2).toInt())
             record(pillNode, rv, (pill.left - pillBlur * 2).toInt(), (pill.top - pillBlur * 2).toInt(), (pill.right + pillBlur * 2).toInt(), (pill.bottom + pillBlur * 2).toInt())
+            if (refract && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                (pill.width() != refractW || pill.height() != refractH)
+            ) {
+                // The pill changes size while focusing; the lens follows it.
+                refractW = pill.width()
+                refractH = pill.height()
+                val m = (pillBlur * 2).toFloat()
+                pillNode.setRenderEffect(liquidRefraction(pillBlur.toFloat(), m, m, refractW, refractH, refractBand))
+            }
 
             canvas.save()
             canvas.clipRect(0f, screenTop.toFloat(), width.toFloat(), statusBottom)
