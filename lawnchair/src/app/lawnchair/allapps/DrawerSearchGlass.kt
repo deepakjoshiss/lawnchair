@@ -55,7 +55,7 @@ object DrawerSearchGlass {
     private fun isLiquid(launcher: LawnchairLauncher) = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
         PreferenceManager2.getInstance(launcher).drawerSearchGlass.firstCached() == LIQUID
 
-    private fun isDark(launcher: LawnchairLauncher) = UiColorMode(Themes.getAttrInteger(launcher, R.attr.uiColorMode)).isDarkTheme
+    fun isDark(launcher: LawnchairLauncher) = UiColorMode(Themes.getAttrInteger(launcher, R.attr.uiColorMode)).isDarkTheme
 
     fun qsbStyle(launcher: LawnchairLauncher, themed: Boolean): QsbStyle {
         val dark = isDark(launcher)

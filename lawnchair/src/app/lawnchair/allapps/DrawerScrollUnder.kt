@@ -2,6 +2,8 @@ package app.lawnchair.allapps
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.RenderEffect
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
+import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.firstCached
 import com.android.launcher3.DeviceProfile
@@ -35,6 +38,10 @@ object DrawerScrollUnder {
 
     private const val PILL_BLUR_DP = 24f
     private const val STATUS_BAR_BLUR_DP = 72f // owner's choice
+
+    // Status bar tint behind the status icons: black under the dark theme's white icons, white
+    // under the light theme's dark ones. Fades in over one search box height of scrolling.
+    private const val STATUS_BAR_TINT_ALPHA = .4f
 
     @JvmStatic
     fun isOn(context: Context, dp: DeviceProfile) = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -140,6 +147,9 @@ object DrawerScrollUnder {
         private val rvLoc = IntArray(2)
         private val pill = RectF()
         private val pillPath = Path()
+        private val tintPaint = Paint().apply {
+            color = if (DrawerSearchGlass.isDark(apps.context.launcher)) Color.BLACK else Color.WHITE
+        }
 
         private fun blurNode(name: String, radius: Int) = RenderNode(name).apply {
             setRenderEffect(RenderEffect.createBlurEffect(radius.toFloat(), radius.toFloat(), Shader.TileMode.DECAL))
@@ -188,6 +198,13 @@ object DrawerScrollUnder {
             canvas.clipRect(0f, screenTop.toFloat(), width.toFloat(), statusBottom)
             canvas.drawRenderNode(statusNode)
             canvas.restore()
+
+            val boxHeight = searchContainer.height.coerceAtLeast(1)
+            val fade = (apps.activeRecyclerView.computeVerticalScrollOffset().toFloat() / boxHeight).coerceIn(0f, 1f)
+            if (fade > 0f) {
+                tintPaint.alpha = (STATUS_BAR_TINT_ALPHA * fade * 255).toInt()
+                canvas.drawRect(0f, screenTop.toFloat(), width.toFloat(), statusBottom, tintPaint)
+            }
 
             val r = pill.height() / 2f
             pillPath.rewind()

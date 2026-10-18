@@ -410,3 +410,14 @@ list position, list padding, backdrop attach, `drawChild`; `FloatingHeaderView`:
 row scroll-out). Emulator frame times unchanged (≈27 % janky frames either way, emulator-bound);
 not measured on a phone. Status-bar icons sit over app icons blurred at 72dp. Next (step 4, not
 built): refraction of the scroll-under backdrop by the Liquid glass shader.
+
+## 31. Scroll-under: status bar tint fades in with scrolling
+
+**Decided (2026-10-19, owner):** with scroll-under on, the status bar strip gets a tint over its
+72dp blur: black 40 % on dark themes, white 40 % on light themes (behind white / dark status icons).
+Opacity 0 at the top of the list, rising linearly to full once the list has scrolled one search box
+height (76dp).
+
+**Why:** status icons stay readable over app icons passing behind them.
+
+**Cost:** drawn by the scroll-under backdrop; no new hooks. Light theme not checked on screen.

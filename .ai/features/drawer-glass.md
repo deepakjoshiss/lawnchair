@@ -34,3 +34,5 @@ Full-screen drawer only (DECISIONS #28); the bottom sheet keeps upstream's pill.
   unchanged, rows and apps pass under pill and status bar (`88`, `89`, `94-sb72.png`); fling to end
   and back is pixel-identical at rest (mean diff 0; control vs scrolled: 31). Spacing measured:
   status bar → pill 63px (24dp), pill → box bottom 32px (12dp). `95-gap-rest.png`.
+- Status bar tint (DECISIONS #31): at ~⅓ box-height scroll the strip read 22,22,28 vs 25,26,31
+  unscrolled (≈12 % black, as expected); `97`–`99-tint-*.png`.
