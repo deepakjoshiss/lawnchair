@@ -350,6 +350,7 @@ public class DeviceProfile {
     private float workspacePaddingVerticalFactor;
     private float widgetPaddingFactor;
     private int homeBottomPaddingDp; // DJ(home-grid)
+    private boolean djDrawerSheet; // DJ(drawer-look)
     private float drawerPaddingTopFactor;
     private PreferenceManager2 preferenceManager2 = null;
 
@@ -379,6 +380,8 @@ public class DeviceProfile {
         // DJ(home-grid): bottom padding multiplier, ~1dp per step
         homeBottomPaddingDp = Utilities.boundToRange(PreferenceCacheExtensionsKt
                 .firstCached(preferenceManager2.getHomeBottomPaddingMultiplier()), -100, 100);
+        // DJ(drawer-look): phones get 15's full-screen drawer unless the sheet is chosen
+        djDrawerSheet = PreferenceCacheExtensionsKt.firstCached(preferenceManager2.getDrawerSheet());
         this.inv = inv;
 
         mDeviceProperties = DeviceProperties.Factory.createDeviceProperties(
@@ -1474,7 +1477,8 @@ public class DeviceProfile {
 
     /** Whether All Apps should be presented on a bottom sheet. */
     public boolean shouldShowAllAppsOnSheet() {
-        return mDeviceProperties.isTablet() || Flags.allAppsSheetForHandheld();
+        // DJ(drawer-look): handheld sheet only when the "Bottom sheet drawer" setting is on
+        return mDeviceProperties.isTablet() || (Flags.allAppsSheetForHandheld() && djDrawerSheet);
     }
 
     private void setupAllAppsStyle(Context context) {

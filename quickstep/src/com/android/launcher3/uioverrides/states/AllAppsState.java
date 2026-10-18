@@ -180,7 +180,8 @@ public class AllAppsState extends LauncherState {
     }
 
     private static boolean isWorkspaceVisible(DeviceProfile deviceProfile) {
-        return deviceProfile.getDeviceProperties().isTablet() || (Flags.allAppsSheetForHandheld() && Flags.allAppsBlur());
+        // DJ(drawer-look): follow the drawer setting, not the flag alone
+        return deviceProfile.getDeviceProperties().isTablet() || (deviceProfile.shouldShowAllAppsOnSheet() && Flags.allAppsBlur());
     }
 
     @Override
@@ -210,8 +211,9 @@ public class AllAppsState extends LauncherState {
     public ScrimColors getWorkspaceScrimColor(Launcher launcher) {
         int backgroundColor;
         if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
-            // Always use an opaque scrim if there's no sheet.
-            backgroundColor = ColorTokens.AllAppsScrimColor.resolveColor(launcher);
+            // DJ(drawer-look): 15's full-screen background: theme colour with the drawer colour and opacity settings
+            backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher,
+                ColorTokens.ColorBackground.resolveColor(launcher));
         } else if (!Flags.allAppsBlur()) {
             // If there's a sheet but no blur, use the old scrim color.
             backgroundColor = LawnchairUtilsKt.getAllAppsBackgroundColor(launcher, 

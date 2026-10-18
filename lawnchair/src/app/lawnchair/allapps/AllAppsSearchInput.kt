@@ -70,7 +70,6 @@ import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.BlurUtils
 import java.util.Locale
-import kotlin.math.max
 import kotlinx.coroutines.launch
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
@@ -515,7 +514,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 launcher.deviceProfile.shouldShowAllAppsOnSheet() ->
                     resources.getDimensionPixelSize(R.dimen.bottom_sheet_handle_area_height)
 
-                else -> max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
+                // DJ(drawer-look): full-screen drawer starts below the status bar; the old
+                // insets.top - 20dp tucked the pill under a tall (52dp) status bar
+                else -> insets.top
             }
         }
         requestLayout()

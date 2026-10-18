@@ -40,3 +40,14 @@ look (outline, darker translucent pill, smaller text) recreated on it.
   **48 %** and **23 %** (0.475 / 0.225 rounded for display); with the old 0.1 step they would snap
   to 50 % / 20 %. `41-drawer-opacity-step.png`. Row height, indent and icon size use the same
   control; their new steps are checked in code only.
+
+## Result (2026-10-18): full-screen drawer (DECISIONS #28)
+
+- "Bottom sheet drawer" setting (App drawer → Style), default off = 15's full-screen drawer.
+- Verified on `VinPix_Dev`: sheet off/on switches the drawer (`58-sheet-on.png`, `59-sheet-off.png`);
+  background at 0 % / 100 % opacity reads RGB 18,18,18 (wallpaper) / 26,27,32 (#1A1B20);
+  wallpaper blur visible at 50 % opacity with "Wallpaper depth effect" on
+  (`52-drawer-50pct.png` sharp with it off, `55-drawer-50pct-depth.png` blurred);
+  search container top at 136 px = status bar bottom (was 83 px);
+  wallpaper zoom during a slow drag climbs 0 → 0.6 in steps ≤ 0.03 (old curve: 0.3 → 0.6 jump,
+  from code). Installed on the owner's Pixel as Lawnchair DJ before the zoom fix and band removal.

@@ -96,6 +96,12 @@ fun AppDrawerPreferences(
             AppDrawerHapticFeedbackPreference()
         }
         PreferenceGroup(heading = stringResource(R.string.style)) {
+            // DJ(drawer-look)
+            SwitchPreference(
+                label = stringResource(id = R.string.dj_drawer_sheet),
+                description = stringResource(id = R.string.dj_drawer_sheet_description),
+                adapter = prefs2.drawerSheet.getAdapter(),
+            )
             ColorPreference(preference = prefs2.appDrawerBackgroundColor)
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),

@@ -85,8 +85,9 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             Interpolators.clampToProgress(FINAL_FRAME, 0f, ALL_APPS_STATE_TRANSITION_MANUAL);
 
     // The blur to All Apps is set to be complete when the interpolator is at 0.5.
-    private static final Interpolator BLUR_ADJUSTED =
-            Interpolators.mapToProgress(LINEAR, 0f, ALL_APPS_FULL_DEPTH_PROGRESS);
+    // DJ(drawer-look): reach full depth smoothly; the upstream curve stopped at half depth and
+    // snapped to full when the workspace hid, a visible wallpaper zoom jump under a see-through drawer
+    private static final Interpolator BLUR_ADJUSTED = LINEAR;
     public static final Interpolator BLUR_ATOMIC =
             Interpolators.clampToProgress(
                     BLUR_ADJUSTED, WORKSPACE_MOTION_START_ATOMIC, ALL_APPS_STATE_TRANSITION_ATOMIC);

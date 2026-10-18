@@ -349,3 +349,24 @@ default. The setting stays in the experimental font group.
 
 **Cost:** one item removed from upstream's `BaseIcon.AllApps` style; default and reset in the
 Lawnchair layer. Translations of "General" are not used for this label any more.
+
+## 28. Full-screen app drawer by default; 16's bottom sheet behind a setting
+
+**Decided (2026-10-18, owner):** phones get 15's full-screen drawer (slides up, home fades and
+shrinks) by default. New App drawer setting "Bottom sheet drawer" (`dj_drawer_sheet`, default off)
+brings back 16's sheet. Fixes that came with it, full-screen only:
+- background is 15's (theme background + drawer colour and opacity settings), not the 40 % grey
+  scrim meant for the sheet's blur;
+- search bar starts below the status bar (15's `insets.top - 20dp` hid it under a 52dp status bar);
+- wallpaper zoom reaches full depth smoothly during the open swipe (upstream's curve snapped from
+  half to full depth at 40 % of the swipe; on 15 the depth cap of the dropped depth-blur hid it);
+- no header band behind the search bar when the list scrolls (the "Search bar background"
+  setting no longer applies to the full-screen drawer).
+
+**Why:** owner prefers 15's drawer layout and motion; caddy, drawer folders and search do not
+depend on the sheet.
+
+**Cost:** `allAppsSheetForHandheld` is read through the setting in `DeviceProfile`, `LauncherState`
+and `AllAppsState`; `allAppsBlur` stays on (it also drives blur for taskbar and overview). Wallpaper
+blur behind the drawer needs Home screen → "Wallpaper depth effect" on. The full-screen phone path
+gets little upstream testing since September 2025.

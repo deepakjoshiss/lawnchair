@@ -655,6 +655,9 @@
     <string name="dj_folder_stack_icon">Stack icon</string>
     <string name="dj_folder_show_footer">Show footer</string>
     <string name="dj_folder_label_color">Label color</string>
+    <!-- DJ(drawer-look) -->
+    <string name="dj_drawer_sheet">Bottom sheet drawer</string>
+    <string name="dj_drawer_sheet_description">Open the app drawer as a sheet over the blurred home screen. Off: full screen</string>
     <!-- DJ(home-grid) -->
     <string name="dj_bottom_padding_multiplier">Bottom padding multiplier</string>
     <!-- DJ(wallpaper-shift) -->

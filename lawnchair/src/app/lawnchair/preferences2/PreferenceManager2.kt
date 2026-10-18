@@ -233,6 +233,13 @@ class PreferenceManager2 @Inject constructor(
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_app_drawer_bg_color)),
     )
 
+    // DJ(drawer-look): off = 15's full-screen drawer (default), on = 16's bottom sheet
+    val drawerSheet = preference(
+        key = booleanPreferencesKey(name = "dj_drawer_sheet"),
+        defaultValue = false,
+        onSet = { reloadHelper.restart() },
+    )
+
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),

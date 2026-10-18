@@ -239,7 +239,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         pref2 = PreferenceManager2.getInstance(mActivityContext);
         pref = PreferenceManager.getInstance(mActivityContext);
         
-        mScrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context);
+        // DJ(drawer-look): full-screen drawer background, as on 15 (only read when there's no sheet)
+        mScrimColor = ColorTokens.ColorBackground.resolveColor(context);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
         mHeaderProtectionColor = ColorTokens.AllAppsHeaderProtectionColor.resolveColor(context);
@@ -953,16 +954,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     protected int getHeaderColor(float blendRatio) {
         if (!mActivityContext.getDeviceProfile().shouldShowAllAppsOnSheet()) {
-            float opacity = mSearchContainer.getAlpha();
-            var showHeaderBackground = PreferenceCacheExtensionsKt.firstCached(
-                pref2.getAppDrawerSearchBarBackground(), pref2);
-            if (showHeaderBackground) {
-                opacity = pref.getDrawerOpacity().get();
-            }
-            opacity = MathUtils.clamp(opacity, 0f, 1f);
-            return ColorUtils.setAlphaComponent(
-                    ColorUtils.blendARGB(getBackgroundColor(), mHeaderProtectionColor, blendRatio),
-                    Math.round(opacity * 255));
+            // DJ(drawer-look): no header band behind the search bar in the full-screen drawer
+            return Color.TRANSPARENT;
         }
         return isBackgroundBlurEnabled()
                 ? ColorUtils.setAlphaComponent(mHeaderProtectionColor, (int) (blendRatio * 255))
@@ -971,7 +964,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     private int getBackgroundColor() {
         return mActivityContext.getDeviceProfile().shouldShowAllAppsOnSheet()
-                ? getBottomSheetBackgroundColor() : mScrimColor;
+                // DJ(drawer-look): match the scrim drawn by AllAppsState (drawer colour setting)
+                ? getBottomSheetBackgroundColor()
+                : LawnchairUtilsKt.getAllAppsBackgroundColor(mActivityContext, mScrimColor);
     }
 
     // LC-Note: Hey! We cache this! see updateBottomSheetBackgroundColor() for more details.
