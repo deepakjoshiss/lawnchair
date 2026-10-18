@@ -128,6 +128,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         hint = ViewCompat.requireViewById(this, R.id.hint)
 
         input = ViewCompat.requireViewById(this, R.id.input)
+        setSearchHint() // DJ(drawer-look)
+        if (DrawerSearchGlass.isActive(launcher)) input.setHintTextColor(DrawerSearchGlass.hintColor(launcher)) // DJ(drawer-glass)
 
         qsbShell = ViewCompat.requireViewById(this, R.id.qsb_shell)
 
@@ -190,15 +192,20 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 )
 
                 // Ignore other theme attributes to preserve existing behavior
-                val style = buildQsbStyle(
-                    context = context,
-                    themed = themedQsb,
-                    backgroundColor = backgroundColor,
-                    backgroundAlpha = backgroundAlpha,
-                    cornerRadius = 1f,
-                    strokeColor = null,
-                    strokeWidth = 0f,
-                )
+                val style = if (DrawerSearchGlass.isActive(launcher)) {
+                    // DJ(drawer-glass): glass pill in the full-screen drawer, kept while typing
+                    DrawerSearchGlass.frostStyle(launcher, themedQsb)
+                } else {
+                    buildQsbStyle(
+                        context = context,
+                        themed = themedQsb,
+                        backgroundColor = backgroundColor,
+                        backgroundAlpha = backgroundAlpha,
+                        cornerRadius = 1f,
+                        strokeColor = null,
+                        strokeWidth = 0f,
+                    )
+                }
 
                 val actions = QsbActions(
                     onQsbClick = {
@@ -273,11 +280,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         input.onFocusChangeListener = { _, hasFocus ->
             if (hasFocus) {
-                if (prefs2.searchAlgorithm.firstCached() != LawnchairSearchAlgorithm.APP_SEARCH) {
-                    input.setHint(R.string.all_apps_device_search_hint)
-                } else {
-                    input.setHint(R.string.all_apps_search_bar_hint)
-                }
+                setSearchHint()
 
                 if (input.text.toString().isEmpty() && isDirectFocus) {
                     searchAlgorithm?.doZeroStateSearch(this)
@@ -299,7 +302,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     animatePadding(currentPaddingLeft, currentPaddingRight)
                 }
                 focusedResultTitle = ""
-                input.setHint("")
+                setSearchHint() // DJ(drawer-look): keep the hint when empty and unfocused (was "")
                 hint.text = ""
             }
 
@@ -345,6 +348,16 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             initialPaddingLeft = padding
             initialPaddingRight = padding
             setPadding(padding, paddingTop, padding, paddingBottom)
+        }
+    }
+
+    // DJ(drawer-look): upstream set the hint only on focus and cleared it on blur, so an empty,
+    // unfocused bar showed no text; also set at inflate
+    private fun setSearchHint() {
+        if (prefs2.searchAlgorithm.firstCached() != LawnchairSearchAlgorithm.APP_SEARCH) {
+            input.setHint(R.string.all_apps_device_search_hint)
+        } else {
+            input.setHint(R.string.all_apps_search_bar_hint)
         }
     }
 

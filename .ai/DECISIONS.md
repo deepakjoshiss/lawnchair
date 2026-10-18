@@ -370,3 +370,21 @@ depend on the sheet.
 and `AllAppsState`; `allAppsBlur` stays on (it also drives blur for taskbar and overview). Wallpaper
 blur behind the drawer needs Home screen → "Wallpaper depth effect" on. The full-screen phone path
 gets little upstream testing since September 2025.
+
+## 29. Drawer search bar: glass pill, hint always shown, 18dp icon
+
+**Decided (2026-10-18, owner):** in the full-screen drawer the search pill is glass. Frost
+(this entry): dark theme white tint 14 % + white edge 24 %; light theme black tint 6 % + black edge
+12 % (a white tint measured 240 on 238 there: invisible); tint doubles without wallpaper blur; the
+pill stays the same while typing. Its hint colour is its own (white 80 % / black 60 %), and the
+search icon is 18dp (pill default 24dp). The hint ("Search apps" / device-search wording) shows
+whenever the bar is empty, both drawer modes (upstream `5ae811d44d` set it only on focus). Next,
+behind settings in Search bar → App drawer: "Glass style" Frost / Liquid glass (Android 13+, AGSL
+light effects; refraction only over app content, the wallpaper is another window) and "Scroll apps
+under search bar" (Android 12+). Sheet mode keeps upstream's pill.
+
+**Why:** owner's look after the header band was removed (DECISIONS #28).
+
+**Cost:** Lawnchair layer plus a `startIconSize` field on upstream's `QsbStyle` (default 24dp, dock
+unchanged). Exception: dark mode + bright wallpaper + see-through drawer gives a mid-grey pill
+(134) where white text reaches only 3.6:1 and the hint 2.9:1; on a dark wallpaper the hint is ~5:1.

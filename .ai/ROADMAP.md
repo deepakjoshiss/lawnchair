@@ -45,6 +45,7 @@ Status: `todo` → `spec` (spec written) → `wip` → `done` (acceptance passed
 | 13 | `dock-poweramp` | Poweramp music widget docked in the hotseat | `PowerampWidgetContainerView.kt`, `PowerampWidgetHostView.kt` | dropped |
 | 14 | `android16-fix` | 15-era fix for running on Android 16 (`cf19020393`); likely obsolete on a 16 base | to confirm | dropped |
 | 15 | `home-text-shadow` | Lighter soft shadow on home-screen text (`workspaceAmbientShadowColor` `#40000000` → `#10000000`, light-text theme only). Decide from before/after screenshots | `res/values/styles.xml` (`e5ed825962`) | done |
+| 16 | `drawer-glass` | New on 16: glass search bar in the full-screen drawer: Frost, Liquid glass (Android 13+ shader), scroll-under lens (DECISIONS #29) | `DrawerSearchGlass.kt`, `AllAppsSearchInput.kt`, `LawnQsbUi.kt` | wip |
 
 Order is the table order: Lawnchair-layer features first, AOSP-heavy ones later, the Poweramp
 dock last. Reorder here, not in STATE.

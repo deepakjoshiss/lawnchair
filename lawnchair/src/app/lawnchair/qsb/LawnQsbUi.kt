@@ -44,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.GoogleGo
@@ -103,6 +104,8 @@ data class QsbStyle(
     @param:ColorInt val strokeColor: Int,
     val strokeWidthPx: Float,
     val cornerRadiusPx: Float,
+    // DJ(drawer-glass): start (search) icon size; the drawer's glass pill uses a smaller one
+    val startIconSize: Dp = 24.dp,
 )
 
 /**
@@ -389,7 +392,7 @@ fun LawnQsbUi(
                     method = state.startIcon.method,
                 ),
                 contentDescription = state.startIcon.contentDescription,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(style.startIconSize), // DJ(drawer-glass): was 24.dp
             )
         }
 
