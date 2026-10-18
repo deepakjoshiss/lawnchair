@@ -42,6 +42,7 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
+import app.lawnchair.allapps.DrawerScrollUnder;
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 
 import java.util.ArrayList;
@@ -340,8 +341,12 @@ public class FloatingHeaderView extends LinearLayout implements
         int maxTranslation = mMaxTranslation - mCurrentRV.getSavedScrollPosition();
         int uncappedTranslationY = mTranslationY;
         mTranslationY = Math.max(mTranslationY, -maxTranslation);
+        // DJ(drawer-glass): scroll-under: rows keep moving up to the top of the screen
+        int scrollUnder = mTabsHidden ? DrawerScrollUnder.extraTop(getContext(),
+                ActivityContext.lookupContext(getContext()).getDeviceProfile()) : 0;
 
-        if (mFloatingRowsCollapsed || uncappedTranslationY < mTranslationY - getPaddingTop()) {
+        if (mFloatingRowsCollapsed
+                || uncappedTranslationY < mTranslationY - getPaddingTop() - scrollUnder) {
             // we hide it completely if already capped (for opening search anim)
             for (FloatingHeaderRow row : mAllRows) {
                 row.setVerticalScroll(0, true /* isScrolledOut */);
@@ -361,6 +366,11 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mRVClip.top = mTabsHidden || mFloatingRowsCollapsed ? clipTop : 0;
         mHeaderClip.top = clipTop;
+        if (scrollUnder > 0) {
+            // DJ(drawer-glass): scroll-under: lists and rows run up behind the status bar
+            mRVClip.top = 0;
+            mHeaderClip.top = clipTop - scrollUnder;
+        }
         // clipping on a draw might cause additional redraw
         setClipBounds(mHeaderClip);
         if (mMainRV != null) {

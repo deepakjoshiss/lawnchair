@@ -194,7 +194,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 // Ignore other theme attributes to preserve existing behavior
                 val style = if (DrawerSearchGlass.isActive(launcher)) {
                     // DJ(drawer-glass): glass pill in the full-screen drawer, kept while typing
-                    DrawerSearchGlass.frostStyle(launcher, themedQsb)
+                    DrawerSearchGlass.qsbStyle(launcher, themedQsb)
                 } else {
                     buildQsbStyle(
                         context = context,
@@ -248,6 +248,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                             state = state,
                             style = style,
                             actions = actions,
+                            // DJ(drawer-glass): Liquid glass shader, or nothing
+                            modifier = DrawerSearchGlass.pillModifier(launcher, style),
                         )
                     }
                 }
@@ -528,8 +530,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     resources.getDimensionPixelSize(R.dimen.bottom_sheet_handle_area_height)
 
                 // DJ(drawer-look): full-screen drawer starts below the status bar; the old
-                // insets.top - 20dp tucked the pill under a tall (52dp) status bar
-                else -> insets.top
+                // insets.top - 20dp tucked the pill under a tall (52dp) status bar.
+                // DJ(drawer-glass): plus a gap
+                else -> insets.top + resources.getDimensionPixelSize(R.dimen.dj_drawer_search_top_gap)
             }
         }
         requestLayout()

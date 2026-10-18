@@ -658,6 +658,12 @@
     <!-- DJ(drawer-look) -->
     <string name="dj_drawer_sheet">Bottom sheet drawer</string>
     <string name="dj_drawer_sheet_description">Open the app drawer as a sheet over the blurred home screen. Off: full screen</string>
+    <!-- DJ(drawer-glass) -->
+    <string name="dj_drawer_glass_style">Glass style</string>
+    <string name="dj_drawer_glass_frost">Frost</string>
+    <string name="dj_drawer_glass_liquid">Liquid glass</string>
+    <string name="dj_drawer_scroll_under">Scroll apps under search bar</string>
+    <string name="dj_drawer_scroll_under_description">Apps blur as they pass behind the search bar</string>
     <!-- DJ(home-grid) -->
     <string name="dj_bottom_padding_multiplier">Bottom padding multiplier</string>
     <!-- DJ(wallpaper-shift) -->

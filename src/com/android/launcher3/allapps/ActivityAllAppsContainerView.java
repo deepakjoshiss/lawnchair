@@ -115,6 +115,7 @@ import java.util.stream.Stream;
 
 import app.lawnchair.preferences2.PreferenceCacheExtensionsKt;
 import static com.topjohnwu.superuser.internal.Utils.context;
+import app.lawnchair.allapps.DrawerScrollUnder;
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences.PreferenceManager;
@@ -328,6 +329,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Add the search box above everything else in this container (if the flag is enabled,
             // it's added to drag layer in onAttach instead).
             addView(mSearchContainer);
+            // DJ(drawer-glass): blurred copy of the list behind the search bar (scroll-under)
+            DrawerScrollUnder.attach(this, mSearchContainer, mActivityContext.getDeviceProfile());
             // The search container is visually at the top of the all apps UI, and should thus be
             // focused by default. It's added to end of the children list, so it needs to be
             // explicitly marked as focused by default.
@@ -859,7 +862,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 getCurrentPage(),
                 tabsHidden);
 
-        int padding = (hideSearchBar && !mUsingTabs) ? 0 : mHeader.getMaxTranslation();
+        int padding = ((hideSearchBar && !mUsingTabs) ? 0 : mHeader.getMaxTranslation())
+                // DJ(drawer-glass): same distance the lists moved up, so nothing moves at rest
+                + ((!hideSearchBar && !mUsingTabs)
+                        ? DrawerScrollUnder.extraTop(getContext(), mActivityContext.getDeviceProfile()) : 0);
         mAH.forEach(adapterHolder -> {
             adapterHolder.mPadding.top = padding;
             adapterHolder.applyPadding();
@@ -1077,6 +1083,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         if (includeTabsMargin) {
             topMargin += getContext().getResources().getDimensionPixelSize(
                     R.dimen.all_apps_header_pill_height);
+        }
+        if (!mUsingTabs && v != mHeader) {
+            // DJ(drawer-glass): scroll-under moves the lists up to the search bar's top
+            topMargin -= DrawerScrollUnder.extraTop(getContext(), mActivityContext.getDeviceProfile());
         }
         layoutParams.topMargin = topMargin;
     }
@@ -1423,6 +1433,16 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mNavBarScrimHeight = computeNavBarScrimHeight(insets);
         applyAdapterSideAndBottomPaddings(mActivityContext.getDeviceProfile());
         return super.dispatchApplyWindowInsets(insets);
+    }
+
+    @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        // DJ(drawer-glass): scroll-under: the sharp list is not drawn inside the search pill
+        int save = DrawerScrollUnder.clipOutPill(
+                this, mSearchContainer, mActivityContext.getDeviceProfile(), canvas, child);
+        boolean result = super.drawChild(canvas, child, drawingTime);
+        if (save >= 0) canvas.restoreToCount(save);
+        return result;
     }
 
     @Override

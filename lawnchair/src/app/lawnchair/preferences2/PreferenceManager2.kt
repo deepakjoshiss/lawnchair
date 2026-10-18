@@ -240,6 +240,20 @@ class PreferenceManager2 @Inject constructor(
         onSet = { reloadHelper.restart() },
     )
 
+    // DJ(drawer-glass): "frost" or "liquid" (Android 13+); see app.lawnchair.allapps.DrawerSearchGlass
+    val drawerSearchGlass = preference(
+        key = stringPreferencesKey(name = "dj_drawer_search_glass"),
+        defaultValue = "frost",
+        onSet = { reloadHelper.recreate() },
+    )
+
+    // DJ(drawer-glass): apps pass blurred under the drawer search bar (Android 12+); see DrawerScrollUnder
+    val drawerSearchScrollUnder = preference(
+        key = booleanPreferencesKey(name = "dj_drawer_search_scroll_under"),
+        defaultValue = false,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val appDrawerSearchBarBackground = preference(
         key = booleanPreferencesKey(name = "all_apps_search_bar_background"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_search_bar_background),

@@ -388,3 +388,25 @@ under search bar" (Android 12+). Sheet mode keeps upstream's pill.
 **Cost:** Lawnchair layer plus a `startIconSize` field on upstream's `QsbStyle` (default 24dp, dock
 unchanged). Exception: dark mode + bright wallpaper + see-through drawer gives a mid-grey pill
 (134) where white text reaches only 3.6:1 and the hint 2.9:1; on a dark wallpaper the hint is ~5:1.
+
+## 30. Drawer search bar: Liquid glass, scroll-under, spacing
+
+**Decided (2026-10-18/19, owner):** in Search bar → App drawer (full-screen drawer only):
+- "Glass style" (`dj_drawer_search_glass`): Frost (default) / Liquid glass. Liquid is an AGSL
+  shader (Android 13+; row hidden below): bright rim on top-left edges, dark rim opposite, inner
+  glow, diagonal sheen over a faint tint. Light effects only: the wallpaper is another window.
+- "Scroll apps under search bar" (`dj_drawer_search_scroll_under`, default off, Android 12+): the
+  A-Z list, search results and suggestion rows run up to the top of the screen. They stay sharp
+  except inside the pill (24dp blur) and behind the status bar (72dp blur): the container skips the
+  sharp list there and a backdrop draws a blurred copy. Off with work-profile tabs.
+- Spacing: search box 76dp (12dp above and below the 52dp pill, was 60dp) and a 12dp gap between
+  status bar and search box (`dj_drawer_search_top_gap`), so the pill is 24dp below the status bar.
+  The 76dp box applies to the sheet too (shared dimension).
+
+**Why:** owner's look; options round in the "Drawer search bar glass" canvas (a–e), picked a, c, e.
+
+**Cost:** scroll-under touches upstream drawer code in 6 hooks (`ActivityAllAppsContainerView`:
+list position, list padding, backdrop attach, `drawChild`; `FloatingHeaderView`: list and row clip,
+row scroll-out). Emulator frame times unchanged (≈27 % janky frames either way, emulator-bound);
+not measured on a phone. Status-bar icons sit over app icons blurred at 72dp. Next (step 4, not
+built): refraction of the scroll-under backdrop by the Liquid glass shader.

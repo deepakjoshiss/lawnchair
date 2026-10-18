@@ -62,6 +62,7 @@ fun DrawerSearchPreference(
                 description = stringResource(R.string.allapps_match_qsb_style_description),
                 adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
             )
+            DrawerGlassPreference() // DJ(drawer-glass)
         }
 
         val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
